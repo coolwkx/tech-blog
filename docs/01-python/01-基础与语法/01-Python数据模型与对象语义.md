@@ -435,7 +435,7 @@ print(Mutable.__hash__ is None) # True —— 生成的 __eq__ 把 __hash__ 置�
 
 默认参数表达式在 **`def` 语句执行时**求值一次，结果存进函数对象的 `__defaults__`（仅位置参数）/ `__kwdefaults__`（keyword-only）。之后每次省略该参数，函数体拿到的都是**同一个对象**。`[]` 可变，所以 `acc.append(...)` 的副作用被持久化到下一次调用——本质是「传参是绑定 + 原地修改可见」的叠加。
 
-修法：`None` 哨兵（最通用，`acc = [] if acc is None else acc`）；不可变默认值（``、`0`、`""`、`frozenset`）；`None` 也是合法业务值时用 `_NOT_SET = object` 哨兵。排查手段是 `print(f.__defaults__)`，看到真实数据而不是 `None`，就说明默认值被当成了状态容器。同一坑还出现在 `def f(x=time.time)`、`def f(x={})`、`def f(x=SomeCache)` 上。
+修法：`None` 哨兵（最通用，`acc = [] if acc is None else acc`）；不可变默认值（`()`、`0`、`""`、`frozenset`）；`None` 也是合法业务值时用 `_NOT_SET = object` 哨兵。排查手段是 `print(f.__defaults__)`，看到真实数据而不是 `None`，就说明默认值被当成了状态容器。同一坑还出现在 `def f(x=time.time)`、`def f(x={})`、`def f(x=SomeCache)` 上。
 
 </details>
 
