@@ -13,7 +13,10 @@ theme:
     - navigation.instant.progress
     - navigation.tracking
     - navigation.top
-    - navigation.sections
+    # navigation.expand：每个分组带展开/收起箭头，可折叠
+    # 注意：它与 navigation.sections 互斥（后者会把所有分组强制展开且不显示箭头），
+    # 因此这里不要同时启用 navigation.sections
+    - navigation.expand
     - navigation.indexes
     - navigation.path
     - navigation.footer
