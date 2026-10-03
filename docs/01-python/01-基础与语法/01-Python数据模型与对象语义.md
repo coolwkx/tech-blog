@@ -159,12 +159,12 @@ print(int.__mro__) # (<class 'int'>, <class 'object'>)
 import dis
 
 def total(seq):
- s = 0
- for item in seq:
- s += item
- return s
+    s = 0
+    for item in seq:
+        s += item
+        return s
 
- dis.dis(total)
+    dis.dis(total)
 ```
 
 ```text
@@ -323,20 +323,20 @@ try: hash([1, 2])
 except TypeError as exc: print(type(exc).__name__, exc) # unhashable type: 'list'
 
 class CaseInsensitive: # 正确示范：__eq__ 与 __hash__ 一致
- def __init__(self, text): self.text = text
- def __eq__(self, other):
- return isinstance(other, CaseInsensitive) and self.text.lower == other.text.lower
- def __hash__(self): return hash(self.text.lower)
+    def __init__(self, text): self.text = text
+    def __eq__(self, other):
+        return isinstance(other, CaseInsensitive) and self.text.lower == other.text.lower
+    def __hash__(self): return hash(self.text.lower)
 
- print({CaseInsensitive("Key"): 1}[CaseInsensitive("kEy")]) # 1
+    print({CaseInsensitive("Key"): 1}[CaseInsensitive("kEy")]) # 1
 
- class Broken: # 只定义 __eq__，__hash__ 被隐式置为 None
- def __init__(self, text): self.text = text
- def __eq__(self, other):
- return isinstance(other, Broken) and self.text == other.text
+    class Broken: # 只定义 __eq__，__hash__ 被隐式置为 None
+        def __init__(self, text): self.text = text
+        def __eq__(self, other):
+            return isinstance(other, Broken) and self.text == other.text
 
- print(Broken.__hash__ is None) # True
- # hash(Broken("a")) -> TypeError: unhashable type: 'Broken'
+        print(Broken.__hash__ is None) # True
+        # hash(Broken("a")) -> TypeError: unhashable type: 'Broken'
 ```
 
 `list` 不能做键不是语法限制而是语义不允许：它可以原地变化，哈希会失效，CPython 干脆不给它 `__hash__`。自定义类定义了 `__eq__` 却没有 `__hash__` 时，`__hash__` 被隐式设为 `None`——因为「值相等」一旦可自定义，默认的按身份哈希就不再自洽。

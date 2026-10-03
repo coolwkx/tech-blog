@@ -73,72 +73,72 @@ from typing import Dict, List
 
 @dataclass
 class BaseMessage:
- content: str
- additional_kwargs: Dict = field(default_factory=dict)
- type: str = "base"
+    content: str
+    additional_kwargs: Dict = field(default_factory=dict)
+    type: str = "base"
 
- def to_dict(self):
- return {"type": self.type, "data": {"content": self.content,
- "additional_kwargs": self.additional_kwargs}}
+    def to_dict(self):
+        return {"type": self.type, "data": {"content": self.content,
+    "additional_kwargs": self.additional_kwargs}}
 
-@dataclass
-class HumanMessage(BaseMessage):
- type: str = "human"
+    @dataclass
+    class HumanMessage(BaseMessage):
+        type: str = "human"
 
-@dataclass
-class AIMessage(BaseMessage):
- type: str = "ai"
+        @dataclass
+        class AIMessage(BaseMessage):
+            type: str = "ai"
 
-MESSAGE_CLASSES = {"human": HumanMessage, "ai": AIMessage}
+            MESSAGE_CLASSES = {"human": HumanMessage, "ai": AIMessage}
 
-def messages_to_dict(messages: List[BaseMessage]) -> List[dict]:
- return [message.to_dict() for message in messages]
+            def messages_to_dict(messages: List[BaseMessage]) -> List[dict]:
+                return [message.to_dict() for message in messages]
 
-def messages_from_dict(dicts: List[dict]) -> List[BaseMessage]:
- messages = []
- for item in dicts:
- cls = MESSAGE_CLASSES.get(item["type"])
- if cls is None:
- raise ValueError("未知消息类型: %s" % item["type"])
- messages.append(cls(content=item["data"]["content"],
- additional_kwargs=item["data"].get("additional_kwargs", {})))
- return messages
+            def messages_from_dict(dicts: List[dict]) -> List[BaseMessage]:
+                messages = []
+                for item in dicts:
+                    cls = MESSAGE_CLASSES.get(item["type"])
+                    if cls is None:
+                        raise ValueError("未知消息类型: %s" % item["type"])
+                    messages.append(cls(content=item["data"]["content"],
+                    additional_kwargs=item["data"].get("additional_kwargs", {})))
+                    return messages
 
-class ChatMessageHistory:
- """最小会话记忆容器"""
+                class ChatMessageHistory:
+                    """最小会话记忆容器"""
 
- def __init__(self):
- self.messages: List[BaseMessage] = []
+                    def __init__(self):
+                        self.messages: List[BaseMessage] = []
 
- def add_user_message(self, content):
- self.messages.append(HumanMessage(content=content))
+                        def add_user_message(self, content):
+                            self.messages.append(HumanMessage(content=content))
 
- def add_ai_message(self, content):
- self.messages.append(AIMessage(content=content))
+                            def add_ai_message(self, content):
+                                self.messages.append(AIMessage(content=content))
 
- def to_json(self):
- return json.dumps(messages_to_dict(self.messages), ensure_ascii=False)
+                                def to_json(self):
+                                    return json.dumps(messages_to_dict(self.messages), ensure_ascii=False)
 
- @classmethod
- def from_json(cls, payload):
- history = cls()
- history.messages = messages_from_dict(json.loads(payload))
- return history
+                                @classmethod
+                                def from_json(cls, payload):
+                                    history = cls()
+                                    history.messages = messages_from_dict(json.loads(payload))
+                                    return history
 
-if __name__ == "__main__":
- history = ChatMessageHistory()
- history.add_user_message("小明有1只猫")
- history.add_ai_message("小明有一只猫，那这只猫叫什么名字呢？")
- history.add_user_message("小刚有2只狗")
+                                if __name__ == "__main__":
+                                    history = ChatMessageHistory()
+                                    history.add_user_message("小明有1只猫")
+                                    history.add_ai_message("小明有一只猫，那这只猫叫什么名字呢？")
+                                    history.add_user_message("小刚有2只狗")
 
- payload = history.to_json()
- print("序列化结果:")
- print(payload)
+                                    payload = history.to_json()
+                                    print("序列化结果:")
+                                    print(payload)
 
- restored = ChatMessageHistory.from_json(payload)
- print("恢复后的消息条数:", len(restored.messages))
- for message in restored.messages:
- print("[%s] %s" % (message.type, message.content))
+                                    restored = ChatMessageHistory.from_json(payload)
+                                    print("恢复后的消息条数:", len(restored.messages))
+                                    for message in restored.messages:
+                                        print("[%s] %s" % (message.type, message.content))
 ```
 
 它的价值在于**把「维护一个 messages 列表」这件事变成有语义的 API**，并且维护了消息类型信息，方便直接回传给 Chat Models。
@@ -198,69 +198,69 @@ MAX_HISTORY = 500 # 历史记忆上限（滑动窗口）
 NOTIFY_INTERVAL = 3600 # 同类提醒最小间隔（秒）
 
 def load_json(path, default):
- try:
- with open(path, "r", encoding="utf-8") as file:
- return json.load(file)
- except (OSError, ValueError):
- return default
+    try:
+        with open(path, "r", encoding="utf-8") as file:
+            return json.load(file)
+    except (OSError, ValueError):
+        return default
 
-def save_json(path, payload):
- with open(path, "w", encoding="utf-8") as file:
- json.dump(payload, file, ensure_ascii=False, indent=2)
+    def save_json(path, payload):
+        with open(path, "w", encoding="utf-8") as file:
+            json.dump(payload, file, ensure_ascii=False, indent=2)
 
-def load_state():
- return load_json(STATE_FILE, {"last_price": None, "last_status": "normal", "last_notify_time": 0})
+            def load_state():
+                return load_json(STATE_FILE, {"last_price": None, "last_status": "normal", "last_notify_time": 0})
 
-def save_state(state):
- save_json(STATE_FILE, state)
+            def save_state(state):
+                save_json(STATE_FILE, state)
 
-def append_history(price):
- """写入历史记忆，并做滑动窗口截断"""
- history = load_json(HISTORY_FILE, [])
- history.append({"time": time.strftime("%Y-%m-%d %H:%M:%S"), "price": price})
- history = history[-MAX_HISTORY:] # 遗忘：只保留最近 500 条
- save_json(HISTORY_FILE, history)
- return history
+                def append_history(price):
+                    """写入历史记忆，并做滑动窗口截断"""
+                    history = load_json(HISTORY_FILE, [])
+                    history.append({"time": time.strftime("%Y-%m-%d %H:%M:%S"), "price": price})
+                    history = history[-MAX_HISTORY:] # 遗忘：只保留最近 500 条
+                    save_json(HISTORY_FILE, history)
+                    return history
 
-def get_price_change(current, last):
- if not last:
- return 0.0
- return (current - last) / last * 100
+                def get_price_change(current, last):
+                    if not last:
+                        return 0.0
+                    return (current - last) / last * 100
 
-def decide_and_notify(price, buy_threshold=800, sell_threshold=900, now=None, notifier=print):
- """决策：状态变化立即提醒；状态未变则按间隔限流提醒。"""
- now = now if now is not None else time.time()
- state = load_state()
- change = get_price_change(price, state.get("last_price"))
+                def decide_and_notify(price, buy_threshold=800, sell_threshold=900, now=None, notifier=print):
+                    """决策：状态变化立即提醒；状态未变则按间隔限流提醒。"""
+                    now = now if now is not None else time.time()
+                    state = load_state()
+                    change = get_price_change(price, state.get("last_price"))
 
- if price < buy_threshold:
- status, title = "buy", "黄金买入提醒"
- elif price > sell_threshold:
- status, title = "sell", "黄金卖出提醒"
- else:
- status, title = "normal", None
+                    if price < buy_threshold:
+                        status, title = "buy", "黄金买入提醒"
+                    elif price > sell_threshold:
+                        status, title = "sell", "黄金卖出提醒"
+                    else:
+                        status, title = "normal", None
 
- should_notify = False
- if status != state.get("last_status") and title:
- should_notify = True # 状态变化 → 立即提醒
- elif title and now - state.get("last_notify_time", 0) > NOTIFY_INTERVAL:
- should_notify = True # 状态未变但超时 → 周期提醒
+                        should_notify = False
+                        if status != state.get("last_status") and title:
+                            should_notify = True # 状态变化 → 立即提醒
+                        elif title and now - state.get("last_notify_time", 0) > NOTIFY_INTERVAL:
+                            should_notify = True # 状态未变但超时 → 周期提醒
 
- if should_notify:
- notifier("%s 当前价格 %.2f 元/克，相比上次 %.2f%%" % (title, price, change))
- state["last_notify_time"] = now
+                            if should_notify:
+                                notifier("%s 当前价格 %.2f 元/克，相比上次 %.2f%%" % (title, price, change))
+                                state["last_notify_time"] = now
 
- state["last_price"] = price
- state["last_status"] = status
- save_state(state)
- append_history(price)
- return status, should_notify
+                                state["last_price"] = price
+                                state["last_status"] = status
+                                save_state(state)
+                                append_history(price)
+                                return status, should_notify
 
-if __name__ == "__main__":
- print(decide_and_notify(780.0)) # 低于买入阈值 → 提醒
- print(decide_and_notify(785.0)) # 状态仍为 buy 且未超时 → 不提醒
- print(decide_and_notify(910.0)) # 状态变化 → 提醒
- print("历史条数:", len(load_json(HISTORY_FILE, [])))
+                            if __name__ == "__main__":
+                                print(decide_and_notify(780.0)) # 低于买入阈值 → 提醒
+                                print(decide_and_notify(785.0)) # 状态仍为 buy 且未超时 → 不提醒
+                                print(decide_and_notify(910.0)) # 状态变化 → 提醒
+                                print("历史条数:", len(load_json(HISTORY_FILE, [])))
 ```
 
 对应数据侧（`preprocess.py`）的拼接格式：

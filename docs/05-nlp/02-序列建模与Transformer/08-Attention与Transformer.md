@@ -170,224 +170,224 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 def attention(query, key, value, mask=None, dropout=None):
- """Scaled Dot-Product Attention
- query/key/value: [B, h, L, d_k]；mask 需可广播到 [B, h, L, L]
- 返回: 加权结果 [B, h, L, d_k]、注意力权重 [B, h, L, L]
- """
- d_k = query.size(-1)
- scores = torch.matmul(query, key.transpose(-2, -1)) / math.sqrt(d_k) # 1) 打分并缩放
- if mask is not None:
- scores = scores.masked_fill(mask == 0, -1e9) # 2) 掩码
- p_attn = F.softmax(scores, dim=-1) # 3) 归一化
- if dropout is not None:
- p_attn = dropout(p_attn)
- return torch.matmul(p_attn, value), p_attn # 4) 加权求和
+    """Scaled Dot-Product Attention
+    query/key/value: [B, h, L, d_k]；mask 需可广播到 [B, h, L, L]
+    返回: 加权结果 [B, h, L, d_k]、注意力权重 [B, h, L, L]
+    """
+    d_k = query.size(-1)
+    scores = torch.matmul(query, key.transpose(-2, -1)) / math.sqrt(d_k) # 1) 打分并缩放
+    if mask is not None:
+        scores = scores.masked_fill(mask == 0, -1e9) # 2) 掩码
+        p_attn = F.softmax(scores, dim=-1) # 3) 归一化
+        if dropout is not None:
+            p_attn = dropout(p_attn)
+            return torch.matmul(p_attn, value), p_attn # 4) 加权求和
 
- def clones(module, n):
- """深拷贝 n 份，得到相互独立的层"""
- return nn.ModuleList([copy.deepcopy(module) for _ in range(n)])
+        def clones(module, n):
+            """深拷贝 n 份，得到相互独立的层"""
+            return nn.ModuleList([copy.deepcopy(module) for _ in range(n)])
 
- class MultiHeadedAttention(nn.Module):
- def __init__(self, head, embedding_dim, dropout=0.1):
- super.__init__
- assert embedding_dim % head == 0, "特征维度必须能被头数整除"
- self.d_k = embedding_dim // head
- self.head = head
- self.linears = clones(nn.Linear(embedding_dim, embedding_dim), 4) # Q,K,V,O
- self.dropout = nn.Dropout(p=dropout)
- self.attn = None
+        class MultiHeadedAttention(nn.Module):
+            def __init__(self, head, embedding_dim, dropout=0.1):
+                super.__init__
+                assert embedding_dim % head == 0, "特征维度必须能被头数整除"
+                self.d_k = embedding_dim // head
+                self.head = head
+                self.linears = clones(nn.Linear(embedding_dim, embedding_dim), 4) # Q,K,V,O
+                self.dropout = nn.Dropout(p=dropout)
+                self.attn = None
 
- def forward(self, query, key, value, mask=None):
- if mask is not None:
- mask = mask.unsqueeze(0) # [B,L,L] -> [1,B,L,L]，广播到 head 维
- batch_size = query.size(0)
- # 线性投影 + 切头: [B,L,d_model] -> [B,L,h,d_k] -> [B,h,L,d_k]
- query, key, value = [
- lin(x).view(batch_size, -1, self.head, self.d_k).transpose(1, 2)
- for lin, x in zip(self.linears, (query, key, value))
- ]
- x, self.attn = attention(query, key, value, mask=mask, dropout=self.dropout)
- # 合并头: [B,h,L,d_k] -> [B,L,h,d_k] -> [B,L,d_model]
- x = x.transpose(1, 2).contiguous.view(batch_size, -1, self.head * self.d_k)
- return self.linears[-1](x) # 输出投影 W^O
+                def forward(self, query, key, value, mask=None):
+                    if mask is not None:
+                        mask = mask.unsqueeze(0) # [B,L,L] -> [1,B,L,L]，广播到 head 维
+                        batch_size = query.size(0)
+                        # 线性投影 + 切头: [B,L,d_model] -> [B,L,h,d_k] -> [B,h,L,d_k]
+                        query, key, value = [
+                        lin(x).view(batch_size, -1, self.head, self.d_k).transpose(1, 2)
+                        for lin, x in zip(self.linears, (query, key, value))
+                        ]
+                        x, self.attn = attention(query, key, value, mask=mask, dropout=self.dropout)
+                        # 合并头: [B,h,L,d_k] -> [B,L,h,d_k] -> [B,L,d_model]
+                        x = x.transpose(1, 2).contiguous.view(batch_size, -1, self.head * self.d_k)
+                        return self.linears[-1](x) # 输出投影 W^O
 ```
 
 ### 3.2 位置编码、前馈层、LayerNorm、子层连接
 
 ```python
 class Embeddings(nn.Module):
- def __init__(self, d_model, vocab):
- super.__init__
- self.d_model = d_model
- self.lut = nn.Embedding(vocab, d_model)
+    def __init__(self, d_model, vocab):
+        super.__init__
+        self.d_model = d_model
+        self.lut = nn.Embedding(vocab, d_model)
 
- def forward(self, x):
- return self.lut(x) * math.sqrt(self.d_model) # 与位置编码量级匹配
+        def forward(self, x):
+            return self.lut(x) * math.sqrt(self.d_model) # 与位置编码量级匹配
 
- class PositionalEncoding(nn.Module):
- def __init__(self, d_model, dropout=0.1, max_len=5000):
- super.__init__
- self.dropout = nn.Dropout(p=dropout)
- pe = torch.zeros(max_len, d_model)
- position = torch.arange(0, max_len).unsqueeze(1).float # [max_len,1]
- div_term = torch.exp(
- torch.arange(0, d_model, 2).float * (-math.log(10000.0) / d_model)
- ) # [d_model/2]
- pe[:, 0::2] = torch.sin(position * div_term) # 偶数列
- pe[:, 1::2] = torch.cos(position * div_term) # 奇数列
- # register_buffer: 随模型保存/迁移，但不作为可训练参数
- self.register_buffer("pe", pe.unsqueeze(0)) # [1,max_len,d_model]
+        class PositionalEncoding(nn.Module):
+            def __init__(self, d_model, dropout=0.1, max_len=5000):
+                super.__init__
+                self.dropout = nn.Dropout(p=dropout)
+                pe = torch.zeros(max_len, d_model)
+                position = torch.arange(0, max_len).unsqueeze(1).float # [max_len,1]
+                div_term = torch.exp(
+                torch.arange(0, d_model, 2).float * (-math.log(10000.0) / d_model)
+                ) # [d_model/2]
+                pe[:, 0::2] = torch.sin(position * div_term) # 偶数列
+                pe[:, 1::2] = torch.cos(position * div_term) # 奇数列
+                # register_buffer: 随模型保存/迁移，但不作为可训练参数
+                self.register_buffer("pe", pe.unsqueeze(0)) # [1,max_len,d_model]
 
- def forward(self, x):
- x = x + self.pe[:, :x.size(1)]
- return self.dropout(x)
+                def forward(self, x):
+                    x = x + self.pe[:, :x.size(1)]
+                    return self.dropout(x)
 
- class PositionwiseFeedForward(nn.Module):
- def __init__(self, d_model, d_ff, dropout=0.1):
- super.__init__
- self.w1 = nn.Linear(d_model, d_ff)
- self.w2 = nn.Linear(d_ff, d_model)
- self.dropout = nn.Dropout(p=dropout)
+                class PositionwiseFeedForward(nn.Module):
+                    def __init__(self, d_model, d_ff, dropout=0.1):
+                        super.__init__
+                        self.w1 = nn.Linear(d_model, d_ff)
+                        self.w2 = nn.Linear(d_ff, d_model)
+                        self.dropout = nn.Dropout(p=dropout)
 
- def forward(self, x):
- return self.w2(self.dropout(F.relu(self.w1(x))))
+                        def forward(self, x):
+                            return self.w2(self.dropout(F.relu(self.w1(x))))
 
- class LayerNorm(nn.Module):
- def __init__(self, features, eps=1e-6):
- super.__init__
- self.a2 = nn.Parameter(torch.ones(features)) # gamma
- self.b2 = nn.Parameter(torch.zeros(features)) # beta
- self.eps = eps
+                        class LayerNorm(nn.Module):
+                            def __init__(self, features, eps=1e-6):
+                                super.__init__
+                                self.a2 = nn.Parameter(torch.ones(features)) # gamma
+                                self.b2 = nn.Parameter(torch.zeros(features)) # beta
+                                self.eps = eps
 
- def forward(self, x):
- mean = x.mean(-1, keepdim=True)
- std = x.std(-1, keepdim=True)
- return self.a2 * (x - mean) / (std + self.eps) + self.b2
+                                def forward(self, x):
+                                    mean = x.mean(-1, keepdim=True)
+                                    std = x.std(-1, keepdim=True)
+                                    return self.a2 * (x - mean) / (std + self.eps) + self.b2
 
- class SublayerConnection(nn.Module):
- """Pre-LN 残差结构: x + dropout(sublayer(norm(x)))"""
+                                class SublayerConnection(nn.Module):
+                                    """Pre-LN 残差结构: x + dropout(sublayer(norm(x)))"""
 
- def __init__(self, size, dropout=0.1):
- super.__init__
- self.norm = LayerNorm(size)
- self.dropout = nn.Dropout(dropout)
+                                    def __init__(self, size, dropout=0.1):
+                                        super.__init__
+                                        self.norm = LayerNorm(size)
+                                        self.dropout = nn.Dropout(dropout)
 
- def forward(self, x, sublayer):
- return x + self.dropout(sublayer(self.norm(x)))
+                                        def forward(self, x, sublayer):
+                                            return x + self.dropout(sublayer(self.norm(x)))
 ```
 
 ### 3.3 掩码、Encoder / Decoder 与整体拼装
 
 ```python
 def subsequent_mask(size):
- """下三角矩阵: 位置 i 只能看到 <= i 的信息"""
- triu = torch.triu(torch.ones(1, size, size), diagonal=1) # 上三角(不含对角线)
- return (1 - triu).to(torch.uint8)
+    """下三角矩阵: 位置 i 只能看到 <= i 的信息"""
+    triu = torch.triu(torch.ones(1, size, size), diagonal=1) # 上三角(不含对角线)
+    return (1 - triu).to(torch.uint8)
 
 class EncoderLayer(nn.Module):
- def __init__(self, size, self_attn, feed_forward, dropout):
- super.__init__
- self.self_attn = self_attn
- self.feed_forward = feed_forward
- self.sublayer = clones(SublayerConnection(size, dropout), 2)
- self.size = size
+    def __init__(self, size, self_attn, feed_forward, dropout):
+        super.__init__
+        self.self_attn = self_attn
+        self.feed_forward = feed_forward
+        self.sublayer = clones(SublayerConnection(size, dropout), 2)
+        self.size = size
 
- def forward(self, x, mask):
- x = self.sublayer[0](x, lambda x: self.self_attn(x, x, x, mask))
- return self.sublayer[1](x, self.feed_forward)
+        def forward(self, x, mask):
+            x = self.sublayer[0](x, lambda x: self.self_attn(x, x, x, mask))
+            return self.sublayer[1](x, self.feed_forward)
 
- class Encoder(nn.Module):
- def __init__(self, layer, n):
- super.__init__
- self.layers = clones(layer, n)
- self.norm = LayerNorm(layer.size)
+        class Encoder(nn.Module):
+            def __init__(self, layer, n):
+                super.__init__
+                self.layers = clones(layer, n)
+                self.norm = LayerNorm(layer.size)
 
- def forward(self, x, mask):
- for layer in self.layers:
- x = layer(x, mask)
- return self.norm(x)
+                def forward(self, x, mask):
+                    for layer in self.layers:
+                        x = layer(x, mask)
+                        return self.norm(x)
 
- class DecoderLayer(nn.Module):
- def __init__(self, size, self_attn, src_attn, feed_forward, dropout):
- super.__init__
- self.size = size
- self.self_attn = self_attn # Q = K = V
- self.src_attn = src_attn # Q != K = V
- self.feed_forward = feed_forward
- self.sublayer = clones(SublayerConnection(size, dropout), 3)
+                    class DecoderLayer(nn.Module):
+                        def __init__(self, size, self_attn, src_attn, feed_forward, dropout):
+                            super.__init__
+                            self.size = size
+                            self.self_attn = self_attn # Q = K = V
+                            self.src_attn = src_attn # Q != K = V
+                            self.feed_forward = feed_forward
+                            self.sublayer = clones(SublayerConnection(size, dropout), 3)
 
- def forward(self, x, memory, source_mask, target_mask):
- m = memory
- x = self.sublayer[0](x, lambda x: self.self_attn(x, x, x, target_mask))
- x = self.sublayer[1](x, lambda x: self.src_attn(x, m, m, source_mask))
- return self.sublayer[2](x, self.feed_forward)
+                            def forward(self, x, memory, source_mask, target_mask):
+                                m = memory
+                                x = self.sublayer[0](x, lambda x: self.self_attn(x, x, x, target_mask))
+                                x = self.sublayer[1](x, lambda x: self.src_attn(x, m, m, source_mask))
+                                return self.sublayer[2](x, self.feed_forward)
 
- class Decoder(nn.Module):
- def __init__(self, layer, n):
- super.__init__
- self.layers = clones(layer, n)
- self.norm = LayerNorm(layer.size)
+                            class Decoder(nn.Module):
+                                def __init__(self, layer, n):
+                                    super.__init__
+                                    self.layers = clones(layer, n)
+                                    self.norm = LayerNorm(layer.size)
 
- def forward(self, x, memory, source_mask, target_mask):
- for layer in self.layers:
- x = layer(x, memory, source_mask, target_mask)
- return self.norm(x)
+                                    def forward(self, x, memory, source_mask, target_mask):
+                                        for layer in self.layers:
+                                            x = layer(x, memory, source_mask, target_mask)
+                                            return self.norm(x)
 
- class Generator(nn.Module):
- def __init__(self, d_model, vocab_size):
- super.__init__
- self.project = nn.Linear(d_model, vocab_size)
+                                        class Generator(nn.Module):
+                                            def __init__(self, d_model, vocab_size):
+                                                super.__init__
+                                                self.project = nn.Linear(d_model, vocab_size)
 
- def forward(self, x):
- # 训练配 NLLLoss，与 CrossEntropyLoss 等价但数值更稳
- return F.log_softmax(self.project(x), dim=-1)
+                                                def forward(self, x):
+                                                    # 训练配 NLLLoss，与 CrossEntropyLoss 等价但数值更稳
+                                                    return F.log_softmax(self.project(x), dim=-1)
 
- class EncoderDecoder(nn.Module):
- def __init__(self, encoder, decoder, src_embed, tgt_embed, generator):
- super.__init__
- self.encoder, self.decoder = encoder, decoder
- self.src_embed, self.tgt_embed = src_embed, tgt_embed
- self.generator = generator
+                                                class EncoderDecoder(nn.Module):
+                                                    def __init__(self, encoder, decoder, src_embed, tgt_embed, generator):
+                                                        super.__init__
+                                                        self.encoder, self.decoder = encoder, decoder
+                                                        self.src_embed, self.tgt_embed = src_embed, tgt_embed
+                                                        self.generator = generator
 
- def encode(self, source, source_mask):
- return self.encoder(self.src_embed(source), source_mask)
+                                                        def encode(self, source, source_mask):
+                                                            return self.encoder(self.src_embed(source), source_mask)
 
- def decode(self, memory, source_mask, target, target_mask):
- return self.decoder(self.tgt_embed(target), memory, source_mask, target_mask)
+                                                        def decode(self, memory, source_mask, target, target_mask):
+                                                            return self.decoder(self.tgt_embed(target), memory, source_mask, target_mask)
 
- def forward(self, source, target, source_mask, target_mask):
- return self.generator(
- self.decode(self.encode(source, source_mask), source_mask, target, target_mask)
- )
+                                                        def forward(self, source, target, source_mask, target_mask):
+                                                            return self.generator(
+                                                        self.decode(self.encode(source, source_mask), source_mask, target, target_mask)
+                                                        )
 
- def make_model(src_vocab, tgt_vocab, n=6, d_model=512, d_ff=2048, head=8, dropout=0.1):
- c = copy.deepcopy
- attn = MultiHeadedAttention(head, d_model, dropout)
- ff = PositionwiseFeedForward(d_model, d_ff, dropout)
- position = PositionalEncoding(d_model, dropout)
- model = EncoderDecoder(
- Encoder(EncoderLayer(d_model, c(attn), c(ff), dropout), n),
- Decoder(DecoderLayer(d_model, c(attn), c(attn), c(ff), dropout), n),
- nn.Sequential(Embeddings(d_model, src_vocab), c(position)),
- nn.Sequential(Embeddings(d_model, tgt_vocab), c(position)),
- Generator(d_model, tgt_vocab),
- )
- for p in model.parameters:
- if p.dim > 1:
- nn.init.xavier_uniform_(p)
- return model
+                                                        def make_model(src_vocab, tgt_vocab, n=6, d_model=512, d_ff=2048, head=8, dropout=0.1):
+                                                            c = copy.deepcopy
+                                                            attn = MultiHeadedAttention(head, d_model, dropout)
+                                                            ff = PositionwiseFeedForward(d_model, d_ff, dropout)
+                                                            position = PositionalEncoding(d_model, dropout)
+                                                            model = EncoderDecoder(
+                                                            Encoder(EncoderLayer(d_model, c(attn), c(ff), dropout), n),
+                                                            Decoder(DecoderLayer(d_model, c(attn), c(attn), c(ff), dropout), n),
+                                                            nn.Sequential(Embeddings(d_model, src_vocab), c(position)),
+                                                            nn.Sequential(Embeddings(d_model, tgt_vocab), c(position)),
+                                                            Generator(d_model, tgt_vocab),
+                                                            )
+                                                            for p in model.parameters:
+                                                                if p.dim > 1:
+                                                                    nn.init.xavier_uniform_(p)
+                                                                    return model
 
- if __name__ == "__main__":
- batch, src_len, tgt_len, vocab = 2, 5, 6, 100
- model = make_model(vocab, vocab, n=2, d_model=64, d_ff=256, head=8)
- src = torch.randint(1, vocab, (batch, src_len))
- tgt = torch.randint(1, vocab, (batch, tgt_len))
- src_mask = torch.ones(batch, 1, src_len).to(torch.uint8)
- tgt_mask = subsequent_mask(tgt_len) # [1,tgt_len,tgt_len]
+                                                                if __name__ == "__main__":
+                                                                    batch, src_len, tgt_len, vocab = 2, 5, 6, 100
+                                                                    model = make_model(vocab, vocab, n=2, d_model=64, d_ff=256, head=8)
+                                                                    src = torch.randint(1, vocab, (batch, src_len))
+                                                                    tgt = torch.randint(1, vocab, (batch, tgt_len))
+                                                                    src_mask = torch.ones(batch, 1, src_len).to(torch.uint8)
+                                                                    tgt_mask = subsequent_mask(tgt_len) # [1,tgt_len,tgt_len]
 
- out = model(src, tgt, src_mask, tgt_mask)
- print("输出形状:", out.shape) # [2, 6, 100]
- print(subsequent_mask(4).squeeze(0)) # 验证 look-ahead mask
+                                                                    out = model(src, tgt, src_mask, tgt_mask)
+                                                                    print("输出形状:", out.shape) # [2, 6, 100]
+                                                                    print(subsequent_mask(4).squeeze(0)) # 验证 look-ahead mask
 ```
 
 ## 4. 常见坑

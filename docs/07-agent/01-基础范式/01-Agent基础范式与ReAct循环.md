@@ -237,83 +237,83 @@ import json
 import re
 
 TOOL_SCHEMAS = [
- {
- "name": "get_current_weather",
- "description": "查询给定城市当前的天气情况",
- "parameters": {
- "type": "object",
- "properties": {
- "location": {"type": "string", "description": "城市名，例如 北京"}
- },
- "required": ["location"],
- },
- },
- {
- "name": "calculator",
- "description": "执行四则运算，输入形如 '3*4+2' 的表达式",
- "parameters": {
- "type": "object",
- "properties": {
- "expression": {"type": "string", "description": "算术表达式"}
- },
- "required": ["expression"],
- },
- },
+{
+"name": "get_current_weather",
+"description": "查询给定城市当前的天气情况",
+"parameters": {
+"type": "object",
+"properties": {
+"location": {"type": "string", "description": "城市名，例如 北京"}
+},
+"required": ["location"],
+},
+},
+{
+"name": "calculator",
+"description": "执行四则运算，输入形如 '3*4+2' 的表达式",
+"parameters": {
+"type": "object",
+"properties": {
+"expression": {"type": "string", "description": "算术表达式"}
+},
+"required": ["expression"],
+},
+},
 ]
 
 def get_current_weather(location):
- fake_db = {"北京": {"type": "晴", "high": 33, "low": 17}}
- return fake_db.get(location, {"error": "未知城市: %s" % location})
+    fake_db = {"北京": {"type": "晴", "high": 33, "low": 17}}
+    return fake_db.get(location, {"error": "未知城市: %s" % location})
 
 def calculator(expression):
- if not re.fullmatch(r"[0-9+\-*/(). ]+", expression):
- return {"error": "表达式包含非法字符"}
- return {"result": eval(expression)} # 仅演示，生产环境请改用 ast.literal_eval
+    if not re.fullmatch(r"[0-9+\-*/(). ]+", expression):
+        return {"error": "表达式包含非法字符"}
+    return {"result": eval(expression)} # 仅演示，生产环境请改用 ast.literal_eval
 
 TOOLS = {"get_current_weather": get_current_weather, "calculator": calculator}
 
 class ScriptedLLM:
- """假 LLM：按预设脚本依次吐 Thought/Action，演示 ReAct 轨迹格式。"""
+    """假 LLM：按预设脚本依次吐 Thought/Action，演示 ReAct 轨迹格式。"""
 
- def __init__(self, script):
- self.script = list(script)
- self.calls = 0
+    def __init__(self, script):
+        self.script = list(script)
+        self.calls = 0
 
- def __call__(self, memory):
- if self.calls >= len(self.script):
- return "Final Answer: 北京今天晴，最高 33℃，最低 17℃。", None, None
- action, action_input = self.script[self.calls]
- self.calls += 1
- if action is None:
- return action_input, None, None
- return "需要调用工具 %s" % action, action, action_input
+        def __call__(self, memory):
+            if self.calls >= len(self.script):
+                return "Final Answer: 北京今天晴，最高 33℃，最低 17℃。", None, None
+            action, action_input = self.script[self.calls]
+            self.calls += 1
+            if action is None:
+                return action_input, None, None
+            return "需要调用工具 %s" % action, action, action_input
 
-def execute(action, action_input):
- if action not in TOOLS:
- return {"error": "未知工具: %s" % action}
- return TOOLS[action](**action_input)
+        def execute(action, action_input):
+            if action not in TOOLS:
+                return {"error": "未知工具: %s" % action}
+            return TOOLS[action](**action_input)
 
-def run_agent(goal, llm, max_steps=5):
- memory = [{"role": "user", "content": goal}]
- for step in range(1, max_steps + 1):
- thought, action, action_input = llm(memory)
- print("[step %d] Thought: %s" % (step, thought))
- if action is None:
- print("[step %d] Finish" % step)
- return thought
- observation = execute(action, action_input)
- print("[step %d] Action: %s(%s)" % (step, action, json.dumps(action_input, ensure_ascii=False)))
- print("[step %d] Observation: %s" % (step, json.dumps(observation, ensure_ascii=False)))
- memory.append({"role": "assistant", "content": thought, "action": action})
- memory.append({"role": "tool", "content": json.dumps(observation, ensure_ascii=False)})
- return "达到最大步数仍未完成"
+        def run_agent(goal, llm, max_steps=5):
+            memory = [{"role": "user", "content": goal}]
+            for step in range(1, max_steps + 1):
+                thought, action, action_input = llm(memory)
+                print("[step %d] Thought: %s" % (step, thought))
+                if action is None:
+                    print("[step %d] Finish" % step)
+                    return thought
+                observation = execute(action, action_input)
+                print("[step %d] Action: %s(%s)" % (step, action, json.dumps(action_input, ensure_ascii=False)))
+                print("[step %d] Observation: %s" % (step, json.dumps(observation, ensure_ascii=False)))
+                memory.append({"role": "assistant", "content": thought, "action": action})
+                memory.append({"role": "tool", "content": json.dumps(observation, ensure_ascii=False)})
+                return "达到最大步数仍未完成"
 
-if __name__ == "__main__":
- scripted = ScriptedLLM([
- ("get_current_weather", {"location": "北京"}),
- (None, "Final Answer: 北京今天晴，最高 33℃，最低 17℃。"),
- ])
- print(run_agent("今天北京的天气如何？", scripted))
+            if __name__ == "__main__":
+                scripted = ScriptedLLM([
+                ("get_current_weather", {"location": "北京"}),
+                (None, "Final Answer: 北京今天晴，最高 33℃，最低 17℃。"),
+                ])
+                print(run_agent("今天北京的天气如何？", scripted))
 ```
 
 运行后可以看到完整的 `Thought → Action → Observation → Final Answer` 轨迹——这正是 ReAct 的外形，只是「思考」由脚本而非模型产生。
@@ -322,7 +322,7 @@ if __name__ == "__main__":
 
  Function Call 章节用的是智谱 `glm-4`。把上面的 `ScriptedLLM` 换成真实调用即可：
 
-```python
+```text
 """真实模型版 Agent 骨架（需联网与 API Key）。
 
 依赖：pip install zhipuai python-dotenv

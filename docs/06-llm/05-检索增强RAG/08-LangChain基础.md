@@ -251,16 +251,16 @@ chain = prompt | ChatOllama(model="qwen2.5:7b", temperature=0)
 
 _store = {}
 def get_history(session_id: str):
- if session_id not in _store:
- _store[session_id] = InMemoryChatMessageHistory()
- return _store[session_id]
+    if session_id not in _store:
+        _store[session_id] = InMemoryChatMessageHistory()
+        return _store[session_id]
 
- chat = RunnableWithMessageHistory(chain, get_history,
- input_messages_key="input", history_messages_key="history")
- cfg = {"configurable": {"session_id": "user-1"}}
- print(chat.invoke({"input": "小明有1只猫"}, config=cfg).content)
- print(chat.invoke({"input": "小刚有2只狗"}, config=cfg).content)
- print(chat.invoke({"input": "他们一共有几只宠物？"}, config=cfg).content) # 能利用上文
+    chat = RunnableWithMessageHistory(chain, get_history,
+    input_messages_key="input", history_messages_key="history")
+    cfg = {"configurable": {"session_id": "user-1"}}
+    print(chat.invoke({"input": "小明有1只猫"}, config=cfg).content)
+    print(chat.invoke({"input": "小刚有2只狗"}, config=cfg).content)
+    print(chat.invoke({"input": "他们一共有几只宠物？"}, config=cfg).content) # 能利用上文
 ```
 
 `RunnableWithMessageHistory` 相当于把「取历史 → 拼 prompt → 调用 → 写回历史」显式化，

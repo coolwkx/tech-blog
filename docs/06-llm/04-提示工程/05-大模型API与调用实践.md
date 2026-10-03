@@ -165,13 +165,13 @@ model="gpt-4o-mini",
 messages=[{"role": "user", "content": "用两句话解释什么是参数高效微调。"}],
 temperature=0.7, top_p=0.9, max_tokens=256, stream=True,
 ):
- piece = chunk.choices[0].delta.content
- if piece:
- if first is None:
- first = time.time() - start
- buf.append(piece)
- print(piece, end="", flush=True)
- print(f"\n[TTFT {first:.2f}s / 总耗时 {time.time() - start:.2f}s]")
+    piece = chunk.choices[0].delta.content
+    if piece:
+        if first is None:
+            first = time.time() - start
+            buf.append(piece)
+            print(piece, end="", flush=True)
+            print(f"\n[TTFT {first:.2f}s / 总耗时 {time.time() - start:.2f}s]")
 ```
 
 **要点**：结构化任务 `temperature=0`；创意任务 0.7~1.0 配 `top_p=0.8~0.95`；

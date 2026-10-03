@@ -259,47 +259,47 @@ workdir = tempfile.mkdtemp
 # FastText 分类要求每行「__label__类别 文本」
 train_path = os.path.join(workdir, "train.txt")
 with open(train_path, "w", encoding="utf-8") as f:
- for text, label in [
- ("肾结石 一般 用 什么 药", "治疗"),
- ("胆结石 怎么 治疗 效果好", "治疗"),
- ("心肌梗死 症状 是 什么", "症状"),
- ("脑梗死 表现 有哪些", "症状"),
- ("如何 预防 糖尿病", "预防"),
- ("怎么 预防 高血压", "预防"),
- ] * 20:
- f.write(f"__label__{label} {text}\n")
+    for text, label in [
+    ("肾结石 一般 用 什么 药", "治疗"),
+    ("胆结石 怎么 治疗 效果好", "治疗"),
+    ("心肌梗死 症状 是 什么", "症状"),
+    ("脑梗死 表现 有哪些", "症状"),
+    ("如何 预防 糖尿病", "预防"),
+    ("怎么 预防 高血压", "预防"),
+    ] * 20:
+        f.write(f"__label__{label} {text}\n")
 
- model = fasttext.train_supervised(
- input=train_path,
- lr=0.5,
- epoch=25,
- dim=100,
- wordNgrams=2, # 加 bi-gram，部分恢复词序
- loss="softmax", # 多分类用 softmax；类别极多时可用 'ova' 或 'hs'
- verbose=0,
- )
- model.save_model(os.path.join(workdir, "cls.bin"))
+        model = fasttext.train_supervised(
+        input=train_path,
+        lr=0.5,
+        epoch=25,
+        dim=100,
+        wordNgrams=2, # 加 bi-gram，部分恢复词序
+        loss="softmax", # 多分类用 softmax；类别极多时可用 'ova' 或 'hs'
+        verbose=0,
+        )
+        model.save_model(os.path.join(workdir, "cls.bin"))
 
- # 测试集：故意用训练集里没出现过的词「尿结石」
- test_path = os.path.join(workdir, "test.txt")
- with open(test_path, "w", encoding="utf-8") as f:
- f.write("__label__治疗 尿结石 用 什么 药\n")
- f.write("__label__症状 心梗 的 表现\n")
+        # 测试集：故意用训练集里没出现过的词「尿结石」
+        test_path = os.path.join(workdir, "test.txt")
+        with open(test_path, "w", encoding="utf-8") as f:
+            f.write("__label__治疗 尿结石 用 什么 药\n")
+            f.write("__label__症状 心梗 的 表现\n")
 
- n, precision, recall = model.test(test_path)
- print(f"样本数={n} 准确率={precision:.4f} 召回率={recall:.4f}")
+            n, precision, recall = model.test(test_path)
+            print(f"样本数={n} 准确率={precision:.4f} 召回率={recall:.4f}")
 
- labels, probs = model.predict("尿 结石 用 什么 药", k=2)
- print("预测标签:", labels, "概率:", probs)
- print("OOV 演示 —— '尿结石' 的向量（子词拼出来）:", model.get_word_vector("尿结石").shape)
+            labels, probs = model.predict("尿 结石 用 什么 药", k=2)
+            print("预测标签:", labels, "概率:", probs)
+            print("OOV 演示 —— '尿结石' 的向量（子词拼出来）:", model.get_word_vector("尿结石").shape)
 
- # 还可以用 FastText 无监督训练词向量（相当于原版 word2vec）
- unsup_path = os.path.join(workdir, "unsup.txt")
- with open(unsup_path, "w", encoding="utf-8") as f:
- for s in ["猫 喜欢 鱼", "狗 喜欢 骨头", "猫 和 狗 都 是 宠物"] * 50:
- f.write(s + "\n")
- vec_model = fasttext.train_unsupervised(unsup_path, model="skipgram", dim=50, epoch=20, verbose=0)
- print("'猫' 的最近邻:", vec_model.get_nearest_neighbors("猫"))
+            # 还可以用 FastText 无监督训练词向量（相当于原版 word2vec）
+            unsup_path = os.path.join(workdir, "unsup.txt")
+            with open(unsup_path, "w", encoding="utf-8") as f:
+                for s in ["猫 喜欢 鱼", "狗 喜欢 骨头", "猫 和 狗 都 是 宠物"] * 50:
+                    f.write(s + "\n")
+                    vec_model = fasttext.train_unsupervised(unsup_path, model="skipgram", dim=50, epoch=20, verbose=0)
+                    print("'猫' 的最近邻:", vec_model.get_nearest_neighbors("猫"))
 ```
 
 `get_word_vector("尿结石")` 能正常返回向量，正是因为 FastText 用子词合成，而不是查一张固定的词表。

@@ -226,47 +226,47 @@ np.random.seed(0)
 
 
 def softmax(x, axis=-1):
- e = np.exp(x - x.max(axis=axis, keepdims=True)) # 减最大值，防止溢出
- return e / e.sum(axis=axis, keepdims=True)
+    e = np.exp(x - x.max(axis=axis, keepdims=True)) # 减最大值，防止溢出
+    return e / e.sum(axis=axis, keepdims=True)
 
 
 def scaled_dot_product_attention(Q, K, V, mask=None):
- """Q: (..., n_q, d_k) K: (..., n_k, d_k) V: (..., n_k, d_v)"""
- d_k = Q.shape[-1]
- scores = Q @ K.swapaxes(-2, -1) / np.sqrt(d_k) # (..., n_q, n_k)
- if mask is not None:
- scores = np.where(mask, scores, -1e9) # 屏蔽位置给极小值
- return softmax(scores, axis=-1) @ V, scores
+    """Q: (..., n_q, d_k) K: (..., n_k, d_k) V: (..., n_k, d_v)"""
+    d_k = Q.shape[-1]
+    scores = Q @ K.swapaxes(-2, -1) / np.sqrt(d_k) # (..., n_q, n_k)
+    if mask is not None:
+        scores = np.where(mask, scores, -1e9) # 屏蔽位置给极小值
+        return softmax(scores, axis=-1) @ V, scores
 
 
- def multi_head_attention(X, n_heads, mask=None):
- """X: (n, d_model) -> 输出 (n, d_model)"""
- n, d_model = X.shape
- assert d_model % n_heads == 0, "d_model 必须能被 n_heads 整除"
- d_k = d_model // n_heads
+    def multi_head_attention(X, n_heads, mask=None):
+        """X: (n, d_model) -> 输出 (n, d_model)"""
+        n, d_model = X.shape
+        assert d_model % n_heads == 0, "d_model 必须能被 n_heads 整除"
+        d_k = d_model // n_heads
 
- W = np.random.randn(d_model, 3 * d_model) * 0.02 # 可学习投影的替身
- QKV = X @ W # (n, 3*d_model)
- Q, K, V = np.split(QKV, 3, axis=-1)
+        W = np.random.randn(d_model, 3 * d_model) * 0.02 # 可学习投影的替身
+        QKV = X @ W # (n, 3*d_model)
+        Q, K, V = np.split(QKV, 3, axis=-1)
 
- def split(t): # (n, d_model) -> (n_heads, n, d_k)
- return t.reshape(n, n_heads, d_k).transpose(1, 0, 2)
+        def split(t): # (n, d_model) -> (n_heads, n, d_k)
+            return t.reshape(n, n_heads, d_k).transpose(1, 0, 2)
 
- Q, K, V = split(Q), split(K), split(V)
- out, scores = scaled_dot_product_attention(Q, K, V, mask) # (n_heads, n, d_k)
- out = out.transpose(1, 0, 2).reshape(n, d_model) # 拼接多头
- return out, scores
+        Q, K, V = split(Q), split(K), split(V)
+        out, scores = scaled_dot_product_attention(Q, K, V, mask) # (n_heads, n, d_k)
+        out = out.transpose(1, 0, 2).reshape(n, d_model) # 拼接多头
+        return out, scores
 
 
- n, d_model, n_heads = 4, 8, 2
- X = np.random.randn(n, d_model)
- causal = np.tril(np.ones((n, n), dtype=bool)) # 位置 i 只能看到 j <= i
- out, scores = multi_head_attention(X, n_heads, mask=causal)
+    n, d_model, n_heads = 4, 8, 2
+    X = np.random.randn(n, d_model)
+    causal = np.tril(np.ones((n, n), dtype=bool)) # 位置 i 只能看到 j <= i
+    out, scores = multi_head_attention(X, n_heads, mask=causal)
 
- print("输入 X 形状 :", X.shape)
- print("注意力分数形状 :", scores.shape, "= (n_heads, n_q, n_k)")
- print("输出形状 :", out.shape)
- print("第 0 个头的分数矩阵 :\n", np.round(scores[0], 3))
+    print("输入 X 形状 :", X.shape)
+    print("注意力分数形状 :", scores.shape, "= (n_heads, n_q, n_k)")
+    print("输出形状 :", out.shape)
+    print("第 0 个头的分数矩阵 :\n", np.round(scores[0], 3))
 ```
 
 **要观察的三件事**：① `scores` 的形状是 `(n_heads, n_q, n_k)`，说明每个头各自有一张注意力矩阵；

@@ -246,30 +246,30 @@ from langchain_core.tools import tool
 
 @tool("查询本地商品库存")
 def query_stock(sku: str) -> str:
- """输入商品 SKU，返回当前库存数量。SKU 形如 'A1001'。"""
- fake_db = {"A1001": 12, "A1002": 0, "A1003": 47}
- if sku not in fake_db:
- return "未找到 SKU: %s" % sku
- return "SKU %s 当前库存 %d 件" % (sku, fake_db[sku])
+    """输入商品 SKU，返回当前库存数量。SKU 形如 'A1001'。"""
+    fake_db = {"A1001": 12, "A1002": 0, "A1003": 47}
+    if sku not in fake_db:
+        return "未找到 SKU: %s" % sku
+    return "SKU %s 当前库存 %d 件" % (sku, fake_db[sku])
 
 @tool("按单价与数量计算总价")
 def calc_total(price: float, quantity: int) -> str:
- """输入单价与数量，返回总价（保留两位小数）。"""
- return "总价：%.2f 元" % (price * quantity)
+    """输入单价与数量，返回总价（保留两位小数）。"""
+    return "总价：%.2f 元" % (price * quantity)
 
 llm = Ollama(model="qwen2.5:7b")
 tools = [query_stock, calc_total]
 
 agent = initialize_agent(
- tools,
- llm,
- agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
- verbose=True,
- handle_parsing_errors=True,
+tools,
+llm,
+agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
+verbose=True,
+handle_parsing_errors=True,
 )
 
 if __name__ == "__main__":
- print(agent.run("A1003 还有多少库存？如果单价 19.9 元，全部买下要多少钱？"))
+    print(agent.run("A1003 还有多少库存？如果单价 19.9 元，全部买下要多少钱？"))
 ```
 
 `@tool` 装饰器的第一个参数是**工具名**，函数 docstring 是**工具描述**——两者都会进入提示词，所以 docstring 要写清楚「输入是什么、返回什么、格式要求」。
@@ -295,86 +295,86 @@ llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.7)
 
 @tool("将文本写入文档中")
 def store_poesy_to_txt(content: str) -> str:
- """将编辑后的书信文本内容自动保存到 txt 文档中，返回保存状态。"""
- filename = os.path.join(os.path.dirname(os.path.abspath(__file__)), "poie.txt")
- with open(filename, "w", encoding="utf-8") as file:
- file.write(content)
- return "File written to %s." % filename
+    """将编辑后的书信文本内容自动保存到 txt 文档中，返回保存状态。"""
+    filename = os.path.join(os.path.dirname(os.path.abspath(__file__)), "poie.txt")
+    with open(filename, "w", encoding="utf-8") as file:
+        file.write(content)
+        return "File written to %s." % filename
 
-@tool("发送文本到邮件")
-def send_message() -> str:
- """读取本地书信文件，并以邮件的形式发送到指定的邮箱地址。
+    @tool("发送文本到邮件")
+    def send_message() -> str:
+        """读取本地书信文件，并以邮件的形式发送到指定的邮箱地址。
 
- 为保证示例可运行，这里只打印动作而不真正发信；
- 生产实现可参考 custom_tools.py 的 smtplib.SMTP_SSL 版本。
- """
- filename = os.path.join(os.path.dirname(os.path.abspath(__file__)), "poie.txt")
- if not os.path.exists(filename):
- return "错误：本地书信文件不存在，请先保存内容。"
- return "邮件已发送（示例模式）。"
+        为保证示例可运行，这里只打印动作而不真正发信；
+        生产实现可参考 custom_tools.py 的 smtplib.SMTP_SSL 版本。
+        """
+        filename = os.path.join(os.path.dirname(os.path.abspath(__file__)), "poie.txt")
+        if not os.path.exists(filename):
+            return "错误：本地书信文件不存在，请先保存内容。"
+        return "邮件已发送（示例模式）。"
 
-poet = Agent(
- role="作家",
- goal="根据用户需求，创作出情感丰富的文章（最长字数不超过300个词）。",
- backstory="你作为一名著名的作家，拥有千万级别的粉丝，最擅长写情感类型的文章。",
- llm=llm,
- allow_delegation=False,
- verbose=True,
-)
+    poet = Agent(
+    role="作家",
+    goal="根据用户需求，创作出情感丰富的文章（最长字数不超过300个词）。",
+    backstory="你作为一名著名的作家，拥有千万级别的粉丝，最擅长写情感类型的文章。",
+    llm=llm,
+    allow_delegation=False,
+    verbose=True,
+    )
 
-letter_writer = Agent(
- role="内容编辑",
- goal="对作家撰写的文章内容进行精心编辑。",
- backstory=(
- "作为一名经验丰富的编辑，你在编辑书信方面有多年的专业经验，"
- "你需要将作家写的文章内容整理编排成书信的样式，并将书信内容存储在本地磁盘上。"
- ),
- tools=[store_poesy_to_txt],
- llm=llm,
- allow_delegation=False,
- verbose=True,
-)
+    letter_writer = Agent(
+    role="内容编辑",
+    goal="对作家撰写的文章内容进行精心编辑。",
+    backstory=(
+    "作为一名经验丰富的编辑，你在编辑书信方面有多年的专业经验，"
+    "你需要将作家写的文章内容整理编排成书信的样式，并将书信内容存储在本地磁盘上。"
+    ),
+    tools=[store_poesy_to_txt],
+    llm=llm,
+    allow_delegation=False,
+    verbose=True,
+    )
 
-sender = Agent(
- role="寄信人",
- goal="将编辑好的书信以邮件的形式发送给心仪的人",
- backstory="你是一名勤恳的信使，专注于将书信传递给每个人。",
- tools=[send_message],
- llm=llm,
- allow_delegation=True,
- verbose=True,
-)
+    sender = Agent(
+    role="寄信人",
+    goal="将编辑好的书信以邮件的形式发送给心仪的人",
+    backstory="你是一名勤恳的信使，专注于将书信传递给每个人。",
+    tools=[send_message],
+    llm=llm,
+    allow_delegation=True,
+    verbose=True,
+    )
 
-def build_crew(content):
- task1 = Task(
- description="用户需求:%s。你最后给出的答案必须是一份富含爱情表示的情书。" % content,
- agent=poet,
- )
- task2 = Task(
- description=(
- "查找任何语法错误，进行编辑和格式化（如果需要），并要求将内容保存在本地磁盘中。"
- "将内容保存到本地非常重要，你最后的答案必须是信息是否已被存储在本地磁盘中。"
- ),
- agent=letter_writer,
- )
- task3 = Task(
- description=(
- "根据本次磁盘保存的书信内容，你将整理并发送邮件给心仪的人，这个很重要。"
- "你最后的答案一定要成功发送该邮件。"
- ),
- agent=sender,
- )
- return Crew(
- agents=[poet, letter_writer, sender],
- tasks=[task1, task2, task3],
- process=Process.sequential, # 上一任务结果作为附加内容传给下一个任务
- verbose=2,
- )
+    def build_crew(content):
+        task1 = Task(
+        description="用户需求:%s。你最后给出的答案必须是一份富含爱情表示的情书。" % content,
+        agent=poet,
+        )
+        task2 = Task(
+        description=(
+        "查找任何语法错误，进行编辑和格式化（如果需要），并要求将内容保存在本地磁盘中。"
+        "将内容保存到本地非常重要，你最后的答案必须是信息是否已被存储在本地磁盘中。"
+        ),
+        agent=letter_writer,
+        )
+        task3 = Task(
+        description=(
+        "根据本次磁盘保存的书信内容，你将整理并发送邮件给心仪的人，这个很重要。"
+        "你最后的答案一定要成功发送该邮件。"
+        ),
+        agent=sender,
+        )
+        return Crew(
+    agents=[poet, letter_writer, sender],
+    tasks=[task1, task2, task3],
+    process=Process.sequential, # 上一任务结果作为附加内容传给下一个任务
+    verbose=2,
+    )
 
-if __name__ == "__main__":
- crew = build_crew("帮我写一份情书")
- result = crew.kickoff()
- print(result)
+    if __name__ == "__main__":
+        crew = build_crew("帮我写一份情书")
+        result = crew.kickoff()
+        print(result)
 ```
 
 三点工程说明：

@@ -174,67 +174,67 @@ COLLECTION = "demo_v1"
 
 # ---------- 1. 建集合：先定义 Schema ----------
 if client.has_collection(COLLECTION):
- client.drop_collection(COLLECTION)
+    client.drop_collection(COLLECTION)
 
- schema = client.create_schema(auto_id=False, enable_dynamic_field=True)
- schema.add_field(field_name="id", datatype=DataType.INT64, is_primary=True)
- schema.add_field(field_name="vector", datatype=DataType.FLOAT_VECTOR, dim=5)
- schema.add_field(field_name="scalar1", datatype=DataType.VARCHAR, max_length=256,
- description="标量字段")
+    schema = client.create_schema(auto_id=False, enable_dynamic_field=True)
+    schema.add_field(field_name="id", datatype=DataType.INT64, is_primary=True)
+    schema.add_field(field_name="vector", datatype=DataType.FLOAT_VECTOR, dim=5)
+    schema.add_field(field_name="scalar1", datatype=DataType.VARCHAR, max_length=256,
+    description="标量字段")
 
- # ---------- 2. 建索引 ----------
- index_params = client.prepare_index_params()
- index_params.add_index(field_name="vector", index_name="vector_index",
- index_type="IVF_FLAT", metric_type="COSINE",
- params={"nlist": 128})
- # 标量字段的默认索引通常为 INVERTED，用于加速 filter
- index_params.add_index(field_name="scalar1", index_name="scalar_index", index_type="INVERTED")
+    # ---------- 2. 建索引 ----------
+    index_params = client.prepare_index_params()
+    index_params.add_index(field_name="vector", index_name="vector_index",
+    index_type="IVF_FLAT", metric_type="COSINE",
+    params={"nlist": 128})
+    # 标量字段的默认索引通常为 INVERTED，用于加速 filter
+    index_params.add_index(field_name="scalar1", index_name="scalar_index", index_type="INVERTED")
 
- client.create_collection(collection_name=COLLECTION, schema=schema, index_params=index_params)
- print("索引列表:", client.list_indexes(collection_name=COLLECTION))
- print("索引详情:", client.describe_index(collection_name=COLLECTION, index_name="vector_index"))
+    client.create_collection(collection_name=COLLECTION, schema=schema, index_params=index_params)
+    print("索引列表:", client.list_indexes(collection_name=COLLECTION))
+    print("索引详情:", client.describe_index(collection_name=COLLECTION, index_name="vector_index"))
 
- # ---------- 3. 插入实体（动态字段 color 会自动进 $meta）----------
- data = [
- {"id": 0, "vector": [0.358, -0.602, 0.184, -0.263, 0.903], "color": "pink_8682", "scalar1": "a"},
- {"id": 1, "vector": [0.199, 0.060, 0.698, 0.261, 0.839], "color": "red_7025", "scalar1": "b"},
- {"id": 2, "vector": [0.437, -0.560, 0.646, -0.326, 0.326], "color": "brown_7231", "scalar1": "c"},
- {"id": 3, "vector": [0.317, 0.972, -0.370, -0.486, 0.958], "color": "orange_6781", "scalar1": "d"},
- ]
- print("插入:", client.insert(collection_name=COLLECTION, data=data))
- # upsert：主键已存在则覆盖，不存在则插入（数据级操作）
- # client.upsert(collection_name=COLLECTION, data=data)
+    # ---------- 3. 插入实体（动态字段 color 会自动进 $meta）----------
+    data = [
+    {"id": 0, "vector": [0.358, -0.602, 0.184, -0.263, 0.903], "color": "pink_8682", "scalar1": "a"},
+    {"id": 1, "vector": [0.199, 0.060, 0.698, 0.261, 0.839], "color": "red_7025", "scalar1": "b"},
+    {"id": 2, "vector": [0.437, -0.560, 0.646, -0.326, 0.326], "color": "brown_7231", "scalar1": "c"},
+    {"id": 3, "vector": [0.317, 0.972, -0.370, -0.486, 0.958], "color": "orange_6781", "scalar1": "d"},
+    ]
+    print("插入:", client.insert(collection_name=COLLECTION, data=data))
+    # upsert：主键已存在则覆盖，不存在则插入（数据级操作）
+    # client.upsert(collection_name=COLLECTION, data=data)
 
- # ---------- 4. 向量检索 ----------
- res = client.search(
- collection_name=COLLECTION,
- data=[[0.358, -0.602, 0.184, -0.263, 0.903]],
- limit=2,
- search_params={"metric_type": "COSINE", "params": {"nprobe": 10}},
- output_fields=["id", "color"], # 指定返回哪些属性
- )
- for hits in res:
- for hit in hits:
- print(f" id={hit['id']} distance={hit['distance']:.4f} color={hit['entity']['color']}")
+    # ---------- 4. 向量检索 ----------
+    res = client.search(
+    collection_name=COLLECTION,
+    data=[[0.358, -0.602, 0.184, -0.263, 0.903]],
+    limit=2,
+    search_params={"metric_type": "COSINE", "params": {"nprobe": 10}},
+    output_fields=["id", "color"], # 指定返回哪些属性
+    )
+    for hits in res:
+        for hit in hits:
+            print(f" id={hit['id']} distance={hit['distance']:.4f} color={hit['entity']['color']}")
 
- # ---------- 5. 带标量过滤的检索 ----------
- res = client.search(
- collection_name=COLLECTION,
- data=[[0.358, -0.602, 0.184, -0.263, 0.903]],
- limit=5,
- search_params={"metric_type": "COSINE", "params": {}},
- filter='color like "red%"', # 只看红色的记录
- output_fields=["color"],
- )
- print("过滤检索命中数:", len(res[0]))
+            # ---------- 5. 带标量过滤的检索 ----------
+            res = client.search(
+            collection_name=COLLECTION,
+            data=[[0.358, -0.602, 0.184, -0.263, 0.903]],
+            limit=5,
+            search_params={"metric_type": "COSINE", "params": {}},
+            filter='color like "red%"', # 只看红色的记录
+            output_fields=["color"],
+            )
+            print("过滤检索命中数:", len(res[0]))
 
- # ---------- 6. 标量查询（不走向量检索）----------
- print("条件查询:", client.query(collection_name=COLLECTION, filter="id in [0, 1]",
- output_fields=["id", "color"]))
+            # ---------- 6. 标量查询（不走向量检索）----------
+            print("条件查询:", client.query(collection_name=COLLECTION, filter="id in [0, 1]",
+            output_fields=["id", "color"]))
 
- # ---------- 7. 删除 ----------
- print("按过滤器删除:", client.delete(collection_name=COLLECTION, filter="id in [2, 3]"))
- print("剩余:", client.query(collection_name=COLLECTION, filter="id >= 0", output_fields=["id"]))
+            # ---------- 7. 删除 ----------
+            print("按过滤器删除:", client.delete(collection_name=COLLECTION, filter="id in [2, 3]"))
+            print("剩余:", client.query(collection_name=COLLECTION, filter="id >= 0", output_fields=["id"]))
 ```
 
 ## 4. 常见坑

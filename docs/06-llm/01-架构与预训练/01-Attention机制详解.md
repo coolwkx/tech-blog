@@ -86,22 +86,22 @@ x : [B, n, d_model] B=batch, n=序列长度, d_model=隐藏维度
 import numpy as np
 
 def softmax(x, axis=-1):
- x = x - x.max(axis=axis, keepdims=True) # 减最大值：数学等价，数值救命
- e = np.exp(x)
- return e / e.sum(axis=axis, keepdims=True)
+    x = x - x.max(axis=axis, keepdims=True) # 减最大值：数学等价，数值救命
+    e = np.exp(x)
+    return e / e.sum(axis=axis, keepdims=True)
 
 def attention(Q, K, V, mask=None):
- d_k = Q.shape[-1]
- scores = Q @ K.swapaxes(-1, -2) / np.sqrt(d_k) # [.., n, n] 相关度
- if mask is not None: # True=保留, False=屏蔽
- scores = np.where(mask, scores, -np.inf)
- weights = softmax(scores, axis=-1) # [.., n, n] 每行和=1
- return weights @ V, weights # [.., n, d_k], [.., n, n]
+    d_k = Q.shape[-1]
+    scores = Q @ K.swapaxes(-1, -2) / np.sqrt(d_k) # [.., n, n] 相关度
+    if mask is not None: # True=保留, False=屏蔽
+        scores = np.where(mask, scores, -np.inf)
+        weights = softmax(scores, axis=-1) # [.., n, n] 每行和=1
+        return weights @ V, weights # [.., n, d_k], [.., n, n]
 
- rng = np.random.default_rng(0)
- Q, K, V = (rng.standard_normal((2, 4, 8)) for _ in range(3))
- out, w = attention(Q, K, V)
- print(out.shape, w.shape, w.sum(-1))
+    rng = np.random.default_rng(0)
+    Q, K, V = (rng.standard_normal((2, 4, 8)) for _ in range(3))
+    out, w = attention(Q, K, V)
+    print(out.shape, w.shape, w.sum(-1))
 ```
 
 输出 `(2, 4, 8) (2, 4, 4)`，且 `w.sum(-1)` 全为 1。
@@ -143,31 +143,31 @@ $$\operatorname{tr}(J) = \sum_i p_i(1-p_i) = 1 - \sum_i p_i^2$$
 import numpy as np
 
 def softmax(x, axis=-1):
- x = x - x.max(axis=axis, keepdims=True)
- e = np.exp(x); return e / e.sum(axis=axis, keepdims=True)
+    x = x - x.max(axis=axis, keepdims=True)
+    e = np.exp(x); return e / e.sum(axis=axis, keepdims=True)
 
- rng = np.random.default_rng(42)
- n, trials = 1024, 300
+    rng = np.random.default_rng(42)
+    n, trials = 1024, 300
 
- print("A) Var(q.k), q_i,k_i ~ N(0,1) i.i.d.")
- for d in [16, 64, 256, 1024]:
- q = rng.standard_normal((20000, d)); k = rng.standard_normal((20000, d))
- s = (q * k).sum(1)
- print(f" d_k={d:5d} Var={s.var:8.2f} std={s.std:7.3f} sqrt(d_k)={np.sqrt(d):7.3f}")
+    print("A) Var(q.k), q_i,k_i ~ N(0,1) i.i.d.")
+    for d in [16, 64, 256, 1024]:
+        q = rng.standard_normal((20000, d)); k = rng.standard_normal((20000, d))
+        s = (q * k).sum(1)
+        print(f" d_k={d:5d} Var={s.var:8.2f} std={s.std:7.3f} sqrt(d_k)={np.sqrt(d):7.3f}")
 
- # tr(J) = 1 - sum(p^2) 是 softmax Jacobian 特征值之和，衡量"还能有多少梯度流过"
- print("B) 缩放对 softmax 饱和的影响")
- print(f" {'d_k':>5} {'scale':>11} {'logit_std':>10} {'max_p':>8} {'entropy':>8} {'tr(J)':>8}")
- for d in [16, 64, 128, 256, 1024]:
- for name, div in [("1", 1.0), ("1/sqrt(d_k)", np.sqrt(d))]:
- st, mp, en, tr = [], [], [], []
- for _ in range(trials):
- z = (rng.standard_normal(d) @ rng.standard_normal((n, d)).T) / div
- p = softmax(z)
- st.append(z.std); mp.append(p.max)
- en.append(-(p * np.log(p + 1e-300)).sum); tr.append(1 - (p ** 2).sum)
- print(f" {d:5d} {name:>11} {np.mean(st):10.2f} {np.mean(mp):8.4f} "
- f"{np.mean(en):8.3f} {np.mean(tr):8.4f}")
+        # tr(J) = 1 - sum(p^2) 是 softmax Jacobian 特征值之和，衡量"还能有多少梯度流过"
+        print("B) 缩放对 softmax 饱和的影响")
+        print(f" {'d_k':>5} {'scale':>11} {'logit_std':>10} {'max_p':>8} {'entropy':>8} {'tr(J)':>8}")
+        for d in [16, 64, 128, 256, 1024]:
+            for name, div in [("1", 1.0), ("1/sqrt(d_k)", np.sqrt(d))]:
+                st, mp, en, tr = [], [], [], []
+                for _ in range(trials):
+                    z = (rng.standard_normal(d) @ rng.standard_normal((n, d)).T) / div
+                    p = softmax(z)
+                    st.append(z.std); mp.append(p.max)
+                    en.append(-(p * np.log(p + 1e-300)).sum); tr.append(1 - (p ** 2).sum)
+                    print(f" {d:5d} {name:>11} {np.mean(st):10.2f} {np.mean(mp):8.4f} "
+                    f"{np.mean(en):8.3f} {np.mean(tr):8.4f}")
 ```
 
 实测输出（$n=1024$，300 次试验平均）整理为两张表：
@@ -239,42 +239,42 @@ $d_{head}$ 通常固定在 64~128：太小则低维点积噪声大、且注意�
 import numpy as np
 
 def softmax(x, axis=-1):
- x = x - x.max(axis=axis, keepdims=True)
- e = np.exp(x); return e / e.sum(axis=axis, keepdims=True)
+    x = x - x.max(axis=axis, keepdims=True)
+    e = np.exp(x); return e / e.sum(axis=axis, keepdims=True)
 
- class MultiHeadSelfAttention:
- def __init__(self, d_model, num_heads, rng):
- assert d_model % num_heads == 0, "d_model 必须能被 num_heads 整除"
- self.h, self.d_head = num_heads, d_model // num_heads
- s = 1.0 / np.sqrt(d_model) # 简化的初始化
- self.Wq, self.Wk, self.Wv, self.Wo = (
- rng.standard_normal((d_model, d_model)) * s for _ in range(4))
+    class MultiHeadSelfAttention:
+        def __init__(self, d_model, num_heads, rng):
+            assert d_model % num_heads == 0, "d_model 必须能被 num_heads 整除"
+            self.h, self.d_head = num_heads, d_model // num_heads
+            s = 1.0 / np.sqrt(d_model) # 简化的初始化
+            self.Wq, self.Wk, self.Wv, self.Wo = (
+            rng.standard_normal((d_model, d_model)) * s for _ in range(4))
 
- def _split_heads(self, x): # [B,n,d] -> [B,h,n,d_head]
- B, n, _ = x.shape
- return x.reshape(B, n, self.h, self.d_head).transpose(0, 2, 1, 3)
+            def _split_heads(self, x): # [B,n,d] -> [B,h,n,d_head]
+                B, n, _ = x.shape
+                return x.reshape(B, n, self.h, self.d_head).transpose(0, 2, 1, 3)
 
- def _merge_heads(self, x): # [B,h,n,d_head] -> [B,n,d]
- B, h, n, d_head = x.shape
- return x.transpose(0, 2, 1, 3).reshape(B, n, h * d_head)
+            def _merge_heads(self, x): # [B,h,n,d_head] -> [B,n,d]
+                B, h, n, d_head = x.shape
+                return x.transpose(0, 2, 1, 3).reshape(B, n, h * d_head)
 
- def forward(self, x, causal=True):
- B, n, _ = x.shape
- Q, K, V = (self._split_heads(x @ W) for W in (self.Wq, self.Wk, self.Wv))
- scores = Q @ K.swapaxes(-1, -2) / np.sqrt(self.d_head) # [B,h,n,n]
- if causal:
- allow = np.tril(np.ones((n, n), dtype=bool)) # 下三角(含对角)可见
- scores = np.where(allow, scores, -np.inf)
- weights = softmax(scores, axis=-1)
- return self._merge_heads(weights @ V) @ self.Wo, weights
+            def forward(self, x, causal=True):
+                B, n, _ = x.shape
+                Q, K, V = (self._split_heads(x @ W) for W in (self.Wq, self.Wk, self.Wv))
+                scores = Q @ K.swapaxes(-1, -2) / np.sqrt(self.d_head) # [B,h,n,n]
+                if causal:
+                    allow = np.tril(np.ones((n, n), dtype=bool)) # 下三角(含对角)可见
+                    scores = np.where(allow, scores, -np.inf)
+                    weights = softmax(scores, axis=-1)
+                    return self._merge_heads(weights @ V) @ self.Wo, weights
 
- rng = np.random.default_rng(0)
- B, n, d_model, h = 2, 6, 16, 4
- x = rng.standard_normal((B, n, d_model))
- mha = MultiHeadSelfAttention(d_model, h, rng)
- y, w = mha.forward(x, causal=True)
- print("out", y.shape, "weights", w.shape)
- print("上三角全为 0:", np.allclose(np.triu(w[0, 0], k=1), 0.0))
+                rng = np.random.default_rng(0)
+                B, n, d_model, h = 2, 6, 16, 4
+                x = rng.standard_normal((B, n, d_model))
+                mha = MultiHeadSelfAttention(d_model, h, rng)
+                y, w = mha.forward(x, causal=True)
+                print("out", y.shape, "weights", w.shape)
+                print("上三角全为 0:", np.allclose(np.triu(w[0, 0], k=1), 0.0))
 ```
 
 输出 `out (2, 6, 16) weights (2, 4, 6, 6)` 与 `上三角全为 0: True`。注意 `weights` 形状是 `[B,h,n,n]`——**每个头都有自己独立的注意力矩阵**，算显存时最容易漏掉这一点。

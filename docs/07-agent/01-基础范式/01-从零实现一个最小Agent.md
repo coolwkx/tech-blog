@@ -71,19 +71,19 @@ Agent 的循环可以完整画成下面这张图。它只有四条边是「新�
 import json, re
 
 def mini_loop(question, llm, tools, max_steps=5):
- scratchpad = ""
- for _ in range(max_steps):
- raw = llm(question, scratchpad) # 1. 问模型
- if m := re.search(r"Final Answer[:：]\s*(.+)", raw):
- return m.group(1) # 2. 终止判定
- name = re.search(r"Action[:：]\s*(\w+)", raw).group(1)
- args = json.loads(re.search(r"Action Input[:：]\s*(.+)", raw).group(1))
- try:
- obs = tools[name](**args) # 3. 执行工具
- except Exception as exc:
- obs = f"ERROR: {type(exc).__name__}: {exc}" # 4. 失败不抛出，只回灌
- scratchpad += f"{raw}\nObservation: {obs}\n" # 5. 结果喂回去
- return "达到步数上限，仍未得到答案"
+    scratchpad = ""
+    for _ in range(max_steps):
+        raw = llm(question, scratchpad) # 1. 问模型
+        if m := re.search(r"Final Answer[:：]\s*(.+)", raw):
+            return m.group(1) # 2. 终止判定
+        name = re.search(r"Action[:：]\s*(\w+)", raw).group(1)
+        args = json.loads(re.search(r"Action Input[:：]\s*(.+)", raw).group(1))
+        try:
+            obs = tools[name](**args) # 3. 执行工具
+        except Exception as exc:
+            obs = f"ERROR: {type(exc).__name__}: {exc}" # 4. 失败不抛出，只回灌
+            scratchpad += f"{raw}\nObservation: {obs}\n" # 5. 结果喂回去
+            return "达到步数上限，仍未得到答案"
 ```
 
 **逐行说明**：
@@ -452,13 +452,13 @@ print(agent.run("帮我算一下 (1250 + 430) * 3 / 4 是多少"))
 
 ```python
 def mock_llm(prompt: str) -> str:
- """离线假模型：靠 prompt 里 Observation 的条数走固定脚本。"""
- rounds = prompt.count("Observation:")
- if rounds == 0:
- return 'Thought: 先算数。\nAction: calculator\nAction Input: {"expression": "(1250 + 430) * 3 / 4"}'
- if rounds == 1:
- return 'Thought: 再查概念。\nAction: search\nAction Input: {"query": "ReAct Reflexion", "top_k": 2}'
- return ('Thought: 材料齐了。\nFinal Answer: (1250 + 430) * 3 / 4 = 1260；'
+    """离线假模型：靠 prompt 里 Observation 的条数走固定脚本。"""
+    rounds = prompt.count("Observation:")
+    if rounds == 0:
+        return 'Thought: 先算数。\nAction: calculator\nAction Input: {"expression": "(1250 + 430) * 3 / 4"}'
+    if rounds == 1:
+        return 'Thought: 再查概念。\nAction: search\nAction Input: {"query": "ReAct Reflexion", "top_k": 2}'
+    return ('Thought: 材料齐了。\nFinal Answer: (1250 + 430) * 3 / 4 = 1260；'
 'ReAct 交错推理与行动，Reflexion 失败后反思再重试。')
 ```
 

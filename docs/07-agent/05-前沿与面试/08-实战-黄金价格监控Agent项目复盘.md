@@ -128,114 +128,114 @@ STATE_FILE = os.path.join(BASE_DIR, "gold_state.json")
 HISTORY_FILE = os.path.join(BASE_DIR, "gold_history.json")
 
 DEFAULT_CONFIG = {
- "buy_threshold": 800,
- "sell_threshold": 900,
- "check_interval_seconds": 5,
- "notify_interval_seconds": 3600,
+"buy_threshold": 800,
+"sell_threshold": 900,
+"check_interval_seconds": 5,
+"notify_interval_seconds": 3600,
 }
 MAX_HISTORY = 500
 
 # ---------------- 记忆层 ----------------
 def _load_json(path, default):
- try:
- with open(path, "r", encoding="utf-8") as file:
- return json.load(file)
- except (OSError, ValueError):
- return default
+    try:
+        with open(path, "r", encoding="utf-8") as file:
+            return json.load(file)
+    except (OSError, ValueError):
+        return default
 
-def load_state():
- return _load_json(STATE_FILE, {"last_price": None, "last_status": "normal",
- "last_notify_time": 0})
+    def load_state():
+        return _load_json(STATE_FILE, {"last_price": None, "last_status": "normal",
+    "last_notify_time": 0})
 
-def save_state(state):
- with open(STATE_FILE, "w", encoding="utf-8") as file:
- json.dump(state, file, ensure_ascii=False, indent=2)
+    def save_state(state):
+        with open(STATE_FILE, "w", encoding="utf-8") as file:
+            json.dump(state, file, ensure_ascii=False, indent=2)
 
-def append_history(price):
- history = _load_json(HISTORY_FILE, [])
- history.append({"time": time.strftime("%Y-%m-%d %H:%M:%S"), "price": price})
- history = history[-MAX_HISTORY:] # 统一截断阈值，避免两套阈值打架
- with open(HISTORY_FILE, "w", encoding="utf-8") as file:
- json.dump(history, file, ensure_ascii=False, indent=2)
- return history
+            def append_history(price):
+                history = _load_json(HISTORY_FILE, [])
+                history.append({"time": time.strftime("%Y-%m-%d %H:%M:%S"), "price": price})
+                history = history[-MAX_HISTORY:] # 统一截断阈值，避免两套阈值打架
+                with open(HISTORY_FILE, "w", encoding="utf-8") as file:
+                    json.dump(history, file, ensure_ascii=False, indent=2)
+                    return history
 
-# ---------------- 感知层 ----------------
-def get_gold_price(price_source):
- """price_source 是一个可迭代的价格序列，模拟多源降级后的结果"""
- for price in price_source:
- if price is None or price <= 0:
- continue
- if price < 200: # 有效性校验
- continue
- return float(price)
- return None
+                # ---------------- 感知层 ----------------
+                def get_gold_price(price_source):
+                    """price_source 是一个可迭代的价格序列，模拟多源降级后的结果"""
+                    for price in price_source:
+                        if price is None or price <= 0:
+                            continue
+                        if price < 200: # 有效性校验
+                            continue
+                        return float(price)
+                    return None
 
-# ---------------- 决策层 ----------------
-def get_price_change(current, last):
- if not last:
- return 0.0
- return (current - last) / last * 100
+                # ---------------- 决策层 ----------------
+                def get_price_change(current, last):
+                    if not last:
+                        return 0.0
+                    return (current - last) / last * 100
 
-def decide(price, config):
- if price < config["buy_threshold"]:
- return "buy", "🟡 黄金买入提醒", "当前黄金价格：%.2f 元/克\n价格低于买入参考价：%d 元/克" % (
- price, config["buy_threshold"])
- if price > config["sell_threshold"]:
- return "sell", "🔴 黄金卖出提醒", "当前黄金价格：%.2f 元/克\n价格高于卖出参考价：%d 元/克" % (
- price, config["sell_threshold"])
- return "normal", None, None
+                def decide(price, config):
+                    if price < config["buy_threshold"]:
+                        return "buy", "🟡 黄金买入提醒", "当前黄金价格：%.2f 元/克\n价格低于买入参考价：%d 元/克" % (
+                    price, config["buy_threshold"])
+                    if price > config["sell_threshold"]:
+                        return "sell", "🔴 黄金卖出提醒", "当前黄金价格：%.2f 元/克\n价格高于卖出参考价：%d 元/克" % (
+                    price, config["sell_threshold"])
+                    return "normal", None, None
 
-# ---------------- 行动层 ----------------
-def send_wechat_message(title, content):
- """真实实现为 requests.post(Server酱)；此处只打印，保证示例可离线运行"""
- line = "[推送] %s\n%s" % (title, content)
- try:
- print(line)
- except UnicodeEncodeError: # Windows GBK 控制台无法输出 emoji，退化为纯 ASCII
- print(line.encode("ascii", "replace").decode("ascii"))
- return True
+                # ---------------- 行动层 ----------------
+                def send_wechat_message(title, content):
+                    """真实实现为 requests.post(Server酱)；此处只打印，保证示例可离线运行"""
+                    line = "[推送] %s\n%s" % (title, content)
+                    try:
+                        print(line)
+                    except UnicodeEncodeError: # Windows GBK 控制台无法输出 emoji，退化为纯 ASCII
+                        print(line.encode("ascii", "replace").decode("ascii"))
+                        return True
 
-# ---------------- 主循环 ----------------
-def run_once(price, config=None, now=None):
- config = config or DEFAULT_CONFIG
- now = now if now is not None else time.time()
- state = load_state()
- change = get_price_change(price, state.get("last_price"))
- status, title, content = decide(price, config)
+                    # ---------------- 主循环 ----------------
+                    def run_once(price, config=None, now=None):
+                        config = config or DEFAULT_CONFIG
+                        now = now if now is not None else time.time()
+                        state = load_state()
+                        change = get_price_change(price, state.get("last_price"))
+                        status, title, content = decide(price, config)
 
- notified = False
- if status != state.get("last_status"):
- if title and send_wechat_message(title, content):
- state["last_notify_time"] = now
- notified = True
- elif title and now - state.get("last_notify_time", 0) > config["notify_interval_seconds"]:
- if send_wechat_message(title, content):
- state["last_notify_time"] = now
- notified = True
- else:
- print("状态未变化，无需重复提醒")
+                        notified = False
+                        if status != state.get("last_status"):
+                            if title and send_wechat_message(title, content):
+                                state["last_notify_time"] = now
+                                notified = True
+                            elif title and now - state.get("last_notify_time", 0) > config["notify_interval_seconds"]:
+                                if send_wechat_message(title, content):
+                                    state["last_notify_time"] = now
+                                    notified = True
+                                else:
+                                    print("状态未变化，无需重复提醒")
 
- state["last_price"] = price
- state["last_status"] = status
- save_state(state)
- append_history(price)
- return {"price": price, "status": status, "change": round(change, 2), "notified": notified}
+                                    state["last_price"] = price
+                                    state["last_status"] = status
+                                    save_state(state)
+                                    append_history(price)
+                                    return {"price": price, "status": status, "change": round(change, 2), "notified": notified}
 
-def monitor(prices, config=None):
- """模拟常驻监控：把价格序列逐个喂给 run_once"""
- results = []
- for price in prices:
- print("\n=== 价格 %.2f ===" % price)
- results.append(run_once(price, config))
- return results
+                                def monitor(prices, config=None):
+                                    """模拟常驻监控：把价格序列逐个喂给 run_once"""
+                                    results = []
+                                    for price in prices:
+                                        print("\n=== 价格 %.2f ===" % price)
+                                        results.append(run_once(price, config))
+                                        return results
 
-if __name__ == "__main__":
- # 模拟一段行情：正常 → 跌破买入线 → 继续低位（不应重复提醒）→ 突破卖出线
- outcomes = monitor([880.0, 795.0, 790.0, 912.0])
- print("\n--- 决策轨迹 ---")
- for item in outcomes:
- print(item)
- print("\n历史记录条数:", len(_load_json(HISTORY_FILE, [])))
+                                    if __name__ == "__main__":
+                                        # 模拟一段行情：正常 → 跌破买入线 → 继续低位（不应重复提醒）→ 突破卖出线
+                                        outcomes = monitor([880.0, 795.0, 790.0, 912.0])
+                                        print("\n--- 决策轨迹 ---")
+                                        for item in outcomes:
+                                            print(item)
+                                            print("\n历史记录条数:", len(_load_json(HISTORY_FILE, [])))
 ```
 
 涨跌幅出现在两处：
@@ -341,7 +341,7 @@ create_daily_report():
 
 **依赖**：仅标准库（把网络抓取替换为可注入的价格序列，便于本地验证决策逻辑）。
 
-```python
+```text
 """把黄金监控的决策层升级为 LLM Agent（保留原有感知/记忆/行动）。
 
 依赖：pip install zhipuai python-dotenv

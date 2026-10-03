@@ -91,11 +91,11 @@
 
 ```python
 def clean_text(self, text):
- """只保留中文字符（\u4e00-\u9fa5），其余替换为空格"""
- if not isinstance(text, str):
- return ""
- text = re.sub(r'[^\u4e00-\u9fa5]', ' ', text) # 非中文 -> 空格
- return re.sub(r'\s+', ' ', text).strip # 合并多余空格
+    """只保留中文字符（\u4e00-\u9fa5），其余替换为空格"""
+    if not isinstance(text, str):
+        return ""
+    text = re.sub(r'[^\u4e00-\u9fa5]', ' ', text) # 非中文 -> 空格
+    return re.sub(r'\s+', ' ', text).strip # 合并多余空格
 ```
 
 清洗效果：
@@ -292,16 +292,16 @@ token_type_ids = [0, 0, ..., 0] (单句任务全为 0)
 
 ```python
 class MedicalTextDataset(Dataset):
- def __getitem__(self, idx):
- encoding = self.tokenizer(
- str(self.texts[idx]),
- add_special_tokens=True, # 自动加 [CLS] 与 [SEP]
- max_length=self.max_length, # 128
- padding='max_length',
- truncation=True,
- return_tensors='pt',
- )
- return {
+    def __getitem__(self, idx):
+        encoding = self.tokenizer(
+        str(self.texts[idx]),
+        add_special_tokens=True, # 自动加 [CLS] 与 [SEP]
+        max_length=self.max_length, # 128
+        padding='max_length',
+        truncation=True,
+        return_tensors='pt',
+    )
+    return {
 'input_ids': encoding['input_ids'].flatten,
 'attention_mask': encoding['attention_mask'].flatten,
 'labels': torch.tensor(self.labels[idx], dtype=torch.long),
@@ -414,12 +414,12 @@ pruning_method=prune.L1Unstructured, amount=0.2)
 
 # 自定义剪枝规则：继承 prune.BasePruningMethod 并实现 compute_mask
 class MyPruningMethod(prune.BasePruningMethod):
- PRUNING_TYPE = "unstructured"
+    PRUNING_TYPE = "unstructured"
 
- def compute_mask(self, t, default_mask):
- mask = default_mask.clone
- mask.view(-1)[::3] = 0 # 每 3 个参数遮掉 1 个
- return mask
+    def compute_mask(self, t, default_mask):
+        mask = default_mask.clone
+        mask.view(-1)[::3] = 0 # 每 3 个参数遮掉 1 个
+        return mask
 ```
 
 剪枝后模块会新增 `weight_orig`（原始权重）与 `weight_mask`（0/1 掩码），实际使用的是两者相乘的结果。**不调用 `prune.remove` 就不会真正减小模型**——这是最常见的误解。
@@ -437,65 +437,65 @@ import jieba
 
 # 加载医学自定义词典（实际项目从文件加载）
 for term in ["肾结石", "输尿管", "心肌梗死", "出血性脑梗死", "肢端纤维角化瘤"]:
- jieba.add_word(term)
+    jieba.add_word(term)
 
- # 通用停用词表
- STOPWORDS = set("的 了 在 是 我 有 和 就 都 也 很 只 要 一个 上 到 说".split)
- # 关键修正：疑问词必须保留！它们是判断意图的核心信号
- QUESTION_WORDS = {"什么", "怎么", "如何", "为啥", "咋", "为什么", "哪", "多久", "多少"}
+    # 通用停用词表
+    STOPWORDS = set("的 了 在 是 我 有 和 就 都 也 很 只 要 一个 上 到 说".split)
+    # 关键修正：疑问词必须保留！它们是判断意图的核心信号
+    QUESTION_WORDS = {"什么", "怎么", "如何", "为啥", "咋", "为什么", "哪", "多久", "多少"}
 
- class MedicalTextPreprocessor:
- def __init__(self, stopwords=None, keep_english=True):
- self.stopwords = set(stopwords) if stopwords else STOPWORDS
- self.keep_english = keep_english
+    class MedicalTextPreprocessor:
+        def __init__(self, stopwords=None, keep_english=True):
+            self.stopwords = set(stopwords) if stopwords else STOPWORDS
+            self.keep_english = keep_english
 
- def clean_text(self, text):
- if not isinstance(text, str):
- return ""
- if self.keep_english:
- # 保留中文 + 英文 + 数字（避免丢掉 CT / MRI / B超 等关键缩写）
- text = re.sub(r'[^\u4e00-\u9fa5A-Za-z0-9]', ' ', text)
- else:
- text = re.sub(r'[^\u4e00-\u9fa5]', ' ', text)
- return re.sub(r'\s+', ' ', text).strip
+            def clean_text(self, text):
+                if not isinstance(text, str):
+                    return ""
+                if self.keep_english:
+                    # 保留中文 + 英文 + 数字（避免丢掉 CT / MRI / B超 等关键缩写）
+                    text = re.sub(r'[^\u4e00-\u9fa5A-Za-z0-9]', ' ', text)
+                else:
+                    text = re.sub(r'[^\u4e00-\u9fa5]', ' ', text)
+                    return re.sub(r'\s+', ' ', text).strip
 
- def remove_stopwords(self, words):
- return [w for w in words
- if w.strip and (w in QUESTION_WORDS or w not in self.stopwords)]
+                def remove_stopwords(self, words):
+                    return [w for w in words
+                if w.strip and (w in QUESTION_WORDS or w not in self.stopwords)]
 
- def preprocess(self, text):
- cleaned = self.clean_text(text)
- segmented = jieba.lcut(cleaned)
- filtered = self.remove_stopwords(segmented)
- return ' '.join(filtered)
+                def preprocess(self, text):
+                    cleaned = self.clean_text(text)
+                    segmented = jieba.lcut(cleaned)
+                    filtered = self.remove_stopwords(segmented)
+                    return ' '.join(filtered)
 
- def preprocess_dataframe(self, df, text_column='text'):
- df = df.copy
- df['cleaned_text'] = [self.preprocess(t) for t in df[text_column]]
- lengths = [len(t.split) for t in df['cleaned_text'] if t]
- if lengths:
- print("预处理完成，平均长度 {:.1f} 个词，最长 {}，最短 {}".format(
- float(np.mean(lengths)), max(lengths), min(lengths)))
- return df
+                def preprocess_dataframe(self, df, text_column='text'):
+                    df = df.copy
+                    df['cleaned_text'] = [self.preprocess(t) for t in df[text_column]]
+                    lengths = [len(t.split) for t in df['cleaned_text'] if t]
+                    if lengths:
+                        print("预处理完成，平均长度 {:.1f} 个词，最长 {}，最短 {}".format(
+                        float(np.mean(lengths)), max(lengths), min(lengths)))
+                        return df
 
- if __name__ == "__main__":
- pre = MedicalTextPreprocessor
+                    if __name__ == "__main__":
+                        pre = MedicalTextPreprocessor
 
- samples = [
- "肾结石，输尿管结石一般用什么药呢？而且效果较好！123",
- "请问出血性脑梗死症状是什么",
- "睡一觉醒睡不着咋搞的？现在怀孕7个月了",
- "距骨骨折脱位做啥检查，需要做CT吗",
- "肢端纤维角化瘤应该看啥医生",
- ]
- for s in samples:
- print(f"原文: {s}")
- print(f"清洗: {pre.clean_text(s)}")
- print(f"最终: {pre.preprocess(s)}\n")
+                        samples = [
+                        "肾结石，输尿管结石一般用什么药呢？而且效果较好！123",
+                        "请问出血性脑梗死症状是什么",
+                        "睡一觉醒睡不着咋搞的？现在怀孕7个月了",
+                        "距骨骨折脱位做啥检查，需要做CT吗",
+                        "肢端纤维角化瘤应该看啥医生",
+                        ]
+                        for s in samples:
+                            print(f"原文: {s}")
+                            print(f"清洗: {pre.clean_text(s)}")
+                            print(f"最终: {pre.preprocess(s)}\n")
 
- df = pd.DataFrame({"text": samples, "label_class": ["治疗方法", "临床表现", "病因", "化验/体检方案", "所属科室"]})
- df = pre.preprocess_dataframe(df)
- print(df[["cleaned_text", "label_class"]].to_string(index=False))
+                            df = pd.DataFrame({"text": samples, "label_class": ["治疗方法", "临床表现", "病因", "化验/体检方案", "所属科室"]})
+                            df = pre.preprocess_dataframe(df)
+                            print(df[["cleaned_text", "label_class"]].to_string(index=False))
 ```
 
 注意输出中「CT」被保留、疑问词「什么 / 咋 / 多久」也被保留——这两点正是对原始实现的两处修正。
@@ -607,76 +607,76 @@ device = torch.device("cuda" if torch.cuda.is_available else "cpu")
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 
 class MedicalTextDataset(Dataset):
- def __init__(self, texts, labels):
- self.texts, self.labels = texts, labels
+    def __init__(self, texts, labels):
+        self.texts, self.labels = texts, labels
 
- def __len__(self):
- return len(self.texts)
+        def __len__(self):
+            return len(self.texts)
 
- def __getitem__(self, idx):
- enc = tokenizer(str(self.texts[idx]), add_special_tokens=True,
- max_length=MAX_LEN, padding="max_length",
- truncation=True, return_tensors="pt")
- return {
- "input_ids": enc["input_ids"].flatten,
- "attention_mask": enc["attention_mask"].flatten,
- "labels": torch.tensor(self.labels[idx], dtype=torch.long),
- }
+        def __getitem__(self, idx):
+            enc = tokenizer(str(self.texts[idx]), add_special_tokens=True,
+            max_length=MAX_LEN, padding="max_length",
+            truncation=True, return_tensors="pt")
+            return {
+        "input_ids": enc["input_ids"].flatten,
+        "attention_mask": enc["attention_mask"].flatten,
+        "labels": torch.tensor(self.labels[idx], dtype=torch.long),
+        }
 
- def train_model(texts, labels, epochs=3, batch_size=8, lr=2e-5):
- model = AutoModelForSequenceClassification.from_pretrained(
- MODEL_NAME, num_labels=NUM_LABELS).to(device)
- loader = DataLoader(MedicalTextDataset(texts, labels), batch_size=batch_size, shuffle=True)
+        def train_model(texts, labels, epochs=3, batch_size=8, lr=2e-5):
+            model = AutoModelForSequenceClassification.from_pretrained(
+            MODEL_NAME, num_labels=NUM_LABELS).to(device)
+            loader = DataLoader(MedicalTextDataset(texts, labels), batch_size=batch_size, shuffle=True)
 
- optimizer = AdamW(model.parameters, lr=lr, weight_decay=0.01)
- total_steps = len(loader) * epochs
- scheduler = get_linear_schedule_with_warmup(
- optimizer, num_warmup_steps=int(0.1 * total_steps), num_training_steps=total_steps)
- criterion = nn.CrossEntropyLoss
+            optimizer = AdamW(model.parameters, lr=lr, weight_decay=0.01)
+            total_steps = len(loader) * epochs
+            scheduler = get_linear_schedule_with_warmup(
+            optimizer, num_warmup_steps=int(0.1 * total_steps), num_training_steps=total_steps)
+            criterion = nn.CrossEntropyLoss
 
- for epoch in range(epochs):
- model.train
- total_loss = 0.0
- for batch in loader:
- batch = {k: v.to(device) for k, v in batch.items}
- outputs = model(input_ids=batch["input_ids"],
- attention_mask=batch["attention_mask"])
- loss = criterion(outputs.logits, batch["labels"])
- optimizer.zero_grad
- loss.backward
- torch.nn.utils.clip_grad_norm_(model.parameters, 1.0) # 梯度裁剪
- optimizer.step
- scheduler.step
- total_loss += loss.item
- print(f"epoch {epoch + 1} loss={total_loss / len(loader):.4f}")
+            for epoch in range(epochs):
+                model.train
+                total_loss = 0.0
+                for batch in loader:
+                    batch = {k: v.to(device) for k, v in batch.items}
+                    outputs = model(input_ids=batch["input_ids"],
+                    attention_mask=batch["attention_mask"])
+                    loss = criterion(outputs.logits, batch["labels"])
+                    optimizer.zero_grad
+                    loss.backward
+                    torch.nn.utils.clip_grad_norm_(model.parameters, 1.0) # 梯度裁剪
+                    optimizer.step
+                    scheduler.step
+                    total_loss += loss.item
+                    print(f"epoch {epoch + 1} loss={total_loss / len(loader):.4f}")
 
- # 保存与加载：只存 state_dict，换机器时用 map_location 处理设备
- torch.save(model.state_dict, "medical_bert.bin")
- return model
+                    # 保存与加载：只存 state_dict，换机器时用 map_location 处理设备
+                    torch.save(model.state_dict, "medical_bert.bin")
+                    return model
 
- def predict(model, text, id_to_name=None):
- model.eval
- enc = tokenizer(text, add_special_tokens=True, max_length=MAX_LEN,
- padding="max_length", truncation=True, return_tensors="pt")
- enc = {k: v.to(device) for k, v in enc.items}
- with torch.no_grad:
- logits = model(**enc).logits
- probs = torch.softmax(logits, dim=-1)[0]
- pred_id = int(probs.argmax)
- return (id_to_name[pred_id] if id_to_name else pred_id), float(probs[pred_id])
+                def predict(model, text, id_to_name=None):
+                    model.eval
+                    enc = tokenizer(text, add_special_tokens=True, max_length=MAX_LEN,
+                    padding="max_length", truncation=True, return_tensors="pt")
+                    enc = {k: v.to(device) for k, v in enc.items}
+                    with torch.no_grad:
+                        logits = model(**enc).logits
+                        probs = torch.softmax(logits, dim=-1)[0]
+                        pred_id = int(probs.argmax)
+                        return (id_to_name[pred_id] if id_to_name else pred_id), float(probs[pred_id])
 
- if __name__ == "__main__":
- texts = ["什么是骨纤维瘤", "肾结石一般用什么药", "睡一觉醒睡不着咋搞的",
- "请问出血性脑梗死症状是什么", "距骨骨折脱位做啥检查"] * 8
- labels = [0, 5, 1, 3, 10] * 8
+                    if __name__ == "__main__":
+                        texts = ["什么是骨纤维瘤", "肾结石一般用什么药", "睡一觉醒睡不着咋搞的",
+                        "请问出血性脑梗死症状是什么", "距骨骨折脱位做啥检查"] * 8
+                        labels = [0, 5, 1, 3, 10] * 8
 
- id_to_name = {0: "定义", 1: "病因", 2: "预防", 3: "临床表现", 4: "相关病症",
- 5: "治疗方法", 6: "所属科室", 7: "传染性", 8: "治愈率",
- 9: "禁忌", 10: "化验/体检方案", 11: "治疗时间", 12: "其他"}
+                        id_to_name = {0: "定义", 1: "病因", 2: "预防", 3: "临床表现", 4: "相关病症",
+                        5: "治疗方法", 6: "所属科室", 7: "传染性", 8: "治愈率",
+                        9: "禁忌", 10: "化验/体检方案", 11: "治疗时间", 12: "其他"}
 
- model = train_model(texts, labels, epochs=1) # 演示只跑 1 轮
- for t in ["肾结石一般用什么药", "婴儿会有痔疮吗"]:
- print(t, "->", predict(model, t, id_to_name))
+                        model = train_model(texts, labels, epochs=1) # 演示只跑 1 轮
+                        for t in ["肾结石一般用什么药", "婴儿会有痔疮吗"]:
+                            print(t, "->", predict(model, t, id_to_name))
 ```
 
 ### 3.4 服务封装（Flask，含标签映射与耗时统计）

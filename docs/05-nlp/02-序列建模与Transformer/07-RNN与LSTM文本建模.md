@@ -222,77 +222,77 @@ MAX_LEN = 10
 n_chars = len(char2id) + 1
 
 def name_to_tensor(name: str) -> torch.Tensor:
- """字符 -> id 序列，补齐或截断到 MAX_LEN"""
- ids = [char2id.get(ch, 0) for ch in name.lower][:MAX_LEN]
- ids += [0] * (MAX_LEN - len(ids))
- return torch.tensor(ids, dtype=torch.long)
+    """字符 -> id 序列，补齐或截断到 MAX_LEN"""
+    ids = [char2id.get(ch, 0) for ch in name.lower][:MAX_LEN]
+    ids += [0] * (MAX_LEN - len(ids))
+    return torch.tensor(ids, dtype=torch.long)
 
 class NameDataset(Dataset):
- def __init__(self, data):
- self.x = [name_to_tensor(n) for n, _ in data]
- self.y = [class2id[c] for _, c in data]
+    def __init__(self, data):
+        self.x = [name_to_tensor(n) for n, _ in data]
+        self.y = [class2id[c] for _, c in data]
 
- def __len__(self):
- return len(self.x)
+        def __len__(self):
+            return len(self.x)
 
- def __getitem__(self, idx):
- return self.x[idx], torch.tensor(self.y[idx], dtype=torch.long)
+        def __getitem__(self, idx):
+            return self.x[idx], torch.tensor(self.y[idx], dtype=torch.long)
 
- # ---------- 2. 模型：Embedding + RNN/LSTM/GRU + 取最后时间步 ----------
- class NameClassifier(nn.Module):
- def __init__(self, rnn_type="lstm", vocab_size=n_chars, embed_dim=16,
- hidden_size=32, num_class=len(classes), num_layers=1):
- super.__init__
- self.embedding = nn.Embedding(vocab_size, embed_dim, padding_idx=0)
- # batch_first=True: 输入为 (batch, seq_len, embed_dim)
- rnn_cls = {"rnn": nn.RNN, "lstm": nn.LSTM, "gru": nn.GRU}[rnn_type]
- self.rnn = rnn_cls(embed_dim, hidden_size, num_layers, batch_first=True)
- self.fc = nn.Linear(hidden_size, num_class)
- self.log_softmax = nn.LogSoftmax(dim=-1)
+        # ---------- 2. 模型：Embedding + RNN/LSTM/GRU + 取最后时间步 ----------
+        class NameClassifier(nn.Module):
+            def __init__(self, rnn_type="lstm", vocab_size=n_chars, embed_dim=16,
+            hidden_size=32, num_class=len(classes), num_layers=1):
+                super.__init__
+                self.embedding = nn.Embedding(vocab_size, embed_dim, padding_idx=0)
+                # batch_first=True: 输入为 (batch, seq_len, embed_dim)
+                rnn_cls = {"rnn": nn.RNN, "lstm": nn.LSTM, "gru": nn.GRU}[rnn_type]
+                self.rnn = rnn_cls(embed_dim, hidden_size, num_layers, batch_first=True)
+                self.fc = nn.Linear(hidden_size, num_class)
+                self.log_softmax = nn.LogSoftmax(dim=-1)
 
- def forward(self, x):
- emb = self.embedding(x) # (B, L, E)
- output, _ = self.rnn(emb) # (B, L, H)
- last = output[:, -1, :] # 取最后一个时间步 -> (B, H)
- return self.log_softmax(self.fc(last)) # 配 NLLLoss 使用
+                def forward(self, x):
+                    emb = self.embedding(x) # (B, L, E)
+                    output, _ = self.rnn(emb) # (B, L, H)
+                    last = output[:, -1, :] # 取最后一个时间步 -> (B, H)
+                    return self.log_softmax(self.fc(last)) # 配 NLLLoss 使用
 
- # ---------- 3. 训练与预测 ----------
- def train_model(rnn_type, epochs=80):
- torch.manual_seed(0)
- loader = DataLoader(NameDataset(raw), batch_size=4, shuffle=True)
- model = NameClassifier(rnn_type=rnn_type)
- criterion = nn.NLLLoss # 与模型内 log_softmax 配对
- optimizer = optim.Adam(model.parameters, lr=0.01)
- # RNN 训练标配：梯度裁剪，防止梯度爆炸
- torch.nn.utils.clip_grad_norm_(model.parameters, max_norm=5.0)
+                # ---------- 3. 训练与预测 ----------
+                def train_model(rnn_type, epochs=80):
+                    torch.manual_seed(0)
+                    loader = DataLoader(NameDataset(raw), batch_size=4, shuffle=True)
+                    model = NameClassifier(rnn_type=rnn_type)
+                    criterion = nn.NLLLoss # 与模型内 log_softmax 配对
+                    optimizer = optim.Adam(model.parameters, lr=0.01)
+                    # RNN 训练标配：梯度裁剪，防止梯度爆炸
+                    torch.nn.utils.clip_grad_norm_(model.parameters, max_norm=5.0)
 
- for epoch in range(epochs):
- total_loss = 0.0
- for x, y in loader:
- out = model(x)
- loss = criterion(out, y)
- optimizer.zero_grad
- loss.backward
- torch.nn.utils.clip_grad_norm_(model.parameters, max_norm=5.0)
- optimizer.step
- total_loss += loss.item
- if (epoch + 1) % 20 == 0:
- print(f" [{rnn_type}] epoch {epoch+1:3d} loss={total_loss/len(loader):.4f}")
- return model
+                    for epoch in range(epochs):
+                        total_loss = 0.0
+                        for x, y in loader:
+                            out = model(x)
+                            loss = criterion(out, y)
+                            optimizer.zero_grad
+                            loss.backward
+                            torch.nn.utils.clip_grad_norm_(model.parameters, max_norm=5.0)
+                            optimizer.step
+                            total_loss += loss.item
+                            if (epoch + 1) % 20 == 0:
+                                print(f" [{rnn_type}] epoch {epoch+1:3d} loss={total_loss/len(loader):.4f}")
+                                return model
 
- def predict(model, name):
- model.eval
- with torch.no_grad:
- out = model(name_to_tensor(name).unsqueeze(0)) # 加 batch 维
- prob = out.exp
- idx = int(prob.argmax(dim=-1))
- return classes[idx], float(prob[0, idx])
+                            def predict(model, name):
+                                model.eval
+                                with torch.no_grad:
+                                    out = model(name_to_tensor(name).unsqueeze(0)) # 加 batch 维
+                                    prob = out.exp
+                                    idx = int(prob.argmax(dim=-1))
+                                    return classes[idx], float(prob[0, idx])
 
- if __name__ == "__main__":
- for rnn_type in ["rnn", "lstm", "gru"]:
- m = train_model(rnn_type)
- acc = sum(predict(m, n)[0] == c for n, c in raw) / len(raw)
- print(f"{rnn_type.upper:4s} 训练集准确率: {acc:.3f} 预测('zhang')={predict(m, 'zhang')}")
+                                if __name__ == "__main__":
+                                    for rnn_type in ["rnn", "lstm", "gru"]:
+                                        m = train_model(rnn_type)
+                                        acc = sum(predict(m, n)[0] == c for n, c in raw) / len(raw)
+                                        print(f"{rnn_type.upper:4s} 训练集准确率: {acc:.3f} 预测('zhang')={predict(m, 'zhang')}")
 ```
 
 要点说明：
@@ -310,40 +310,40 @@ import torch.nn as nn
 
 # 任务：序列末尾输出「开头那个 token 的 id」——需要记住 T 步之前的信息
 def make_batch(batch=32, seq_len=60, vocab=10):
- x = torch.randint(1, vocab, (batch, seq_len))
- y = x[:, 0] # 标签 = 第一个 token
- return x, y
+    x = torch.randint(1, vocab, (batch, seq_len))
+    y = x[:, 0] # 标签 = 第一个 token
+    return x, y
 
 def run(rnn_type, seq_len=60, steps=300):
- torch.manual_seed(42)
- embed = nn.Embedding(10, 16, padding_idx=0)
- rnn_cls = {"rnn": nn.RNN, "lstm": nn.LSTM, "gru": nn.GRU}[rnn_type]
- rnn = rnn_cls(16, 32, batch_first=True)
- fc = nn.Linear(32, 10)
- params = list(embed.parameters) + list(rnn.parameters) + list(fc.parameters)
- opt = torch.optim.Adam(params, lr=0.01)
- crit = nn.CrossEntropyLoss
+    torch.manual_seed(42)
+    embed = nn.Embedding(10, 16, padding_idx=0)
+    rnn_cls = {"rnn": nn.RNN, "lstm": nn.LSTM, "gru": nn.GRU}[rnn_type]
+    rnn = rnn_cls(16, 32, batch_first=True)
+    fc = nn.Linear(32, 10)
+    params = list(embed.parameters) + list(rnn.parameters) + list(fc.parameters)
+    opt = torch.optim.Adam(params, lr=0.01)
+    crit = nn.CrossEntropyLoss
 
- for step in range(steps):
- x, y = make_batch(seq_len=seq_len)
- out, _ = rnn(embed(x))
- logits = fc(out[:, -1, :])
- loss = crit(logits, y)
- opt.zero_grad
- loss.backward
- torch.nn.utils.clip_grad_norm_(params, 5.0)
- opt.step
+    for step in range(steps):
+        x, y = make_batch(seq_len=seq_len)
+        out, _ = rnn(embed(x))
+        logits = fc(out[:, -1, :])
+        loss = crit(logits, y)
+        opt.zero_grad
+        loss.backward
+        torch.nn.utils.clip_grad_norm_(params, 5.0)
+        opt.step
 
- with torch.no_grad:
- x, y = make_batch(seq_len=seq_len)
- out, _ = rnn(embed(x))
- pred = fc(out[:, -1, :]).argmax(-1)
- acc = (pred == y).float.mean.item
- return acc
+        with torch.no_grad:
+            x, y = make_batch(seq_len=seq_len)
+            out, _ = rnn(embed(x))
+            pred = fc(out[:, -1, :]).argmax(-1)
+            acc = (pred == y).float.mean.item
+            return acc
 
- for t in ["rnn", "lstm", "gru"]:
- for L in [10, 40]:
- print(f"{t:4s} seq_len={L:3d} 准确率={run(t, seq_len=L):.3f}")
+        for t in ["rnn", "lstm", "gru"]:
+            for L in [10, 40]:
+                print(f"{t:4s} seq_len={L:3d} 准确率={run(t, seq_len=L):.3f}")
 ```
 
 预期现象：序列短（10）时三者都能学到；序列变长（40–60）时传统 RNN 的准确率明显掉到随机水平附近，而 LSTM / GRU 仍能保持较高准确率——这就是门控带来的长依赖能力差异。想更直观，可以把 `seq_len` 继续加大到 100 以上，观察 RNN 与 LSTM 的差距。

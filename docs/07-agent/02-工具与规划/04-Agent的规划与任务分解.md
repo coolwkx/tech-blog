@@ -189,53 +189,53 @@ import json
 
 # ---------- 假知识库 ----------
 KNOWLEDGE_BASE = [
- {"id": "d1", "text": "Milvus 是面向向量检索的数据库，支持亿级向量的近似最近邻搜索。"},
- {"id": "d2", "text": "Milvus 采用分布式架构，可通过增加 query node 水平扩展检索吞吐。"},
- {"id": "d3", "text": "Zilliz Cloud 是全托管的 Milvus 服务，免去集群运维，按量计费。"},
- {"id": "d4", "text": "Zilliz Cloud 提供自动扩缩容与备份恢复，适合中小团队快速上线。"},
- {"id": "d5", "text": "选择向量数据库时需要权衡成本、运维复杂度与数据规模。"},
+{"id": "d1", "text": "Milvus 是面向向量检索的数据库，支持亿级向量的近似最近邻搜索。"},
+{"id": "d2", "text": "Milvus 采用分布式架构，可通过增加 query node 水平扩展检索吞吐。"},
+{"id": "d3", "text": "Zilliz Cloud 是全托管的 Milvus 服务，免去集群运维，按量计费。"},
+{"id": "d4", "text": "Zilliz Cloud 提供自动扩缩容与备份恢复，适合中小团队快速上线。"},
+{"id": "d5", "text": "选择向量数据库时需要权衡成本、运维复杂度与数据规模。"},
 ]
 
 def fake_retriever(query, k=2):
- """极简关键词检索：按查询词与文档的重合度排序，返回 top-k。"""
- tokens = set(query.replace("？", "").replace("，", "").replace(" ", ""))
- scored = []
- for doc in KNOWLEDGE_BASE:
- overlap = len(tokens & set(doc["text"]))
- if overlap:
- scored.append((overlap, doc))
- scored.sort(key=lambda pair: pair[0], reverse=True)
- return [doc for _, doc in scored[:k]]
+    """极简关键词检索：按查询词与文档的重合度排序，返回 top-k。"""
+    tokens = set(query.replace("？", "").replace("，", "").replace(" ", ""))
+    scored = []
+    for doc in KNOWLEDGE_BASE:
+        overlap = len(tokens & set(doc["text"]))
+        if overlap:
+            scored.append((overlap, doc))
+            scored.sort(key=lambda pair: pair[0], reverse=True)
+            return [doc for _, doc in scored[:k]]
 
-# ---------- 假 LLM：把复杂查询拆成子查询 ----------
-def fake_llm_decompose(query):
- if "比较" in query and "优缺点" in query:
- return "Milvus 的优缺点是什么\nZilliz Cloud 的优缺点是什么"
- return query
+        # ---------- 假 LLM：把复杂查询拆成子查询 ----------
+        def fake_llm_decompose(query):
+            if "比较" in query and "优缺点" in query:
+                return "Milvus 的优缺点是什么\nZilliz Cloud 的优缺点是什么"
+            return query
 
-def retrieve_with_subqueries(query, k=2, candidate_m=4):
- """子查询检索：分解 → 逐个检索 → 按内容去重 → 裁剪数量。"""
- subqueries_text = fake_llm_decompose(query)
- subqueries = [q.strip() for q in subqueries_text.split("\n") if q.strip()]
- print("生成的子查询:", subqueries)
+        def retrieve_with_subqueries(query, k=2, candidate_m=4):
+            """子查询检索：分解 → 逐个检索 → 按内容去重 → 裁剪数量。"""
+            subqueries_text = fake_llm_decompose(query)
+            subqueries = [q.strip() for q in subqueries_text.split("\n") if q.strip()]
+            print("生成的子查询:", subqueries)
 
- all_docs = []
- for sub_q in subqueries:
- docs = fake_retriever(sub_q, k=k)
- print("子查询 %r 检索到 %d 个文档" % (sub_q, len(docs)))
- all_docs.extend(docs)
+            all_docs = []
+            for sub_q in subqueries:
+                docs = fake_retriever(sub_q, k=k)
+                print("子查询 %r 检索到 %d 个文档" % (sub_q, len(docs)))
+                all_docs.extend(docs)
 
- # 按内容去重（比按对象地址去重更可靠）
- unique_docs = list({doc["text"]: doc for doc in all_docs}.values())
- print("共检索到 %d 个文档, 去重后剩 %d 个" % (len(all_docs), len(unique_docs)))
+                # 按内容去重（比按对象地址去重更可靠）
+                unique_docs = list({doc["text"]: doc for doc in all_docs}.values())
+                print("共检索到 %d 个文档, 去重后剩 %d 个" % (len(all_docs), len(unique_docs)))
 
- final_docs = unique_docs[:candidate_m]
- print("最终选取 %d 个文档作为上下文" % len(final_docs))
- return final_docs
+                final_docs = unique_docs[:candidate_m]
+                print("最终选取 %d 个文档作为上下文" % len(final_docs))
+                return final_docs
 
-if __name__ == "__main__":
- result = retrieve_with_subqueries("比较 Milvus 和 Zilliz Cloud 的优缺点")
- print(json.dumps(result, ensure_ascii=False, indent=2))
+            if __name__ == "__main__":
+                result = retrieve_with_subqueries("比较 Milvus 和 Zilliz Cloud 的优缺点")
+                print(json.dumps(result, ensure_ascii=False, indent=2))
 ```
 
 预期输出（要点）：
@@ -261,42 +261,42 @@ if __name__ == "__main__":
 import json
 
 TOOL_REGISTRY = {
- "get_plane_number": lambda **kw: {"date": kw["date"], "number": "1123"},
- "get_ticket_price": lambda **kw: {"ticket_price": "668"},
- "notify_user": lambda **kw: {"sent": True, "to": kw.get("contact", "unknown")},
+"get_plane_number": lambda **kw: {"date": kw["date"], "number": "1123"},
+"get_ticket_price": lambda **kw: {"ticket_price": "668"},
+"notify_user": lambda **kw: {"sent": True, "to": kw.get("contact", "unknown")},
 }
 
 def scripted_planner(goal, known_facts):
- """假规划器：根据已知事实逐步给出下一步动作，模拟 Plan-and-Execute。"""
- if "number" not in known_facts:
- return {"step": 1, "tool": "get_plane_number",
- "args": {"date": "2024-04-02", "start": "郑州", "end": "北京"}}
- if "ticket_price" not in known_facts:
- return {"step": 2, "tool": "get_ticket_price",
- "args": {"date": "2024-04-02", "number": known_facts["number"]}}
- return None # 计划完成
+    """假规划器：根据已知事实逐步给出下一步动作，模拟 Plan-and-Execute。"""
+    if "number" not in known_facts:
+        return {"step": 1, "tool": "get_plane_number",
+    "args": {"date": "2024-04-02", "start": "郑州", "end": "北京"}}
+    if "ticket_price" not in known_facts:
+        return {"step": 2, "tool": "get_ticket_price",
+    "args": {"date": "2024-04-02", "number": known_facts["number"]}}
+    return None # 计划完成
 
 def execute_plan(goal, max_steps=5):
- known_facts = {}
- trace = []
- for _ in range(max_steps):
- action = scripted_planner(goal, known_facts)
- if action is None:
- break
- tool_name = action["tool"]
- result = TOOL_REGISTRY[tool_name](**action["args"])
- print("step %d -> %s(%s) => %s" % (
- action["step"], tool_name,
- json.dumps(action["args"], ensure_ascii=False),
- json.dumps(result, ensure_ascii=False),
- ))
- known_facts.update(result)
- trace.append({"tool": tool_name, "args": action["args"], "result": result})
- return known_facts, trace
+    known_facts = {}
+    trace = []
+    for _ in range(max_steps):
+        action = scripted_planner(goal, known_facts)
+        if action is None:
+            break
+        tool_name = action["tool"]
+        result = TOOL_REGISTRY[tool_name](**action["args"])
+        print("step %d -> %s(%s) => %s" % (
+        action["step"], tool_name,
+        json.dumps(action["args"], ensure_ascii=False),
+        json.dumps(result, ensure_ascii=False),
+        ))
+        known_facts.update(result)
+        trace.append({"tool": tool_name, "args": action["args"], "result": result})
+        return known_facts, trace
 
-if __name__ == "__main__":
- facts, trace = execute_plan("查询 2024-04-02 郑州到北京的票价")
- print("最终已知事实:", json.dumps(facts, ensure_ascii=False))
+    if __name__ == "__main__":
+        facts, trace = execute_plan("查询 2024-04-02 郑州到北京的票价")
+        print("最终已知事实:", json.dumps(facts, ensure_ascii=False))
 ```
 
 这个骨架演示了两个关键设计：`known_facts` 充当**执行期状态**（步骤间传参的载体），`scripted_planner` 每次只返回**一步**并在信息充足时返回 `None` 终止——对应 2.1 节「先出计划、允许修订」的折中方案。真实场景中把 `scripted_planner` 换成一次 LLM 调用即可。
@@ -320,56 +320,56 @@ from openai import OpenAI
 STRATEGIES = ["直接检索", "假设问题检索", "子查询检索", "回溯问题检索"]
 
 STRATEGY_PROMPT = PromptTemplate(
- template="""
+template="""
 你是一个智能助手，负责分析用户查询 {query}，并从以下四种检索增强策略中选择一个最适合的策略，
 直接返回策略名称，不需要解释过程。
 
 1. **直接检索**：对用户查询直接进行检索，不进行任何增强处理。
- 适用场景：查询意图明确，需要从知识库中检索特定信息的问题。
+适用场景：查询意图明确，需要从知识库中检索特定信息的问题。
 2. **假设问题检索（HyDE）**：使用 LLM 生成一个假设的答案，然后基于假设答案进行检索。
- 适用场景：查询较为抽象，直接检索效果不佳的问题。
+适用场景：查询较为抽象，直接检索效果不佳的问题。
 3. **子查询检索**：将复杂的用户查询拆分为多个简单的子查询，分别检索并合并结果。
- 适用场景：查询涉及多个实体或方面，需要分别检索不同信息的问题。
+适用场景：查询涉及多个实体或方面，需要分别检索不同信息的问题。
 4. **回溯问题检索**：将复杂的用户查询转化为更基础、更易于检索的问题，然后进行检索。
- 适用场景：查询较为复杂，需要简化后才能有效检索的问题。
+适用场景：查询较为复杂，需要简化后才能有效检索的问题。
 
 根据用户查询 {query}，直接返回最适合的策略名称，例如 "直接检索"。不要输出任何分析过程或其他内容。
 """,
- input_variables=["query"],
+input_variables=["query"],
 )
 
 def select_strategy(query, model="qwen-plus"):
- client = OpenAI(
- api_key=os.environ["DASHSCOPE_API_KEY"],
- base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
- )
- try:
- completion = client.chat.completions.create(
- model=model,
- messages=[
- {"role": "system", "content": "你是一个有用的助手。"},
- {"role": "user", "content": STRATEGY_PROMPT.format(query=query)},
- ],
- temperature=0.1, # 压低随机性，把生成压成一次受限分类
- )
- raw = completion.choices[0].message.content if completion.choices else ""
- except Exception as exc: # 规划器失败必须有安全默认值
- print("策略选择失败，回退到直接检索: %s" % exc)
- return "直接检索"
+    client = OpenAI(
+    api_key=os.environ["DASHSCOPE_API_KEY"],
+    base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+    )
+    try:
+        completion = client.chat.completions.create(
+        model=model,
+        messages=[
+        {"role": "system", "content": "你是一个有用的助手。"},
+        {"role": "user", "content": STRATEGY_PROMPT.format(query=query)},
+        ],
+        temperature=0.1, # 压低随机性，把生成压成一次受限分类
+        )
+        raw = completion.choices[0].message.content if completion.choices else ""
+    except Exception as exc: # 规划器失败必须有安全默认值
+        print("策略选择失败，回退到直接检索: %s" % exc)
+        return "直接检索"
 
- strategy = raw.strip()
- if strategy not in STRATEGIES: # 白名单校验，防止模型自由发挥
- print("模型返回了非法策略 %r，回退到直接检索" % strategy)
- return "直接检索"
- return strategy
+    strategy = raw.strip()
+    if strategy not in STRATEGIES: # 白名单校验，防止模型自由发挥
+        print("模型返回了非法策略 %r，回退到直接检索" % strategy)
+        return "直接检索"
+    return strategy
 
 if __name__ == "__main__":
- for q in [
- "人工智能方向学费是多少？",
- "人工智能在教育领域的应用有哪些？",
- "比较 Milvus 和 Zilliz Cloud 的优缺点。",
- ]:
- print("%s -> %s" % (q, select_strategy(q)))
+    for q in [
+    "人工智能方向学费是多少？",
+    "人工智能在教育领域的应用有哪些？",
+    "比较 Milvus 和 Zilliz Cloud 的优缺点。",
+    ]:
+        print("%s -> %s" % (q, select_strategy(q)))
 ```
 
 ---

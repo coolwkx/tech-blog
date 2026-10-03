@@ -1,6 +1,6 @@
-# 项目实战笔记 01：RAG 学科答疑系统
+# 项目实战笔记 01：法律咨询 RAG 问答系统
 
-> **一句话总结**：用 LangChain + BGE-M3 + Milvus 搭一套"MySQL FAQ 精确匹配优先、Milvus 混合检索兜底"的双通道 RAG 答疑系统，把大模型的幻觉关在知识库的笼子里。
+> **一句话总结**：用 LangChain + BGE-M3 + Milvus 搭一套"MySQL FAQ 精确匹配优先、Milvus 混合检索兜底"的双通道法律咨询 RAG 问答系统，把大模型的幻觉关在知识库的笼子里。
 > **前置知识**：Python 工程化基础、向量检索原理（Embedding / 余弦相似度 / ANN）、LangChain 的 Document 与 TextSplitter 抽象、FastAPI 基础、MySQL 与 Redis 基本操作。
 
 > 1. 独立设计一套"分层切分（父块 + 子块）+ 混合检索 + 重排序"的 RAG 检索链路；
@@ -11,9 +11,9 @@
 
 ### 1.1 业务痛点
 
-教育（IT 教育培训）的学科在线答疑长期依赖人工客服：学员问"人工智能方向学费多少""Java 大纲是什么""我想转行大数据要学多久"，客服每天重复回答高度相似的问题。引入 ChatGPT 类大模型后又出现新问题：
+法律咨询长期依赖人工客服：当事人问"劳动合同纠纷的仲裁时效是多久""租房押金不退怎么办""工伤赔偿标准是多少"，客服每天重复回答高度相似的问题。引入 ChatGPT 类大模型后又出现新问题：
 
-- **幻觉**：模型对"我们机构自己的价格、安排、开班时间"这类私有信息一无所知，会一本正经地编；
+- **幻觉**：模型对"我们律所自己的收费标准、办案流程、材料清单"这类私有信息一无所知，会一本正经地编；
 - **时效性**：训练数据截止后新增的信息无法感知；
 - **成本**：全量微调（SFT/LoRA）要标注数据、要 GPU，信息一变就得重训，迭代成本极高。
 
@@ -84,7 +84,7 @@
 ### 离线索引管线
 
 ```text
-data/{ai,java,test,ops,bigdata}_data/
+data/{statute,judicial,cases,faq,procedure}_data/
  │ load_documents_from_directory 按扩展名选 Loader
  │ .txt→TextLoader .pdf/.docx/.ppt/.jpg→OCR 类 Loader
  │ 同时写入 metadata: source / file_path / timestamp
@@ -118,9 +118,9 @@ query ──▶ BGE-M3 ──▶ dense AnnSearchRequest ─┐
 | Redis 缓存 | 命中后连 BM25 都不用算 | 多一个组件要运维，缓存要处理失效 | 答案几乎不变，缓存收益远大于成本 |
 | BGE-M3（稠密+稀疏一体） | 一次推理同时产出两种向量，中文检索 SOTA 级 | 模型 ~2GB，CPU 推理慢 | 省一套 embedding 服务，混合检索开箱即用 |
 | Milvus | 原生支持 hybrid_search + WeightedRanker，稀疏倒排索引成熟 | 需要单独部署，运维成本高于 FAISS | 要同时管稠密+稀疏+标量过滤，FAISS 做不到 |
-| 分层切分（父 1200 / 子 300） | 检索用小块保精度，生成用父块保上下文 | 存储放大一倍（父块内容冗余存在每个子块上） | 教育文档段落层级强，"小节"是天然的语义单元 |
+| 分层切分（父 1200 / 子 300） | 检索用小块保精度，生成用父块保上下文 | 存储放大一倍（父块内容冗余存在每个子块上） | 法律法规与合同文本段落层级强，"小节"是天然的语义单元 |
 | BGE-Reranker-large（CrossEncoder） | 精排显著提升 Top-2 命中率 | 每次推理要跑 N 对，是本链路最大延迟源 | 只对最终候选（≤5 个父块）重排，成本可控 |
-| 查询路由（BERT 二分类） | 常识题不再白跑一遍向量检索 | 要多训一个小模型，有误分类风险 | 学员大量问"5*9 等于多少"这类题，必须短路 |
+| 查询路由（BERT 二分类） | 常识题不再白跑一遍向量检索 | 要多训一个小模型，有误分类风险 | 用户大量问"民法是什么"这类题，必须短路 |
 | 策略选择交给 LLM | 无需硬编码规则即可适配抽象/复合问题 | 多一次 LLM 调用（~1s），输出可能不规范 | 用 temperature=0.1 + 严格"只输出策略名"约束 |
 
 > **被放弃的方案**：全量 SFT 微调。理由是知识更新频率远高于模型训练频率；另外也没有必要为了"答得准"牺牲"可溯源"。
@@ -135,23 +135,23 @@ query ──▶ BGE-M3 ──▶ dense AnnSearchRequest ─┐
 # core/document_processor.py（精简）
 def process_documents(directory_path, parent_chunk_size=1200,
 child_chunk_size=300, chunk_overlap=50):
- documents = load_documents_from_directory(directory_path) # 已带 source/file_path 元数据
- parent_splitter = ChineseRecursiveTextSplitter(parent_chunk_size, chunk_overlap)
- child_splitter = ChineseRecursiveTextSplitter(child_chunk_size, chunk_overlap)
- child_chunks = []
- for i, doc in enumerate(documents):
- for j, parent_doc in enumerate(parent_splitter.split_documents([doc])):
- parent_id = f"doc_{i}_parent_{j}"
- # 关键：把父块全文塞进每个子块的元数据里，检索后无需二次查库
- parent_doc.metadata["parent_id"] = parent_id
- parent_doc.metadata["parent_content"] = parent_doc.page_content
+    documents = load_documents_from_directory(directory_path) # 已带 source/file_path 元数据
+    parent_splitter = ChineseRecursiveTextSplitter(parent_chunk_size, chunk_overlap)
+    child_splitter = ChineseRecursiveTextSplitter(child_chunk_size, chunk_overlap)
+    child_chunks = []
+    for i, doc in enumerate(documents):
+        for j, parent_doc in enumerate(parent_splitter.split_documents([doc])):
+            parent_id = f"doc_{i}_parent_{j}"
+            # 关键：把父块全文塞进每个子块的元数据里，检索后无需二次查库
+            parent_doc.metadata["parent_id"] = parent_id
+            parent_doc.metadata["parent_content"] = parent_doc.page_content
 
- for k, sub in enumerate(child_splitter.split_documents([parent_doc])):
- sub.metadata.update(parent_id=parent_id,
- parent_content=parent_doc.page_content,
- id=f"{parent_id}_child_{k}")
- child_chunks.append(sub)
- return child_chunks
+            for k, sub in enumerate(child_splitter.split_documents([parent_doc])):
+                sub.metadata.update(parent_id=parent_id,
+                parent_content=parent_doc.page_content,
+                id=f"{parent_id}_child_{k}")
+                child_chunks.append(sub)
+                return child_chunks
 ```
 
 **为什么这么写**：如果把 `parent_content` 只存下来做 join，检索后就要再查一次 Milvus；直接冗余进子块，一次检索就能拿到完整上下文。代价是存储放大，但文档总量只有 MB 级，完全可接受。
@@ -176,39 +176,39 @@ metric_type="IP", params={"drop_ratio_build": 0.2})
 
 - `auto_id=False` + 主键取 `md5(子块文本)`：**天然幂等**。重跑灌库脚本时 `upsert` 会覆盖而不是追加，这点在调试期反复重灌时救命。
 - `metric_type="IP"`：BGE 系列输出已归一化，内积等价于余弦且更快。
-- `source` 字段支撑"只查 人工智能方向"的标量过滤，是业务方最常提的需求。
+- `source` 字段支撑"只查 劳动法"的标量过滤，是业务方最常提的需求。
 
 ### 4.3 混合检索 + 重排序
 
 ```python
 def hybrid_search_with_rerank(self, query, k=5, source_filter=None):
- emb = self.embedding_function([query])
- dense_q = emb["dense"][0]
- row = emb["sparse"].getrow(0)
- sparse_q = {int(i): float(v) for i, v in zip(row.indices, row.data)}
+    emb = self.embedding_function([query])
+    dense_q = emb["dense"][0]
+    row = emb["sparse"].getrow(0)
+    sparse_q = {int(i): float(v) for i, v in zip(row.indices, row.data)}
 
- expr = f"source == '{source_filter}'" if source_filter else ""
- reqs = [
- AnnSearchRequest([dense_q], "dense_vector",
- {"metric_type": "IP", "params": {"nprobe": 10}}, limit=k, expr=expr),
- AnnSearchRequest([sparse_q], "sparse_vector",
- {"metric_type": "IP", "params": {}}, limit=k, expr=expr),
- ]
- # 稀疏权重 0.7 / 稠密权重 1.0 —— 业务术语（代码、学科名）靠稀疏，语义靠稠密
- hits = self.client.hybrid_search(self.collection_name, reqs,
- ranker=WeightedRanker(0.7, 1.0),
- limit=k,
- output_fields=["text", "parent_id",
- "parent_content", "source", "timestamp"])[0]
+    expr = f"source == '{source_filter}'" if source_filter else ""
+    reqs = [
+    AnnSearchRequest([dense_q], "dense_vector",
+    {"metric_type": "IP", "params": {"nprobe": 10}}, limit=k, expr=expr),
+    AnnSearchRequest([sparse_q], "sparse_vector",
+    {"metric_type": "IP", "params": {}}, limit=k, expr=expr),
+    ]
+    # 稀疏权重 0.7 / 稠密权重 1.0 —— 业务术语（法条编号、案由名）靠稀疏，语义靠稠密
+    hits = self.client.hybrid_search(self.collection_name, reqs,
+    ranker=WeightedRanker(0.7, 1.0),
+    limit=k,
+    output_fields=["text", "parent_id",
+    "parent_content", "source", "timestamp"])[0]
 
- sub_chunks = [self._doc_from_hit(h["entity"]) for h in hits]
- parent_docs = self._get_unique_parent_docs(sub_chunks) # 按 parent_content 去重
- if len(parent_docs) < 2:
- return parent_docs[:conf.CANDIDATE_M] # 候选太少，重排无意义
+    sub_chunks = [self._doc_from_hit(h["entity"]) for h in hits]
+    parent_docs = self._get_unique_parent_docs(sub_chunks) # 按 parent_content 去重
+    if len(parent_docs) < 2:
+        return parent_docs[:conf.CANDIDATE_M] # 候选太少，重排无意义
 
- scores = self.reranker.predict([[query, d.page_content] for d in parent_docs])
- ranked = [d for _, d in sorted(zip(scores, parent_docs), reverse=True)]
- return ranked[:conf.CANDIDATE_M]
+    scores = self.reranker.predict([[query, d.page_content] for d in parent_docs])
+    ranked = [d for _, d in sorted(zip(scores, parent_docs), reverse=True)]
+    return ranked[:conf.CANDIDATE_M]
 ```
 
 **两个容易忽略的工程细节**：
@@ -219,29 +219,29 @@ def hybrid_search_with_rerank(self, query, k=5, source_filter=None):
 
 ```python
 class QueryClassifier:
- label_map = {"通用知识": 0, "专业咨询": 1}
+    label_map = {"通用知识": 0, "专业咨询": 1}
 
- def __init__(self, model_path="bert_query_classifier"):
- self.tokenizer = BertTokenizer.from_pretrained("./bert-base-chinese")
- self.device = torch.device("cuda" if torch.cuda.is_available else "cpu")
- self.model = (BertForSequenceClassification.from_pretrained(model_path)
- if os.path.exists(model_path)
- else BertForSequenceClassification.from_pretrained(
- "bert-base-chinese", num_labels=2))
- self.model.to(self.device)
+    def __init__(self, model_path="bert_query_classifier"):
+        self.tokenizer = BertTokenizer.from_pretrained("./bert-base-chinese")
+        self.device = torch.device("cuda" if torch.cuda.is_available else "cpu")
+        self.model = (BertForSequenceClassification.from_pretrained(model_path)
+        if os.path.exists(model_path)
+    else BertForSequenceClassification.from_pretrained(
+    "bert-base-chinese", num_labels=2))
+    self.model.to(self.device)
 
- def predict_category(self, query):
- if self.model is None:
- return "通用知识" # 兜底：走便宜路径
- enc = self.tokenizer(query, truncation=True, padding=True,
- max_length=128, return_tensors="pt")
- enc = {k: v.to(self.device) for k, v in enc.items}
- with torch.no_grad:
- logits = self.model(**enc).logits
- return "专业咨询" if torch.argmax(logits, 1).item == 1 else "通用知识"
+    def predict_category(self, query):
+        if self.model is None:
+            return "通用知识" # 兜底：走便宜路径
+        enc = self.tokenizer(query, truncation=True, padding=True,
+        max_length=128, return_tensors="pt")
+        enc = {k: v.to(self.device) for k, v in enc.items}
+        with torch.no_grad:
+            logits = self.model(**enc).logits
+            return "专业咨询" if torch.argmax(logits, 1).item == 1 else "通用知识"
 ```
 
-训练用 5000 条混合数据集（`training_dataset_hybrid_5000.json`），`bert-base-chinese` 微调 3 epoch、batch=8，验证集准确率约 93%，混淆矩阵 `[[460, 40], [30, 470]]`。**之所以不用规则**：学员问法太散，"学费多少"和"要花多少钱"要靠语义。
+训练用 5000 条混合数据集（`training_dataset_hybrid_5000.json`），`bert-base-chinese` 微调 3 epoch、batch=8，验证集准确率约 93%，混淆矩阵 `[[460, 40], [30, 470]]`。**之所以不用规则**：当事人问法太散，"押金不退"和"能不能退押金"要靠语义。
 
 ### 4.5 LLM 驱动的检索策略选择
 
@@ -266,26 +266,26 @@ class StrategySelector:
 
 ```python
 def retrieve_and_merge(self, query, source_filter=None, strategy=None):
- strategy = strategy or self.strategy_selector.select_strategy(query)
- if strategy == "回溯问题检索":
- docs = self._retrieve_with_backtracking(query) # 化简后再检索
- elif strategy == "子查询检索":
- docs = self._retrieve_with_subqueries(query) # 拆解 + 各自检索 + 按内容去重
- elif strategy == "假设问题检索":
- docs = self._retrieve_with_hyde(query) # 生成假设答案再检索
- else:
- docs = self.vector_store.hybrid_search_with_rerank(
- query, k=conf.RETRIEVAL_K, source_filter=source_filter)
- return docs[:conf.CANDIDATE_M]
+    strategy = strategy or self.strategy_selector.select_strategy(query)
+    if strategy == "回溯问题检索":
+        docs = self._retrieve_with_backtracking(query) # 化简后再检索
+    elif strategy == "子查询检索":
+        docs = self._retrieve_with_subqueries(query) # 拆解 + 各自检索 + 按内容去重
+    elif strategy == "假设问题检索":
+        docs = self._retrieve_with_hyde(query) # 生成假设答案再检索
+    else:
+        docs = self.vector_store.hybrid_search_with_rerank(
+        query, k=conf.RETRIEVAL_K, source_filter=source_filter)
+        return docs[:conf.CANDIDATE_M]
 
- def generate_answer(self, query, source_filter=None):
- if self.query_classifier.predict_category(query) == "通用知识":
- return self.llm(self.rag_prompt.format(context="", question=query,
- phone=conf.CUSTOMER_SERVICE_PHONE))
- docs = self.retrieve_and_merge(query, source_filter)
- context = "\n\n".join(d.page_content for d in docs) if docs else ""
- return self.llm(self.rag_prompt.format(context=context, question=query,
- phone=conf.CUSTOMER_SERVICE_PHONE))
+    def generate_answer(self, query, source_filter=None):
+        if self.query_classifier.predict_category(query) == "通用知识":
+            return self.llm(self.rag_prompt.format(context="", question=query,
+        phone=conf.CUSTOMER_SERVICE_PHONE))
+        docs = self.retrieve_and_merge(query, source_filter)
+        context = "\n\n".join(d.page_content for d in docs) if docs else ""
+        return self.llm(self.rag_prompt.format(context=context, question=query,
+    phone=conf.CUSTOMER_SERVICE_PHONE))
 ```
 
 子查询去重那一行曾被写错成基于对象地址去重，正确写法是基于内容：
@@ -298,22 +298,22 @@ unique_docs = list({doc.page_content: doc for doc in all_docs}.values)
 
 ```python
 class IntegratedQASystem:
- def query(self, query, source_filter=None, session_id=None):
- history = self.get_session_history(session_id) if session_id else []
- answer, need_rag = self.bm25_search.search(query, threshold=0.85)
- if answer: # FAQ 命中，一次性返回
- if session_id: self.update_session_history(session_id, query, answer)
- yield answer, True
- return
- if need_rag: # 兜底：流式生成
- collected = ""
- for token in self.rag_system.generate_answer(query, source_filter, history):
- collected += token
- yield token, False
- if session_id: self.update_session_history(session_id, query, collected)
- yield "", True
- else:
- yield "未找到答案", True
+    def query(self, query, source_filter=None, session_id=None):
+        history = self.get_session_history(session_id) if session_id else []
+        answer, need_rag = self.bm25_search.search(query, threshold=0.85)
+        if answer: # FAQ 命中，一次性返回
+            if session_id: self.update_session_history(session_id, query, answer)
+            yield answer, True
+            return
+        if need_rag: # 兜底：流式生成
+            collected = ""
+            for token in self.rag_system.generate_answer(query, source_filter, history):
+                collected += token
+                yield token, False
+                if session_id: self.update_session_history(session_id, query, collected)
+                yield "", True
+            else:
+                yield "未找到答案", True
 ```
 
 `conversations` 表按 `session_id` 保留最近 5 轮，超出部分在同一个事务里删除：
@@ -363,7 +363,7 @@ pd.DataFrame([result]).to_csv("ragas_evaluation_results.csv", index=False)
 | 重排序耗时陡增、收益不明显 | 对未去重的子块直接重排，同一父块被打分多次 | 先回溯父块、按 `parent_content` 去重，再对父块重排 | 精排成本 = 候选数 × CrossEncoder 前向，**进精排前先降候选**是通用原则 |
 | 重启服务后第一次查询很慢 | Milvus 集合未 load 或 embedding/reranker 模型冷启动 | 集合存在时显式 `client.load_collection(name)`；模型在服务启动时预热 | 上线前跑一次"热身查询"，把懒加载都触发掉 |
 | 会话历史裁剪 SQL 报错 | `DELETE ... WHERE id NOT IN (SELECT ... FROM 同一张表)` | 子查询外包一层派生表 `AS sub` | 记住 MySQL 的"不能在子查询里引用正在被修改的表"限制 |
-| 相似但问法不同的 FAQ 问答不上 | 纯 BM25 是词面匹配，"多少钱"对不上"学费" | 降到 0.85 阈值以下自动走 RAG 兜底；也可做 Query 改写扩展同义词 | 不要试图把 FAQ 阈值调低来"提高命中"，那会把错误答案放出去；兜底链路才是正解 |
+| 相似但问法不同的 FAQ 问答不上 | 纯 BM25 是词面匹配，"多少钱"对不上"退还押金" | 降到 0.85 阈值以下自动走 RAG 兜底；也可做 Query 改写扩展同义词 | 不要试图把 FAQ 阈值调低来"提高命中"，那会把错误答案放出去；兜底链路才是正解 |
 | 回答里偶尔出现"根据文档"但没有文档 | Prompt 里写了"如果答案来源于检索到的文档请说明"，模型对空上下文也照说 | 通用知识路径显式传 `context=""`，并在 Prompt 中区分有无上下文 | Prompt 的分支语义要在代码层面**真实**成立，不能只靠模型自觉 |
 | 敏感信息（API Key、库密码）进了 Git | 配置直接写死在 `config.py` 默认值里 | 改走 `.env` + `dotenv`，`config.ini` 只留非敏感项 | 默认值一律给"安全的假值"，真值只从环境变量来 |
 
@@ -371,7 +371,7 @@ pd.DataFrame([result]).to_csv("ragas_evaluation_results.csv", index=False)
 
 1. **"精确通道 + 语义通道"是所有企业问答系统的通用骨架。** FAQ/规则/词典命中就直接返回，命中不了才进 RAG。这既能守住准确率底线，又能把 LLM 调用量压到最低。阈值宁可高不可低：放出一个错答案的代价远大于多跑一次检索。
 2. **检索用小块，生成用大块。** 这是 RAG 里性价比最高的一招：小块提升向量匹配精度，父块保证上下文完整。实现要点是"子块元数据里冗余父块全文"，一次检索拿到全部所需。
-3. **混合检索的权重是有业务含义的。** 稀疏权重高 → 偏向术语/编号精确匹配；稠密权重高 → 偏向语义泛化。RAG 取 `(0.7, 1.0)` 是"语义为主、术语兜底"，如果你的场景有大量代码、订单号、药品名，就该反过来调。
+3. **混合检索的权重是有业务含义的。** 稀疏权重高 → 偏向术语/编号精确匹配；稠密权重高 → 偏向语义泛化。RAG 取 `(0.7, 1.0)` 是"语义为主、术语兜底"，如果你的场景有大量法条编号、合同编号、案号，就该反过来调。
 4. **精排一定要放在召回之后、且召回要先去重。** 任何"重排/重打分/CrossEncoder"环节都应该在候选集最小化之后执行。
 5. **LLM 做路由要给它降级方案。** `StrategySelector` 在 API 异常时返回"直接检索"，`QueryClassifier` 在模型缺失时返回"通用知识"——路由器的失败必须导致一个**安全且便宜**的默认行为，而不是抛异常。
 6. **日志是 RAG 的可观测性。** 每个环节都记录"用了哪个策略、检索到几个块、最终选了几个、耗时多少"，线上问题才可复盘。RAG 用统一的 `logger` + 文件/控制台双 handler，值得照抄。
@@ -395,9 +395,9 @@ pd.DataFrame([result]).to_csv("ragas_evaluation_results.csv", index=False)
 
 WeightedRanker 的参数是"先稀疏后稠密"的权重，这里表示稀疏 0.7、稠密 1.0——**稠密是主力，稀疏是补丁**。
 
-依据来自业务语料的构成：教育问答里大量是自然语言提问（"转行大数据要学多久"），语义相似是主要匹配信号；而名、学科代码、技术名词（"Milvus""JavaSE""人工智能方向"）这类专有词，BM25 的精确词面匹配比稠密向量更可靠，尤其在稠密模型对生僻术语的表示不够好时。
+依据来自业务语料的构成：法律问答里大量是自然语言提问（"租房押金不退怎么办"），语义相似是主要匹配信号；而法条编号、案由名称、专业术语（"《劳动合同法》第八十二条""仲裁时效""工伤保险条例"）这类专有词，BM25 的精确词面匹配比稠密向量更可靠，尤其在稠密模型对生僻术语的表示不够好时。
 
-实践中不是拍脑袋定的，而是**用 RAGAS 的 `context_recall` 做网格搜索**：固定稠密权重 1.0，稀疏权重从 0.3 扫到 1.0，看哪个点在评测集上召回率最高。如果业务里标识符更多（订单号、药品编码、学号），应该把稀疏权重调高甚至接近 1.0。
+实践中不是拍脑袋定的，而是**用 RAGAS 的 `context_recall` 做网格搜索**：固定稠密权重 1.0，稀疏权重从 0.3 扫到 1.0，看哪个点在评测集上召回率最高。如果业务里标识符更多（订单号、案号、合同编号），应该把稀疏权重调高甚至接近 1.0。
 
 补充一点：Milvus 除 WeightedRanker 外还有 RRFRanker（倒数排序融合），RRF 不需要调权重、对分数量纲不敏感，如果两个召回通道的分数分布差异极大，RRF 往往更稳。
 
@@ -423,7 +423,7 @@ WeightedRanker 的参数是"先稀疏后稠密"的权重，这里表示稀疏 0.
 - LangChain 官方文档：Retrievers / Text Splitters / Document Loaders —— 本项目所有组件的抽象来源
 - Milvus 官方文档：Multi-Vector Hybrid Search 与 WeightedRanker / RRFRanker
 - BGE-M3 论文与 FlagEmbedding 仓库：dense + sparse + multi-vector 三合一的动机
-- 本仓库同目录：[02-项目-医疗问诊机器人](../02-对话与生成系统/02-项目-医疗问诊机器人.md)、[05-项目-物流行业RAG问答](05-项目-物流行业RAG问答.md)
+- 本仓库同目录：[02-项目-法律咨询问答机器人](../02-对话与生成系统/02-项目-法律咨询问答机器人.md)、[05-项目-企业内部制度问答助手](05-项目-企业内部制度问答助手.md)
 - RAGAS 官方文档与 GitHub：四个核心指标的实现细节与 Prompt 模板
 
 ---

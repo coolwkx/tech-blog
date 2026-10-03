@@ -1,16 +1,22 @@
-# 08 · 评估、安全与治理
+# 06 · 06-评估与前沿
 
-> 本章状态：📝 0 篇
+> 本章共 2 篇笔记。
 
 ## 本节目录
 
 | # | 笔记 | 难度 | 预计用时 | 状态 |
 | --- | --- | --- | --- | --- |
-| — | 待补充（见下方待回答的问题） | — | — | 📝 计划中 |
+| 01 | [依赖：pip install ragas datasets langchain-openai pandas](10-RAG评估与优化.md) | ⭐⭐⭐ | 25min | ✅ 已完成 |
+| 02 | [依赖：pip install openai langchain langchain-community crewai python-dotenv](11-AI-Agent开发.md) | ⭐⭐⭐ | 25min | ✅ 已完成 |
 
 ## 本章要回答的问题
 
-基准与数据污染、LLM-as-a-Judge、幻觉检测、红队测试、合规与隐私、成本核算
+- 核心概念
+- 关键机制
+- 可运行示例
+- 核心概念
+- 关键机制
+- 可运行示例
 
 状态说明：✅ 已完成 ｜ 🚧 编写中 ｜ 📝 计划中
 

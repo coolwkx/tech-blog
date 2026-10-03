@@ -1,4 +1,4 @@
-# 项目实战笔记 06：新零售评论文本分类（BERT+PET 与 BERT+P-Tuning）
+# 项目实战笔记 06：电商评论分类（BERT+PET 与 BERT+P-Tuning）
 
 > **一句话总结**：把"评论分类"这个判别任务**改写成完形填空**——PET 用人工硬模板 + 标签词映射（Verbalizer），P-Tuning 用可学习的软模板（伪 token），两者都在 63 条训练样本上把 BERT 的潜力榨出来。
 > **前置知识**：BERT 与 MLM（掩码语言模型）预训练目标、`[MASK]` token 的语义、`AutoModelForMaskedLM` 与 `AutoTokenizer`、HuggingFace `datasets.map(batched=True)`、PyTorch 训练循环与 `CrossEntropyLoss`。
@@ -144,8 +144,8 @@ P-Tuning: [u1]..[u6] [CLS] [MASK][MASK] {评论} [SEP] ← 模板是向量，写
 | **硬模板（PET）** | 无新增参数；模板可读可解释 | 模板靠人写，不同模板准确率可差近 20 个百分点 | 先用最直观的方式实现，作为软模板的对照基线 |
 | **软模板（P-Tuning）** | 模板可微调、可全局优化；缓解人工模板不稳定 | 引入 `p_embedding_num × hidden` 的可学习参数 | 在 PET 基础上改进"人工模板不稳"的问题 |
 | **`[unused1]`~`[unused6]` 作伪 token** | BERT 中文词表自带空位，无需扩词表；改动最小 | 只有 99 个 `[unused]` 可用，数量与位置受限 | 不改 `vocab.txt`、不改模型结构就能加软模板，工程成本最低 |
-| **Verbalizer（标签词映射）** | 把"类别名"换成"模型更容易预测的词" | 需为每个类别设计子标签；映射表要人工维护 | `"中国爆冷2-1战胜韩国"是一则[MASK][MASK]新闻。` 预测"体育"很难，预测"足球"容易得多 |
-| **`max_label_len=2`** | 支持"体育"这类双字标签 | 单字标签要 pad；3 字词被截断 | 中文类别名多为 2 字，恰好对齐 |
+| **Verbalizer（标签词映射）** | 把"类别名"换成"模型更容易预测的词" | 需为每个类别设计子标签；映射表要人工维护 | `"这件衣服掉色严重"是一则[MASK][MASK]评论。` 预测"衣服"很难，预测"掉色"容易得多 |
+| **`max_label_len=2`** | 支持"衣服"这类双字标签 | 单字标签要 pad；3 字词被截断 | 中文类别名多为 2 字，恰好对齐 |
 | **`hard_mapping`（最长公共子串兜底）** | 模型生成表外词时也能映射到主标签 | 可能映射错误；O(标签数×子标签数×串长²) | 保证推理**永远有输出**，不会因没见过一个词就崩 |
 | **`datasets.map(batched=True)`** | 一次处理一批，速度快；与 HF 生态无缝 | 调试时看不到逐条过程 | 与 `partial` 固定超参配合，代码极简 |
 | **`ClassEvaluator` 自算指标** | 同时得到 acc/P/R/F1 和每类细分指标 | 需要自己写 | 小样本必须看每类指标——10 类只有 63 条样本，平均准确率毫无意义 |
@@ -231,64 +231,64 @@ def __call__(self, inputs_dict, tokenizer, mask_length, max_seq_len=512):
 
 ```python
 class Verbalizer(object):
- """将一个 Label 对应到其子 Label 的映射。"""
+    """将一个 Label 对应到其子 Label 的映射。"""
 
- def load_label_dict(self, verbalizer_file):
- """'水果\t苹果,香蕉,橘子' -> {'水果': ['苹果','香蕉','橘子'], ...}"""
- label_dict = {}
- with open(verbalizer_file, 'r', encoding='utf8') as f:
- for line in f.readlines:
- label, sub_labels = line.strip.split('\t')
- label_dict[label] = list(set(sub_labels.split(',')))
- return label_dict
+    def load_label_dict(self, verbalizer_file):
+        """'水果\t苹果,香蕉,橘子' -> {'水果': ['苹果','香蕉','橘子'], ...}"""
+        label_dict = {}
+        with open(verbalizer_file, 'r', encoding='utf8') as f:
+            for line in f.readlines:
+                label, sub_labels = line.strip.split('\t')
+                label_dict[label] = list(set(sub_labels.split(',')))
+                return label_dict
 
- def find_sub_labels(self, label):
- """主标签 -> 所有子标签的 token_ids（训练时构造软目标）"""
- if type(label) == list: # 传入是 id 列表，先转文字
- while self.tokenizer.pad_token_id in label:
- label.remove(self.tokenizer.pad_token_id)
- label = ''.join(self.tokenizer.convert_ids_to_tokens(label))
- if label not in self.label_dict:
- raise ValueError(f'Label Error: "{label}" not in label_dict.')
+            def find_sub_labels(self, label):
+                """主标签 -> 所有子标签的 token_ids（训练时构造软目标）"""
+                if type(label) == list: # 传入是 id 列表，先转文字
+                    while self.tokenizer.pad_token_id in label:
+                        label.remove(self.tokenizer.pad_token_id)
+                        label = ''.join(self.tokenizer.convert_ids_to_tokens(label))
+                        if label not in self.label_dict:
+                            raise ValueError(f'Label Error: "{label}" not in label_dict.')
 
- sub_labels = self.label_dict[label]
- # tokenizer(sub_labels) 会给每个词加 [CLS]/[SEP]，用 [1:-1] 剥掉
- token_ids = [_id[1:-1] for _id in self.tokenizer(sub_labels)['input_ids']]
- for i in range(len(token_ids)):
- token_ids[i] = token_ids[i][:self.max_label_len] # 截断
- if len(token_ids[i]) < self.max_label_len: # 补齐
- token_ids[i] += [self.tokenizer.pad_token_id] * (self.max_label_len - len(token_ids[i]))
- return {'sub_labels': sub_labels, 'token_ids': token_ids}
+                        sub_labels = self.label_dict[label]
+                        # tokenizer(sub_labels) 会给每个词加 [CLS]/[SEP]，用 [1:-1] 剥掉
+                        token_ids = [_id[1:-1] for _id in self.tokenizer(sub_labels)['input_ids']]
+                        for i in range(len(token_ids)):
+                            token_ids[i] = token_ids[i][:self.max_label_len] # 截断
+                            if len(token_ids[i]) < self.max_label_len: # 补齐
+                                token_ids[i] += [self.tokenizer.pad_token_id] * (self.max_label_len - len(token_ids[i]))
+                                return {'sub_labels': sub_labels, 'token_ids': token_ids}
 ```
 
 反查主标签（先精确命中，未命中则走 `hard_mapping` 兜底）：
 
 ```python
 def find_main_label(self, sub_label, hard_mapping=True):
- """'苹果' -> {'label': '水果', 'token_ids': [3717, 3362]}"""
- if type(sub_label) == list: # 传入是 id 列表：去 [PAD] 后转文字
- while self.tokenizer.pad_token_id in sub_label:
- sub_label.remove(self.tokenizer.pad_token_id)
- sub_label = ''.join(self.tokenizer.convert_ids_to_tokens(sub_label))
+    """'苹果' -> {'label': '水果', 'token_ids': [3717, 3362]}"""
+    if type(sub_label) == list: # 传入是 id 列表：去 [PAD] 后转文字
+        while self.tokenizer.pad_token_id in sub_label:
+            sub_label.remove(self.tokenizer.pad_token_id)
+            sub_label = ''.join(self.tokenizer.convert_ids_to_tokens(sub_label))
 
- main_label = '无'
- for label, s_labels in self.label_dict.items:
- if sub_label in s_labels: # ① 精确命中子标签
- main_label = label
- break
- if main_label == '无' and hard_mapping: # ② 兜底：最长公共子串模糊匹配
- main_label = self.hard_mapping(sub_label)
- return {'label': main_label,
- 'token_ids': self.tokenizer(main_label)['input_ids'][1:-1]}
+            main_label = '无'
+            for label, s_labels in self.label_dict.items:
+                if sub_label in s_labels: # ① 精确命中子标签
+                    main_label = label
+                    break
+                if main_label == '无' and hard_mapping: # ② 兜底：最长公共子串模糊匹配
+                    main_label = self.hard_mapping(sub_label)
+                    return {'label': main_label,
+                'token_ids': self.tokenizer(main_label)['input_ids'][1:-1]}
 
- def hard_mapping(self, sub_label):
- """DP 求最长公共子串长度，累加与全部子标签的重合度，取总分最大的主标签"""
- label, max_overlap = '', 0
- for main_label, sub_labels in self.label_dict.items:
- overlap = sum(self.get_common_sub_str(sub_label, s)[1] for s in sub_labels)
- if overlap >= max_overlap:
- max_overlap, label = overlap, main_label
- return label
+                def hard_mapping(self, sub_label):
+                    """DP 求最长公共子串长度，累加与全部子标签的重合度，取总分最大的主标签"""
+                    label, max_overlap = '', 0
+                    for main_label, sub_labels in self.label_dict.items:
+                        overlap = sum(self.get_common_sub_str(sub_label, s)[1] for s in sub_labels)
+                        if overlap >= max_overlap:
+                            max_overlap, label = overlap, main_label
+                            return label
 ```
 
 `get_common_sub_str` 是最长公共子串的标准 DP（`record[i+1][j+1] = record[i][j] + 1`），实现从略。
@@ -303,35 +303,35 @@ def find_main_label(self, sub_label, hard_mapping=True):
 
 ```python
 def mlm_loss(logits, mask_positions, sub_mask_labels, cross_entropy_criterion, device):
- """
- logits: (batch, seq_len, vocab_size) = (8, 256, 21128)
- mask_positions: (batch, mask_label_num) = (8, 2)
- sub_mask_labels: 变长 list，e.g. [[[2398,3352]], [[2398,3352], [3819,3861]]]
- """
- batch_size, seq_len, vocab_size = logits.size
- loss = None
+    """
+    logits: (batch, seq_len, vocab_size) = (8, 256, 21128)
+    mask_positions: (batch, mask_label_num) = (8, 2)
+    sub_mask_labels: 变长 list，e.g. [[[2398,3352]], [[2398,3352], [3819,3861]]]
+    """
+    batch_size, seq_len, vocab_size = logits.size
+    loss = None
 
- for single_logits, single_sub_mask_labels, single_mask_positions in \
- zip(logits, sub_mask_labels, mask_positions):
+    for single_logits, single_sub_mask_labels, single_mask_positions in \
+    zip(logits, sub_mask_labels, mask_positions):
 
- # ① 取出 mask 位置的 logits：(mask_label_num, vocab_size)
- single_mask_logits = single_logits[single_mask_positions]
- # ② 复制 sub_label_num 份：(sub_label_num, mask_label_num, vocab_size)
- single_mask_logits = single_mask_logits.repeat(len(single_sub_mask_labels), 1, 1)
- # ③ 拉平：(sub_label_num * mask_label_num, vocab_size)
- single_mask_logits = single_mask_logits.reshape(-1, vocab_size)
+        # ① 取出 mask 位置的 logits：(mask_label_num, vocab_size)
+        single_mask_logits = single_logits[single_mask_positions]
+        # ② 复制 sub_label_num 份：(sub_label_num, mask_label_num, vocab_size)
+        single_mask_logits = single_mask_logits.repeat(len(single_sub_mask_labels), 1, 1)
+        # ③ 拉平：(sub_label_num * mask_label_num, vocab_size)
+        single_mask_logits = single_mask_logits.reshape(-1, vocab_size)
 
- # ④ 标签同样拉平
- single_sub_mask_labels = torch.LongTensor(single_sub_mask_labels).to(device)
- single_sub_mask_labels = single_sub_mask_labels.reshape(-1, 1).squeeze
+        # ④ 标签同样拉平
+        single_sub_mask_labels = torch.LongTensor(single_sub_mask_labels).to(device)
+        single_sub_mask_labels = single_sub_mask_labels.reshape(-1, 1).squeeze
 
- # ⑤ 交叉熵，按 token 数归一化（消除子标签个数差异带来的量纲差）
- cur_loss = cross_entropy_criterion(single_mask_logits, single_sub_mask_labels)
- cur_loss = cur_loss / len(single_sub_mask_labels)
+        # ⑤ 交叉熵，按 token 数归一化（消除子标签个数差异带来的量纲差）
+        cur_loss = cross_entropy_criterion(single_mask_logits, single_sub_mask_labels)
+        cur_loss = cur_loss / len(single_sub_mask_labels)
 
- loss = cur_loss if loss is None else loss + cur_loss
+        loss = cur_loss if loss is None else loss + cur_loss
 
- return loss / batch_size
+        return loss / batch_size
 ```
 
 **核心思想**：一个主标签可能对应多个子标签（"水果" → 苹果/香蕉/橘子）。模型的 2 个 `[MASK]` 位置应该**同时倾向于所有这些子标签**，而不是只倾向某一个。实现手法是把 mask 位置的 logits **复制 N 份**（N = 子标签个数），与所有子标签 token 一起算交叉熵——**只要预测的是任一合法子标签，loss 都低**。
@@ -342,20 +342,20 @@ def mlm_loss(logits, mask_positions, sub_mask_labels, cross_entropy_criterion, d
 
 ```python
 def convert_logits_to_ids(logits, mask_positions):
- """logits: (8, 512, 21128); mask_positions: (8, 2) -> 返回 (8, 2)"""
- label_length = mask_positions.size[1]
- batch_size, seq_len, vocab_size = logits.size
+    """logits: (8, 512, 21128); mask_positions: (8, 2) -> 返回 (8, 2)"""
+    label_length = mask_positions.size[1]
+    batch_size, seq_len, vocab_size = logits.size
 
- # 把二维坐标 (batch, pos) 展平成一维索引 batch * seq_len + pos
- mask_positions_after_reshaped = []
- for batch, mask_pos in enumerate(mask_positions.detach.cpu.numpy.tolist):
- for pos in mask_pos:
- mask_positions_after_reshaped.append(batch * seq_len + pos)
+    # 把二维坐标 (batch, pos) 展平成一维索引 batch * seq_len + pos
+    mask_positions_after_reshaped = []
+    for batch, mask_pos in enumerate(mask_positions.detach.cpu.numpy.tolist):
+        for pos in mask_pos:
+            mask_positions_after_reshaped.append(batch * seq_len + pos)
 
- logits = logits.reshape(batch_size * seq_len, -1) # 二维化
- mask_logits = logits[mask_positions_after_reshaped] # 取出 mask 位置
- predict_tokens = mask_logits.argmax(dim=-1)
- return predict_tokens.reshape(-1, label_length)
+            logits = logits.reshape(batch_size * seq_len, -1) # 二维化
+            mask_logits = logits[mask_positions_after_reshaped] # 取出 mask 位置
+            predict_tokens = mask_logits.argmax(dim=-1)
+            return predict_tokens.reshape(-1, label_length)
 ```
 
 **为什么要手算 `batch * seq_len + pos`**：`logits[batch_idx, pos]` 这种高级索引对多维张量（尤其 pos 变长时）支持有限。展平成一维后用 Python 列表索引最稳妥、最不会出错。
@@ -367,45 +367,45 @@ def convert_logits_to_ids(logits, mask_positions):
 ```python
 def convert_example(examples, tokenizer, max_seq_len, max_label_len,
 p_embedding_num=6, train_mode=True):
- tokenized_output = {'input_ids': [], 'attention_mask': [],
- 'mask_positions': [], 'mask_labels': []}
+    tokenized_output = {'input_ids': [], 'attention_mask': [],
+    'mask_positions': [], 'mask_labels': []}
 
- for example in examples['text']:
- start_mask_position = 1 # 将 prompt token(s) 插在 [CLS] 之后
+    for example in examples['text']:
+        start_mask_position = 1 # 将 prompt token(s) 插在 [CLS] 之后
 
- label, content = example.strip.split('\t', 1) # ★ 限制只切一刀
- encoded_inputs = tokenizer(text=content, truncation=True,
- max_length=max_seq_len, padding='max_length')
- input_ids = encoded_inputs['input_ids']
+        label, content = example.strip.split('\t', 1) # ★ 限制只切一刀
+        encoded_inputs = tokenizer(text=content, truncation=True,
+        max_length=max_seq_len, padding='max_length')
+        input_ids = encoded_inputs['input_ids']
 
- # ① 生成 MASK tokens（个数 = 标签长度）
- mask_ids = tokenizer.convert_tokens_to_ids(['[MASK]'] * max_label_len)
- # ② 构建伪 token
- p_tokens_ids = tokenizer.convert_tokens_to_ids(
- ["[unused{}]".format(i + 1) for i in range(p_embedding_num)])
+        # ① 生成 MASK tokens（个数 = 标签长度）
+        mask_ids = tokenizer.convert_tokens_to_ids(['[MASK]'] * max_label_len)
+        # ② 构建伪 token
+        p_tokens_ids = tokenizer.convert_tokens_to_ids(
+        ["[unused{}]".format(i + 1) for i in range(p_embedding_num)])
 
- # ③ 按预算裁剪正文长度：[CLS] + MASK + 正文 + [SEP] + 伪 token
- tmp_input_ids = input_ids[:-1] # 先去 [SEP]
- tmp_input_ids = tmp_input_ids[:max_seq_len - len(mask_ids) - len(p_tokens_ids) - 1]
- # ④ 在 [CLS] 之后插入 [MASK]
- tmp_input_ids = (tmp_input_ids[:start_mask_position] + mask_ids
- + tmp_input_ids[start_mask_position:])
- input_ids = tmp_input_ids + [input_ids[-1]] # 补回 [SEP]
- input_ids = p_tokens_ids + input_ids # 伪 token 拼到最前
+        # ③ 按预算裁剪正文长度：[CLS] + MASK + 正文 + [SEP] + 伪 token
+        tmp_input_ids = input_ids[:-1] # 先去 [SEP]
+        tmp_input_ids = tmp_input_ids[:max_seq_len - len(mask_ids) - len(p_tokens_ids) - 1]
+        # ④ 在 [CLS] 之后插入 [MASK]
+        tmp_input_ids = (tmp_input_ids[:start_mask_position] + mask_ids
+        + tmp_input_ids[start_mask_position:])
+        input_ids = tmp_input_ids + [input_ids[-1]] # 补回 [SEP]
+        input_ids = p_tokens_ids + input_ids # 伪 token 拼到最前
 
- # ⑤ 记录 MASK 位置（伪 token 占位导致整体右移）
- mask_positions = [len(p_tokens_ids) + start_mask_position + i
- for i in range(max_label_len)]
+        # ⑤ 记录 MASK 位置（伪 token 占位导致整体右移）
+        mask_positions = [len(p_tokens_ids) + start_mask_position + i
+        for i in range(max_label_len)]
 
- tokenized_output['input_ids'].append(input_ids)
- tokenized_output['attention_mask'].append(get_attention_mask(input_ids)) # ★
- tokenized_output['mask_positions'].append(mask_positions)
+        tokenized_output['input_ids'].append(input_ids)
+        tokenized_output['attention_mask'].append(get_attention_mask(input_ids)) # ★
+        tokenized_output['mask_positions'].append(mask_positions)
 
- if train_mode:
- mask_labels = tokenizer(text=label)['input_ids'][1:-1] # 剥 [CLS]/[SEP]
- mask_labels = mask_labels[:max_label_len]
- mask_labels += [tokenizer.pad_token_id] * (max_label_len - len(mask_labels))
- tokenized_output['mask_labels'].append(mask_labels)
+        if train_mode:
+            mask_labels = tokenizer(text=label)['input_ids'][1:-1] # 剥 [CLS]/[SEP]
+            mask_labels = mask_labels[:max_label_len]
+            mask_labels += [tokenizer.pad_token_id] * (max_label_len - len(mask_labels))
+            tokenized_output['mask_labels'].append(mask_labels)
 ```
 
 **（1）为什么 `attention_mask` 要重新算？**
@@ -490,24 +490,24 @@ def model2train:
 
 ```python
 def evaluate_model(model, metric, data_loader, tokenizer, verbalizer):
- model.eval
- with torch.no_grad:
- for batch in data_loader:
- logits = model(input_ids=..., attention_mask=..., token_type_ids=...).logits
+    model.eval
+    with torch.no_grad:
+        for batch in data_loader:
+            logits = model(input_ids=..., attention_mask=..., token_type_ids=...).logits
 
- # ① mask_labels 去掉 [PAD]、转回文字作为 gold
- mask_labels = batch['mask_labels'].numpy.tolist
- for i in range(len(mask_labels)):
- while tokenizer.pad_token_id in mask_labels[i]:
- mask_labels[i].remove(tokenizer.pad_token_id)
- mask_labels = [''.join(tokenizer.convert_ids_to_tokens(t)) for t in mask_labels]
+            # ① mask_labels 去掉 [PAD]、转回文字作为 gold
+            mask_labels = batch['mask_labels'].numpy.tolist
+            for i in range(len(mask_labels)):
+                while tokenizer.pad_token_id in mask_labels[i]:
+                    mask_labels[i].remove(tokenizer.pad_token_id)
+                    mask_labels = [''.join(tokenizer.convert_ids_to_tokens(t)) for t in mask_labels]
 
- # ② 预测 token → 子标签 → 主标签
- predictions = convert_logits_to_ids(logits, batch['mask_positions']).cpu.numpy.tolist
- predictions = [e['label'] for e in verbalizer.batch_find_main_label(predictions)]
+                    # ② 预测 token → 子标签 → 主标签
+                    predictions = convert_logits_to_ids(logits, batch['mask_positions']).cpu.numpy.tolist
+                    predictions = [e['label'] for e in verbalizer.batch_find_main_label(predictions)]
 
- metric.add_batch(pred_batch=predictions, gold_batch=mask_labels)
- return metric.compute['accuracy'], ..., metric.compute['class_metrics']
+                    metric.add_batch(pred_batch=predictions, gold_batch=mask_labels)
+                    return metric.compute['accuracy'], ..., metric.compute['class_metrics']
 ```
 
 **这里有一个隐蔽的必要约束**：`gold` 用的是 `mask_labels`（原始标签词，如"衣服"），而 `pred` 是经 Verbalizer 反查的主标签。所以映射表必须保证**主标签词本身也是自己的子标签**——看 `verbalizer.txt`：
@@ -574,7 +574,7 @@ Evaluation precision: 0.78000, recall: 0.76000, F1: 0.75000
 
 1. **不引入新的随机初始化参数。** `BertForSequenceClassification` 会加一个 `Linear(768, num_labels)` 分类头，63 条样本训 768×10 个新参数，梯度信号严重不足。PET/P-Tuning 全程只用已有的 MLM 头，参数已在海量语料上训好。
 2. **任务对齐（task alignment）。** BERT 预训练目标就是"补 `[MASK]`"，PET 让它继续做同一件事。传统 Fine-tuning 则要求模型从"语言建模"切换到"分类判别"，中间隔着一次表征空间适配，小样本下适配不过来。
-3. **标签词映射引入了先验知识。** 传统分类里"第 3 类"对模型毫无语义；PET 里它对应"足球、篮球、体育"这些真实词汇，模型已有丰富语义理解。`"中国爆冷2-1战胜韩国"是一则[MASK][MASK]新闻。` 预测"体育"很难，预测"足球"就容易得多。
+3. **标签词映射引入了先验知识。** 传统分类里"第 3 类"对模型毫无语义；PET 里它对应"掉色、起球、衣服"这些真实词汇，模型已有丰富语义理解。`"这件衣服掉色严重"是一则[MASK][MASK]评论。` 预测"衣服"很难，预测"掉色"就容易得多。
 
 **各自的代价**：PET 的硬模板**极度依赖写法**（文档明说不同模板准确率可差近 20 个百分点），且无法全局优化；P-Tuning 引入可学习参数、需要更多训练步数（本项目 50 epoch），而且在**超多分类任务**和**句子蕴含任务**上效果不理想——模板能表达的信息量有限，任务越复杂越难靠几个伪 token 承载。
 
@@ -592,7 +592,7 @@ Evaluation precision: 0.78000, recall: 0.76000, F1: 0.75000
 
 **为什么不能直接用类别名**，三个层面：
 
-1. **语义通顺性。** 模板是 `这是一条[MASK][MASK]评论：...`。"这是一条**水果**评论"读起来别扭，"这是一条**苹果**评论"就通顺得多。MLM 是在自然语言上下文里预测，**上下文越通顺，预测越准**。新闻例子更清楚：`"中国爆冷2-1战胜韩国"是一则[MASK][MASK]新闻。` 填"足球"远比填"体育"自然。
+1. **语义通顺性。** 模板是 `这是一条[MASK][MASK]评论：...`。"这是一条**水果**评论"读起来别扭，"这是一条**苹果**评论"就通顺得多。MLM 是在自然语言上下文里预测，**上下文越通顺，预测越准**。电商评论的例子更清楚：`"这件衣服掉色严重"是一则[MASK][MASK]评论。` 填"掉色"远比填"衣服"自然。
 2. **预测难度。** 有些类别名本身在预训练语料里出现频率低、语义模糊（如"洗浴""蒙牛"），模型很难把它当作"从上下文推断出来的词"；子标签可以选更常见、更具体的词。
 3. **一对多的表达能力。** 一个类别往往有多种表达。用类别名只能对应一个词；有了 Verbalizer，"水果"可同时对应"苹果/香蕉/橘子"，**大幅提高命中的容错率**——模型只要预测出任一个就能正确归类。这是小样本下很实用的"标签平滑"效果。
 
@@ -646,7 +646,7 @@ attention_mask = [1] * seq_len + [0] * (max_seq_len - seq_len)
 - 《GPT Understands, Too》（P-Tuning 原始论文，Liu et al., 2021）
 - 《How Can We Know What Language Models Know?》（LAMA / Automatic Verbalizer Search）
 - HuggingFace 文档：`AutoModelForMaskedLM`、`AutoTokenizer`、`get_scheduler`、`datasets.map(batched=True)`
-- 本仓库同目录：[08-项目-NLP文本分类三方案对比](08-项目-NLP文本分类三方案对比（随机森林FastTextBERT）.md)（大样本下的传统方案对比）
+- 本仓库同目录：[08-项目-新闻文本分类三方案对比](08-项目-新闻文本分类三方案对比（随机森林FastTextBERT）.md)（大样本下的传统方案对比）
 - 配套代码：`PET/data_handle/template.py`、`PET/utils/verbalizer.py`、`PET/utils/common_utils.py`、`P-Tuning/data_handle/data_preprocess.py`、`P-Tuning/train.py`
 
 ---

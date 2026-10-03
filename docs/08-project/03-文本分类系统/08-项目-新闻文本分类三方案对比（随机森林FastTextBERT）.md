@@ -1,6 +1,6 @@
-# 项目实战笔记 08：NLP 文本分类三方案对比（随机森林 / FastText / BERT）
+# 项目实战笔记 08：新闻文本分类三方案对比（随机森林 / FastText / BERT）
 
-> **一句话总结**：同一个今日头条新闻 10 分类任务（18 万训练样本）跑三条技术路线——TF-IDF + 随机森林 81.48%、FastText 91.72%、BERT 93.64%，用真实数字看清"词袋 → 词向量 → 上下文预训练"的能力阶梯，再走完量化与蒸馏的部署优化。
+> **一句话总结**：同一个 THUCNews 风格新闻 10 分类任务（18 万训练样本）跑三条技术路线——TF-IDF + 随机森林 81.48%、FastText 91.72%、BERT 93.64%，用真实数字看清"词袋 → 词向量 → 上下文预训练"的能力阶梯，再走完量化与蒸馏的部署优化。
 > **前置知识**：TF-IDF 与词袋模型、jieba 分词、`sklearn` 的 `TfidfVectorizer` / `RandomForestClassifier`、PyTorch 训练循环、BERT 的 `[CLS]` 与 attention mask。
 
 > 1. 独立完成从原始文本到三个模型可消费格式的全部数据预处理（含字符级与词级两种切分口径）；
@@ -11,7 +11,7 @@
 
 ### 1.1 业务场景
 
-今日头条这类平台每天要处理**数百万篇新闻**，分类是推荐系统的前置环节：
+新闻资讯平台每天要处理**数百万篇新闻**，分类是推荐系统的前置环节：
 
 ```text
 用户行为：喜欢看体育新闻 → 系统记录：偏好 = sports
@@ -31,8 +31,8 @@ train.txt 180000 条 | dev.txt 10000 条 | test.txt 10000 条 | class.txt 10 类
 ```
 
 ```text
-label → 0 finance 1 realty 2 stocks 3 education 4 science
- 5 society 6 politics 7 sports 8 game 9 entertainment
+label → 0 finance 1 realty 2 home 3 education 4 science
+ 5 society 6 politics 7 sports 8 game 9 fashion
 
 Counter({3:18000, 4:18000, 1:18000, 7:18000, 5:18000,
  9:18000, 8:18000, 2:18000, 6:18000, 0:18000}) ← 严格均衡，每类 10.0%
@@ -195,40 +195,40 @@ content.to_csv('./data/data/train_new.csv')
 # 线二：FastText（preprocess.py 精简）——转成 __label__ 格式
 id_to_label = {}
 with open('class.txt', 'r', encoding='utf-8') as f1:
- for idx, line in enumerate(f1.readlines):
- id_to_label[idx] = line.strip
+    for idx, line in enumerate(f1.readlines):
+        id_to_label[idx] = line.strip
 
- train_data = []
- with open('train.txt', 'r', encoding='utf-8') as f2:
- for line in f2.readlines:
- sentence, label = line.strip.split('\t')
- new_label = '__label__' + id_to_label[int(label)]
- sent_char = ' '.join(list(sentence)) # 按字（preprocess1.py 用 jieba.lcut 按词）
- train_data.append(new_label + ' ' + sent_char)
+        train_data = []
+        with open('train.txt', 'r', encoding='utf-8') as f2:
+            for line in f2.readlines:
+                sentence, label = line.strip.split('\t')
+                new_label = '__label__' + id_to_label[int(label)]
+                sent_char = ' '.join(list(sentence)) # 按字（preprocess1.py 用 jieba.lcut 按词）
+                train_data.append(new_label + ' ' + sent_char)
 ```
 
 ```python
 # 线三：BERT（utils.build_dataset 精简）
 def load_dataset(path, pad_size=32):
- contents = []
- with open(path, "r", encoding="UTF-8") as f:
- for line in tqdm(f):
- lin = line.strip
- if not lin: continue
- content, label = lin.split("\t")
- token = config.tokenizer.tokenize(content) # ★ 用 BERT 自己的 tokenizer
- token = [CLS] + token
- seq_len = len(token)
- token_ids = config.tokenizer.convert_tokens_to_ids(token)
- if pad_size:
- if len(token) < pad_size:
- mask = [1] * len(token_ids) + [0] * (pad_size - len(token))
- token_ids += [0] * (pad_size - len(token))
- else:
- mask = [1] * pad_size
- token_ids, seq_len = token_ids[:pad_size], pad_size
- contents.append((token_ids, int(label), seq_len, mask))
- return contents
+    contents = []
+    with open(path, "r", encoding="UTF-8") as f:
+        for line in tqdm(f):
+            lin = line.strip
+            if not lin: continue
+            content, label = lin.split("\t")
+            token = config.tokenizer.tokenize(content) # ★ 用 BERT 自己的 tokenizer
+            token = [CLS] + token
+            seq_len = len(token)
+            token_ids = config.tokenizer.convert_tokens_to_ids(token)
+            if pad_size:
+                if len(token) < pad_size:
+                    mask = [1] * len(token_ids) + [0] * (pad_size - len(token))
+                    token_ids += [0] * (pad_size - len(token))
+                else:
+                    mask = [1] * pad_size
+                    token_ids, seq_len = token_ids[:pad_size], pad_size
+                    contents.append((token_ids, int(label), seq_len, mask))
+                    return contents
 ```
 
 **三处值得单独指出的细节**：
@@ -331,15 +331,15 @@ def main_server:
 
 ```python
 class Model(nn.Module):
- def __init__(self, config):
- super(Model, self).__init__
- self.bert = BertModel.from_pretrained(config.bert_path, config=config.bert_config)
- self.fc = nn.Linear(config.hidden_size, config.num_classes) # 768 → 10
+    def __init__(self, config):
+        super(Model, self).__init__
+        self.bert = BertModel.from_pretrained(config.bert_path, config=config.bert_config)
+        self.fc = nn.Linear(config.hidden_size, config.num_classes) # 768 → 10
 
- def forward(self, x):
- context, mask = x[0], x[2]
- _, pooled = self.bert(context, attention_mask=mask, return_dict=False)
- return self.fc(pooled)
+        def forward(self, x):
+            context, mask = x[0], x[2]
+            _, pooled = self.bert(context, attention_mask=mask, return_dict=False)
+            return self.fc(pooled)
 ```
 
 配置里的关键取舍：
@@ -367,20 +367,20 @@ optimizer = AdamW(optimizer_grouped_parameters, lr=config.learning_rate)
 
 dev_best_loss = float("inf")
 for epoch in range(config.num_epochs):
- for i, (trains, labels) in enumerate(tqdm(train_iter)):
- outputs = model(trains)
- model.zero_grad
- loss = loss_fn(outputs, labels)
- loss.backward
- optimizer.step
+    for i, (trains, labels) in enumerate(tqdm(train_iter)):
+        outputs = model(trains)
+        model.zero_grad
+        loss = loss_fn(outputs, labels)
+        loss.backward
+        optimizer.step
 
- if total_batch % 100 == 0 and total_batch != 0:
- dev_acc, dev_loss = evaluate(config, model, dev_iter)
- if dev_loss < dev_best_loss:
- dev_best_loss = dev_loss
- torch.save(model.state_dict, config.save_path)
- improve = "*"
- model.train # ★ 评估后必须切回 train 模式
+        if total_batch % 100 == 0 and total_batch != 0:
+            dev_acc, dev_loss = evaluate(config, model, dev_iter)
+            if dev_loss < dev_best_loss:
+                dev_best_loss = dev_loss
+                torch.save(model.state_dict, config.save_path)
+                improve = "*"
+                model.train # ★ 评估后必须切回 train 模式
 ```
 
 **两个必须理解的设计**：
@@ -394,7 +394,7 @@ for epoch in range(config.num_epochs):
 ```text
 Test Acc: 93.64%
  precision recall f1-score
- stocks 0.8787 0.8980 0.8882 ← 最弱
+ home 0.8787 0.8980 0.8882 ← 最弱
  science 0.9236 0.8950 0.9091
  sports 0.9780 0.9780 0.9780 ← 最强
  education 0.9511 0.9730 0.9619
@@ -403,21 +403,21 @@ Test Acc: 93.64%
  weighted avg 0.9365 0.9364 0.9364
 
 Confusion Matrix（节选）...
- stocks 行 [ 49 12 898 1 19 1 15 0 2 3]
+ home 行 [ 49 12 898 1 19 1 15 0 2 3]
  ↑ ↑
  49 条→finance 19 条→science
 science 行 [ 4 4 28 7 895 10 12 2 27 11]
  ↑ ↑
- 28 条→stocks 27 条→game
+ 28 条→home 27 条→game
 ```
 
 **三步诊断法**：
 
 **第一步：看 macro 与 weighted 是否接近。** 这里两者几乎完全一致 → **类别均衡，模型没有偏向多数类**。若 macro 明显低于 weighted，说明模型对小类别表现差、被大类别高分掩盖了。
 
-**第二步：找最弱和最强的类别。** 最弱 `stocks`（0.8882）、`science`（0.9091）；最强 `sports`（0.9780）、`education`（0.9619）。
+**第二步：找最弱和最强的类别。** 最弱 `home`（0.8882）、`science`（0.9091）；最强 `sports`（0.9780）、`education`（0.9619）。
 
-**第三步：从混淆矩阵找根因。** 非对角线上的大数字揭示了模式：**"财经/房地产/股票"三者互相混淆，"科技/游戏/娱乐"三者互相混淆**。这在语义上完全合理——"某科技公司股价大涨"到底是 `science` 还是 `stocks`？**边界本身就模糊。**
+**第三步：从混淆矩阵找根因。** 非对角线上的大数字揭示了模式：**"财经/房产/家居"三者互相混淆，"科技/游戏/时尚"三者互相混淆**。这在语义上完全合理——"新款智能家居产品发布"到底是 `science` 还是 `home`？**边界本身就模糊。**
 
 由此推导出的改进方向：合并语义重叠类别（业务上可否接受？）、引入更多区分性特征、对最弱类别做数据增强、**或者接受这个误差**。
 
@@ -459,7 +459,7 @@ loss = α · CE(student_logits, hard_label) ← 学"正确答案"
 
 ```text
 硬标签： sports = 1，其余 = 0 → 学生只学到"这是 sports"
-软标签： sports=0.75, entertainment=0.08, → 学生还学到"sports 和 entertainment
+软标签： sports=0.75, fashion=0.08, → 学生还学到"sports 和 fashion
  science=0.05, ... 有点像"、"sports 和 science 也有关"
 ```
 
@@ -530,7 +530,7 @@ T → ∞ 均匀分布 → 没有信息
 
 顺带一个反直觉发现：**按字切分反而比 jieba 分词好**。原因一是按字 + bigram 能通过 n-gram 学到有意义的字组合（"湖 人 队"能学到"湖人"），本质没丢局部信息；二是**分词没有纠错的机会**——jieba 把"郭庄子"错分成"郭 庄子"，错误就不可逆地传播了。**短文本上，"不引入额外错误的简单方案"往往胜过"可能出错的复杂方案"。**
 
-**第三段：91.72% → 93.64%，+1.92 点，"上下文建模"。** 这是**量变**不是质变。增量来自双向注意力：FastText 的句子表示是**词向量平均**，本质仍是词袋（"狗咬人"和"人咬狗"表示完全相同）；BERT 用 12 层自注意力建模词间交互，能区分语序。但**只有 1.92 点**，因为新闻标题这种短文本（平均 19 字）的信息本就集中在几个关键词上，词袋已抓住大部分信号；剩下的 1.92 点主要在"财经/房地产/股票"这类语义相邻的边缘样本上（混淆矩阵能看到这个模式）。
+**第三段：91.72% → 93.64%，+1.92 点，"上下文建模"。** 这是**量变**不是质变。增量来自双向注意力：FastText 的句子表示是**词向量平均**，本质仍是词袋（"狗咬人"和"人咬狗"表示完全相同）；BERT 用 12 层自注意力建模词间交互，能区分语序。但**只有 1.92 点**，因为新闻标题这种短文本（平均 19 字）的信息本就集中在几个关键词上，词袋已抓住大部分信号；剩下的 1.92 点主要在"财经/房产/家居"这类语义相邻的边缘样本上（混淆矩阵能看到这个模式）。
 
 **完整结论**：第一次跃升来自**表示形式的质变**（稀疏→稠密）；第二次几乎为零，说明**该调数据不该调参**；第三次是**建模能力提升的量变**，代价是推理慢约 38 倍。**面试里能讲清"每个提升来自哪里"，比背出三个数字重要得多。**
 
@@ -592,7 +592,7 @@ FastText: 91.72% 精度，5ms/条 → 100 万条/天 ≈ 1.4 小时
 BERT : 93.64% 精度，182ms/条 → 100 万条/天 ≈ 50 小时
 ```
 
-**用 38 倍算力换 1.92 个点**。而新闻频道分类的错误有"软着陆"：分错一条娱乐新闻到科技频道，体验损失很小，且推荐系统本身有 CTR 反馈可纠正。**错误成本低的场景下，追求极致精度是资源错配。** 若精度要求高（如内容审核分级），1.92 点可能意味着"漏审率下降 20%"，那就值得。
+**用 38 倍算力换 1.92 个点**。而新闻频道分类的错误有"软着陆"：分错一条时尚新闻到科技频道，体验损失很小，且推荐系统本身有 CTR 反馈可纠正。**错误成本低的场景下，追求极致精度是资源错配。** 若精度要求高（如内容审核分级），1.92 点可能意味着"漏审率下降 20%"，那就值得。
 
 **完整方案分五层**：
 
@@ -617,7 +617,7 @@ BERT : 93.64% 精度，182ms/条 → 100 万条/天 ≈ 50 小时
 - 《Distilling the Knowledge in a Neural Network》（Hinton et al., 2015）——温度与软标签的原始论述
 - PyTorch 文档：`torch.quantization.quantize_dynamic`、`torch.backends.cudnn.deterministic`
 - fastText 文档：`train_supervised` 超参与 `autotuneValidationFile` / `autotuneDuration`
-- 本仓库同目录：[06-项目-新零售文本分类（BERT+PET与P-Tuning）](06-项目-新零售文本分类（BERT+PET与P-Tuning）.md)（小样本走完全不同的路线）、[07-项目-金融文本分类与信息抽取](07-项目-金融文本分类与信息抽取.md)（不训模型、纯提示工程）
+- 本仓库同目录：[06-项目-电商评论分类（BERT+PET与P-Tuning）](06-项目-电商评论分类（BERT+PET与P-Tuning）.md)（小样本走完全不同的路线）、[07-项目-监管公告分类与信息抽取](07-项目-监管公告分类与信息抽取.md)（不训模型、纯提示工程）
 - 配套代码：`02-random_forest/analysis.py`、`02-random_forest/random_forest.py`、`03-fast_text/fast_text_2.py`、`03-fast_text/app.py`、`04-bert/src/models/bert.py`、`04-bert/src/train_eval.py`
 
 ---

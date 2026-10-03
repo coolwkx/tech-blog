@@ -101,61 +101,61 @@ Zilliz Cloud 是全托管的 Milvus 服务，免去集群运维，按量计费�
 DIM = 64
 
 def fake_embed(text):
- """用字符 bigram 的哈希构造固定维度伪向量，仅用于流程演示。"""
- vector = [0.0] * DIM
- for i in range(len(text) - 1):
- gram = text[i:i + 2]
- index = int(hashlib.md5(gram.encode("utf-8")).hexdigest(), 16) % DIM
- vector[index] += 1.0
- norm = math.sqrt(sum(v * v for v in vector)) or 1.0
- return [v / norm for v in vector]
+    """用字符 bigram 的哈希构造固定维度伪向量，仅用于流程演示。"""
+    vector = [0.0] * DIM
+    for i in range(len(text) - 1):
+        gram = text[i:i + 2]
+        index = int(hashlib.md5(gram.encode("utf-8")).hexdigest(), 16) % DIM
+        vector[index] += 1.0
+        norm = math.sqrt(sum(v * v for v in vector)) or 1.0
+        return [v / norm for v in vector]
 
-def cosine(a, b):
- return sum(x * y for x, y in zip(a, b))
+    def cosine(a, b):
+        return sum(x * y for x, y in zip(a, b))
 
-def chunk_text(text, chunk_size=60, overlap=10):
- """按字符滑窗切分（真实项目请用按语义/标点的递归切分器）。"""
- chunks = []
- start = 0
- while start < len(text):
- chunks.append(text[start:start + chunk_size])
- start += chunk_size - overlap
- return [c.strip() for c in chunks if c.strip()]
+    def chunk_text(text, chunk_size=60, overlap=10):
+        """按字符滑窗切分（真实项目请用按语义/标点的递归切分器）。"""
+        chunks = []
+        start = 0
+        while start < len(text):
+            chunks.append(text[start:start + chunk_size])
+            start += chunk_size - overlap
+            return [c.strip() for c in chunks if c.strip()]
 
-def build_index(text):
- chunks = chunk_text(text)
- return [{"text": chunk, "vector": fake_embed(chunk)} for chunk in chunks]
+        def build_index(text):
+            chunks = chunk_text(text)
+            return [{"text": chunk, "vector": fake_embed(chunk)} for chunk in chunks]
 
-def retrieve(index, query, k=2):
- query_vector = fake_embed(query)
- scored = [(cosine(query_vector, item["vector"]), item) for item in index]
- scored.sort(key=lambda pair: pair[0], reverse=True)
- return [item for _, item in scored[:k]]
+        def retrieve(index, query, k=2):
+            query_vector = fake_embed(query)
+            scored = [(cosine(query_vector, item["vector"]), item) for item in index]
+            scored.sort(key=lambda pair: pair[0], reverse=True)
+            return [item for _, item in scored[:k]]
 
-RAG_PROMPT = """你是一个智能助手，帮助用户回答问题。
-如果提供了上下文，请基于上下文回答；如果答案来源于检索到的文档，请在回答中说明。
+        RAG_PROMPT = """你是一个智能助手，帮助用户回答问题。
+        如果提供了上下文，请基于上下文回答；如果答案来源于检索到的文档，请在回答中说明。
 
-上下文: {context}
-问题: {question}
+        上下文: {context}
+        问题: {question}
 
-如果无法回答，请回复："信息不足，无法回答。"
-回答:"""
+        如果无法回答，请回复："信息不足，无法回答。"
+        回答:"""
 
-def build_prompt(query, docs):
- context = "\n\n".join(doc["text"] for doc in docs) if docs else ""
- return RAG_PROMPT.format(context=context, question=query)
+        def build_prompt(query, docs):
+            context = "\n\n".join(doc["text"] for doc in docs) if docs else ""
+            return RAG_PROMPT.format(context=context, question=query)
 
-if __name__ == "__main__":
- index = build_index(DOCUMENT)
- print("索引块数:", len(index))
+        if __name__ == "__main__":
+            index = build_index(DOCUMENT)
+            print("索引块数:", len(index))
 
- for query in ["IVF_FLAT 索引有什么特点？", "完全无关的问题：今天天气如何？"]:
- docs = retrieve(index, query, k=2)
- print("\n=== 查询:", query)
- for doc in docs:
- print(" 召回:", doc["text"][:40].replace("\n", " "))
- print("--- 最终 prompt ---")
- print(build_prompt(query, docs))
+            for query in ["IVF_FLAT 索引有什么特点？", "完全无关的问题：今天天气如何？"]:
+                docs = retrieve(index, query, k=2)
+                print("\n=== 查询:", query)
+                for doc in docs:
+                    print(" 召回:", doc["text"][:40].replace("\n", " "))
+                    print("--- 最终 prompt ---")
+                    print(build_prompt(query, docs))
 ```
 
 注意 `chunk_size=5` 却切出 `'a b c'`（3 个字符）——因为切分先按分隔符断开，再在长度限制内合并，所以**实际块长通常小于 `chunk_size`**。这一点在调参时容易误判。
@@ -378,114 +378,114 @@ RETRIEVAL_K = 10
 CANDIDATE_M = 5
 
 class VectorStore:
- def __init__(self, reranker_path="./bge/bge-reranker-large"):
- self.reranker = CrossEncoder(reranker_path)
- self.embedding_function = BGEM3EmbeddingFunction(use_fp16=False, device="cpu")
- self.dense_dim = self.embedding_function.dim["dense"]
- self.client = MilvusClient(uri="http://%s:%s" % (HOST, PORT), db_name=DATABASE)
- self._create_or_load_collection()
+    def __init__(self, reranker_path="./bge/bge-reranker-large"):
+        self.reranker = CrossEncoder(reranker_path)
+        self.embedding_function = BGEM3EmbeddingFunction(use_fp16=False, device="cpu")
+        self.dense_dim = self.embedding_function.dim["dense"]
+        self.client = MilvusClient(uri="http://%s:%s" % (HOST, PORT), db_name=DATABASE)
+        self._create_or_load_collection()
 
- def _create_or_load_collection(self):
- if not self.client.has_collection(COLLECTION_NAME):
- schema = self.client.create_schema(auto_id=False, enable_dynamic_field=True)
- schema.add_field(field_name="id", datatype=DataType.VARCHAR, is_primary=True, max_length=100)
- schema.add_field(field_name="text", datatype=DataType.VARCHAR, max_length=65535)
- schema.add_field(field_name="dense_vector", datatype=DataType.FLOAT_VECTOR, dim=self.dense_dim)
- schema.add_field(field_name="sparse_vector", datatype=DataType.SPARSE_FLOAT_VECTOR)
- schema.add_field(field_name="parent_id", datatype=DataType.VARCHAR, max_length=100)
- schema.add_field(field_name="parent_content", datatype=DataType.VARCHAR, max_length=65535)
- schema.add_field(field_name="source", datatype=DataType.VARCHAR, max_length=50)
+        def _create_or_load_collection(self):
+            if not self.client.has_collection(COLLECTION_NAME):
+                schema = self.client.create_schema(auto_id=False, enable_dynamic_field=True)
+                schema.add_field(field_name="id", datatype=DataType.VARCHAR, is_primary=True, max_length=100)
+                schema.add_field(field_name="text", datatype=DataType.VARCHAR, max_length=65535)
+                schema.add_field(field_name="dense_vector", datatype=DataType.FLOAT_VECTOR, dim=self.dense_dim)
+                schema.add_field(field_name="sparse_vector", datatype=DataType.SPARSE_FLOAT_VECTOR)
+                schema.add_field(field_name="parent_id", datatype=DataType.VARCHAR, max_length=100)
+                schema.add_field(field_name="parent_content", datatype=DataType.VARCHAR, max_length=65535)
+                schema.add_field(field_name="source", datatype=DataType.VARCHAR, max_length=50)
 
- index_params = self.client.prepare_index_params()
- index_params.add_index(
- field_name="dense_vector", index_name="dense_index",
- index_type="IVF_FLAT", metric_type="IP", params={"nlist": 128},
- )
- index_params.add_index(
- field_name="sparse_vector", index_name="sparse_index",
- index_type="SPARSE_INVERTED_INDEX", metric_type="IP",
- params={"drop_ratio_build": 0.2},
- )
- self.client.create_collection(
- collection_name=COLLECTION_NAME, schema=schema, index_params=index_params
- )
- print("已创建集合 %s" % COLLECTION_NAME)
- else:
- print("已加载集合 %s" % COLLECTION_NAME)
- self.client.load_collection(COLLECTION_NAME)
+                index_params = self.client.prepare_index_params()
+                index_params.add_index(
+                field_name="dense_vector", index_name="dense_index",
+                index_type="IVF_FLAT", metric_type="IP", params={"nlist": 128},
+                )
+                index_params.add_index(
+                field_name="sparse_vector", index_name="sparse_index",
+                index_type="SPARSE_INVERTED_INDEX", metric_type="IP",
+                params={"drop_ratio_build": 0.2},
+                )
+                self.client.create_collection(
+                collection_name=COLLECTION_NAME, schema=schema, index_params=index_params
+                )
+                print("已创建集合 %s" % COLLECTION_NAME)
+            else:
+                print("已加载集合 %s" % COLLECTION_NAME)
+                self.client.load_collection(COLLECTION_NAME)
 
- @staticmethod
- def _sparse_to_dict(row):
- return {int(idx): float(value) for idx, value in zip(row.indices, row.data)}
+                @staticmethod
+                def _sparse_to_dict(row):
+                    return {int(idx): float(value) for idx, value in zip(row.indices, row.data)}
 
- def add_documents(self, documents):
- texts = [doc.page_content for doc in documents]
- embeddings = self.embedding_function(texts)
- data = []
- for i, doc in enumerate(documents):
- data.append({
- "id": hashlib.md5(doc.page_content.encode("utf-8")).hexdigest(),
- "text": doc.page_content,
- "dense_vector": embeddings["dense"][i],
- "sparse_vector": self._sparse_to_dict(embeddings["sparse"].getrow(i)),
- "parent_id": doc.metadata["parent_id"],
- "parent_content": doc.metadata["parent_content"],
- "source": doc.metadata.get("source", "unknown"),
- })
- if data:
- self.client.upsert(collection_name=COLLECTION_NAME, data=data)
- print("已插入或更新 %d 个文档" % len(data))
+                def add_documents(self, documents):
+                    texts = [doc.page_content for doc in documents]
+                    embeddings = self.embedding_function(texts)
+                    data = []
+                    for i, doc in enumerate(documents):
+                        data.append({
+                        "id": hashlib.md5(doc.page_content.encode("utf-8")).hexdigest(),
+                        "text": doc.page_content,
+                        "dense_vector": embeddings["dense"][i],
+                        "sparse_vector": self._sparse_to_dict(embeddings["sparse"].getrow(i)),
+                        "parent_id": doc.metadata["parent_id"],
+                        "parent_content": doc.metadata["parent_content"],
+                        "source": doc.metadata.get("source", "unknown"),
+                        })
+                        if data:
+                            self.client.upsert(collection_name=COLLECTION_NAME, data=data)
+                            print("已插入或更新 %d 个文档" % len(data))
 
- def hybrid_search_with_rerank(self, query, k=RETRIEVAL_K, source_filter=None):
- query_embeddings = self.embedding_function([query])
- dense_query_vector = query_embeddings["dense"][0]
- sparse_query_vector = self._sparse_to_dict(query_embeddings["sparse"].getrow(0))
+                            def hybrid_search_with_rerank(self, query, k=RETRIEVAL_K, source_filter=None):
+                                query_embeddings = self.embedding_function([query])
+                                dense_query_vector = query_embeddings["dense"][0]
+                                sparse_query_vector = self._sparse_to_dict(query_embeddings["sparse"].getrow(0))
 
- filter_expr = "source == '%s'" % source_filter if source_filter else ""
+                                filter_expr = "source == '%s'" % source_filter if source_filter else ""
 
- dense_request = AnnSearchRequest(
- data=[dense_query_vector], anns_field="dense_vector",
- param={"metric_type": "IP", "params": {"nprobe": 10}}, limit=k, expr=filter_expr,
- )
- sparse_request = AnnSearchRequest(
- data=[sparse_query_vector], anns_field="sparse_vector",
- param={"metric_type": "IP", "params": {}}, limit=k, expr=filter_expr,
- )
+                                dense_request = AnnSearchRequest(
+                                data=[dense_query_vector], anns_field="dense_vector",
+                                param={"metric_type": "IP", "params": {"nprobe": 10}}, limit=k, expr=filter_expr,
+                                )
+                                sparse_request = AnnSearchRequest(
+                                data=[sparse_query_vector], anns_field="sparse_vector",
+                                param={"metric_type": "IP", "params": {}}, limit=k, expr=filter_expr,
+                                )
 
- ranker = WeightedRanker(0.7, 1.0) # 稀疏 0.7，稠密 1.0
- results = self.client.hybrid_search(
- collection_name=COLLECTION_NAME,
- reqs=[dense_request, sparse_request],
- ranker=ranker,
- limit=k,
- output_fields=["text", "parent_id", "parent_content", "source"],
- )[0]
+                                ranker = WeightedRanker(0.7, 1.0) # 稀疏 0.7，稠密 1.0
+                                results = self.client.hybrid_search(
+                                collection_name=COLLECTION_NAME,
+                                reqs=[dense_request, sparse_request],
+                                ranker=ranker,
+                                limit=k,
+                                output_fields=["text", "parent_id", "parent_content", "source"],
+                                )[0]
 
- parent_docs = self._get_unique_parent_docs(results)
- if len(parent_docs) < 2: # 只有 1 个文档时跳过重排
- return parent_docs[:CANDIDATE_M]
- pairs = [[query, doc.page_content] for doc in parent_docs]
- scores = self.reranker.predict(pairs)
- ranked = [doc for _, doc in sorted(zip(scores, parent_docs), reverse=True)]
- return ranked[:CANDIDATE_M]
+                                parent_docs = self._get_unique_parent_docs(results)
+                                if len(parent_docs) < 2: # 只有 1 个文档时跳过重排
+                                    return parent_docs[:CANDIDATE_M]
+                                pairs = [[query, doc.page_content] for doc in parent_docs]
+                                scores = self.reranker.predict(pairs)
+                                ranked = [doc for _, doc in sorted(zip(scores, parent_docs), reverse=True)]
+                                return ranked[:CANDIDATE_M]
 
- @staticmethod
- def _get_unique_parent_docs(hits):
- seen, unique_docs = set(), []
- for hit in hits:
- entity = hit["entity"] if isinstance(hit, dict) and "entity" in hit else hit
- parent_content = entity.get("parent_content") or entity.get("text")
- if parent_content and parent_content not in seen:
- unique_docs.append(Document(
- page_content=parent_content,
- metadata={"parent_id": entity.get("parent_id"), "source": entity.get("source")},
- ))
- seen.add(parent_content)
- return unique_docs
+                            @staticmethod
+                            def _get_unique_parent_docs(hits):
+                                seen, unique_docs = set(), []
+                                for hit in hits:
+                                    entity = hit["entity"] if isinstance(hit, dict) and "entity" in hit else hit
+                                    parent_content = entity.get("parent_content") or entity.get("text")
+                                    if parent_content and parent_content not in seen:
+                                        unique_docs.append(Document(
+                                        page_content=parent_content,
+                                        metadata={"parent_id": entity.get("parent_id"), "source": entity.get("source")},
+                                        ))
+                                        seen.add(parent_content)
+                                        return unique_docs
 
-if __name__ == "__main__":
- store = VectorStore()
- print(store.hybrid_search_with_rerank("人工智能方向学费是多少？", source_filter="ai"))
+                                    if __name__ == "__main__":
+                                        store = VectorStore()
+                                        print(store.hybrid_search_with_rerank("人工智能方向学费是多少？", source_filter="ai"))
 ```
 
 预期输出（要点）：

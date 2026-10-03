@@ -254,35 +254,35 @@ sklearn.cluster.KMeans(
 import numpy as np
 
 X = np.array([[1, 1], [3, 3], [2, 3], [8, 7], [9, 8],
- [10, 8], [8, 7], [6, 6], [2, 2], [9, 1]], dtype=float)
+[10, 8], [8, 7], [6, 6], [2, 2], [9, 1]], dtype=float)
 names = list("ABCDEFGHIJ")
 
 centers = np.array([[1, 1], [3, 3]], dtype=float) # P1=A, P2=B
 
 
 def assign(X, centers):
- """返回每个点到各中心的距离矩阵与归属标签"""
- d = np.linalg.norm(X[:, None, :] - centers[None, :, :], axis=2)
- return d, d.argmin(axis=1)
+    """返回每个点到各中心的距离矩阵与归属标签"""
+    d = np.linalg.norm(X[:, None, :] - centers[None, :, :], axis=2)
+    return d, d.argmin(axis=1)
 
 
 for it in range(1, 8):
- d, labels = assign(X, centers)
- print(f"\n===== 第 {it} 轮 =====")
- for nm, xi, di, lb in zip(names, X, d, labels):
- print(f" {nm}{tuple(xi)}: 到P1={di[0]:6.2f} 到P2={di[1]:6.2f} -> 簇{lb + 1}")
+    d, labels = assign(X, centers)
+    print(f"\n===== 第 {it} 轮 =====")
+    for nm, xi, di, lb in zip(names, X, d, labels):
+        print(f" {nm}{tuple(xi)}: 到P1={di[0]:6.2f} 到P2={di[1]:6.2f} -> 簇{lb + 1}")
 
- new_centers = np.array([X[labels == k].mean(axis=0) for k in range(2)])
- sse = sum(((X[labels == k] - new_centers[k]) ** 2).sum() for k in range(2))
- print(" 新质心:", new_centers.round(4).tolist(), " SSE =", round(sse, 4))
+        new_centers = np.array([X[labels == k].mean(axis=0) for k in range(2)])
+        sse = sum(((X[labels == k] - new_centers[k]) ** 2).sum() for k in range(2))
+        print(" 新质心:", new_centers.round(4).tolist(), " SSE =", round(sse, 4))
 
- if np.allclose(new_centers, centers):
- print(" >>> 质心不再移动，算法收敛！")
- break
- centers = new_centers
+        if np.allclose(new_centers, centers):
+            print(" >>> 质心不再移动，算法收敛！")
+            break
+        centers = new_centers
 
-# 期望第 1 轮：簇1={A,I}，新质心 (1.5,1.5)；
-# 簇2={B,C,D,E,F,G,H,J}，新质心 (6.875,5.375)
+        # 期望第 1 轮：簇1={A,I}，新质心 (1.5,1.5)；
+        # 簇2={B,C,D,E,F,G,H,J}，新质心 (6.875,5.375)
 ```
 
 ### 3.2 SSE + 肘部法 + SC + CH 三指标选 $K$
@@ -361,62 +361,62 @@ CSV = "customers.csv"
 
 
 def main():
- dataset = pd.read_csv(CSV)
- dataset.columns = ["CustomerID", "Gender", "Age", "Annual Income", "Spending Score"]
- print(dataset.info())
+    dataset = pd.read_csv(CSV)
+    dataset.columns = ["CustomerID", "Gender", "Age", "Annual Income", "Spending Score"]
+    print(dataset.info())
 
- # 只取"年收入"与"消费指数"两个特征做二维可视化聚类
- X = dataset.iloc[:, [3, 4]]
- print(X.head())
+    # 只取"年收入"与"消费指数"两个特征做二维可视化聚类
+    X = dataset.iloc[:, [3, 4]]
+    print(X.head())
 
- # ---- 第一步：用肘部法 + 轮廓系数确定 K ----
- mysse, mysscore = [], []
- for i in range(2, 11):
- mykmeans = KMeans(n_clusters=i, n_init=10, random_state=0)
- mykmeans.fit(X)
- mysse.append(mykmeans.inertia_)
- mysscore.append(silhouette_score(X, mykmeans.predict(X)))
+    # ---- 第一步：用肘部法 + 轮廓系数确定 K ----
+    mysse, mysscore = [], []
+    for i in range(2, 11):
+        mykmeans = KMeans(n_clusters=i, n_init=10, random_state=0)
+        mykmeans.fit(X)
+        mysse.append(mykmeans.inertia_)
+        mysscore.append(silhouette_score(X, mykmeans.predict(X)))
 
- fig, axes = plt.subplots(1, 2, figsize=(14, 5))
- axes[0].plot(range(2, 11), mysse)
- axes[0].set_title("the elbow method")
- axes[0].set_xlabel("number of clusters")
- axes[0].set_ylabel("SSE")
- axes[0].grid(True)
+        fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+        axes[0].plot(range(2, 11), mysse)
+        axes[0].set_title("the elbow method")
+        axes[0].set_xlabel("number of clusters")
+        axes[0].set_ylabel("SSE")
+        axes[0].grid(True)
 
- axes[1].plot(range(2, 11), mysscore)
- axes[1].set_title("silhouette score")
- axes[1].grid(True)
- plt.show()
- # 结论：肘部法与轮廓系数都显示"聚成 5 类效果最好"
+        axes[1].plot(range(2, 11), mysscore)
+        axes[1].set_title("silhouette score")
+        axes[1].grid(True)
+        plt.show()
+        # 结论：肘部法与轮廓系数都显示"聚成 5 类效果最好"
 
- # ---- 第二步：用 K=5 聚类并可视化 ----
- mykmeans = KMeans(n_clusters=5, n_init=10, random_state=0)
- y_kmeans = mykmeans.fit_predict(X)
+        # ---- 第二步：用 K=5 聚类并可视化 ----
+        mykmeans = KMeans(n_clusters=5, n_init=10, random_state=0)
+        y_kmeans = mykmeans.fit_predict(X)
 
- plt.figure(figsize=(10, 7))
- colors = ["red", "blue", "green", "cyan", "magenta"]
- labels = ["Standard", "Traditional", "Normal", "Youth", "TA"]
- for c in range(5):
- plt.scatter(X.values[y_kmeans == c, 0], X.values[y_kmeans == c, 1],
- s=100, c=colors[c], label=labels[c])
- plt.scatter(mykmeans.cluster_centers_[:, 0], mykmeans.cluster_centers_[:, 1],
- s=300, c="black", label="Centroids", marker="X")
- plt.title("Clusters of customers")
- plt.xlabel("Annual Income (k$)")
- plt.ylabel("Spending Score (1-100)")
- plt.legend()
- plt.show()
+        plt.figure(figsize=(10, 7))
+        colors = ["red", "blue", "green", "cyan", "magenta"]
+        labels = ["Standard", "Traditional", "Normal", "Youth", "TA"]
+        for c in range(5):
+            plt.scatter(X.values[y_kmeans == c, 0], X.values[y_kmeans == c, 1],
+            s=100, c=colors[c], label=labels[c])
+            plt.scatter(mykmeans.cluster_centers_[:, 0], mykmeans.cluster_centers_[:, 1],
+            s=300, c="black", label="Centroids", marker="X")
+            plt.title("Clusters of customers")
+            plt.xlabel("Annual Income (k$)")
+            plt.ylabel("Spending Score (1-100)")
+            plt.legend()
+            plt.show()
 
- # ---- 第三步：业务解读 ----
- result = X.copy()
- result["cluster"] = y_kmeans
- print(result.groupby("cluster").mean())
- # 右上角那一簇 = 收入高 + 消费高 => 黄金客户群；左下角 = 低收入低消费
+            # ---- 第三步：业务解读 ----
+            result = X.copy()
+            result["cluster"] = y_kmeans
+            print(result.groupby("cluster").mean())
+            # 右上角那一簇 = 收入高 + 消费高 => 黄金客户群；左下角 = 低收入低消费
 
 
-if __name__ == "__main__":
- main()
+            if __name__ == "__main__":
+                main()
 ```
 
 ### 3.4 演示"不标准化会造成什么后果"

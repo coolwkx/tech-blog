@@ -192,50 +192,50 @@ print(gdp.sort_values(['GDP'], ascending=False)) # 排序
 # rank：四种 method 的差异（成绩 100, 90, 90, 80）
 rk = pd.DataFrame({'姓名': ['小明', '小美', '小强', '小兰'], '成绩': [100, 90, 90, 80]})
 for m in ['average', 'min', 'max', 'dense']:
- rk[f'rank_{m}'] = rk['成绩'].rank(method=m, ascending=False)
- print(rk) # 100 都是 1；两个 90 分别为 2.5/2.5、2/2、3/3、2/2；80 为 4/4/4/3
+    rk[f'rank_{m}'] = rk['成绩'].rank(method=m, ascending=False)
+    print(rk) # 100 都是 1；两个 90 分别为 2.5/2.5、2/2、3/3、2/2；80 为 4/4/4/3
 
- # ================= 6. 缺失值处理 =================
- movie = pd.DataFrame({'Title': ['A', 'B', 'C', 'D'],
- 'Rating': [8.1, np.nan, 7.5, 9.0],
- 'Revenue': [100.0, 200.0, np.nan, 400.0],
- 'Metascore': [70, 80, 60, np.nan]})
- print(movie.isnull, movie.isnull.sum) # 逐格判断 / 每列缺失个数
- print(movie.isnull.any(axis=1)) # 哪些行有缺失
- print(np.any(pd.isnull(movie)), np.all(pd.notnull(movie))) # True / False
- print(movie.dropna) # 删掉任何含 NaN 的行
- print(movie.dropna(how='all')) # 只删全为 NaN 的行
+    # ================= 6. 缺失值处理 =================
+    movie = pd.DataFrame({'Title': ['A', 'B', 'C', 'D'],
+    'Rating': [8.1, np.nan, 7.5, 9.0],
+    'Revenue': [100.0, 200.0, np.nan, 400.0],
+    'Metascore': [70, 80, 60, np.nan]})
+    print(movie.isnull, movie.isnull.sum) # 逐格判断 / 每列缺失个数
+    print(movie.isnull.any(axis=1)) # 哪些行有缺失
+    print(np.any(pd.isnull(movie)), np.all(pd.notnull(movie))) # True / False
+    print(movie.dropna) # 删掉任何含 NaN 的行
+    print(movie.dropna(how='all')) # 只删全为 NaN 的行
 
- m1 = movie.copy # 填充：按列选择不同策略
- m1['Rating'] = m1['Rating'].fillna(m1['Rating'].mean)
- m1['Revenue'] = m1['Revenue'].fillna(m1['Revenue'].median)
- m1['Metascore'] = m1['Metascore'].fillna(0)
- print(m1)
+    m1 = movie.copy # 填充：按列选择不同策略
+    m1['Rating'] = m1['Rating'].fillna(m1['Rating'].mean)
+    m1['Revenue'] = m1['Revenue'].fillna(m1['Revenue'].median)
+    m1['Metascore'] = m1['Metascore'].fillna(0)
+    print(m1)
 
- m2 = movie.copy # 批量填充：每列用其均值
- for col in m2.columns:
- if not np.all(pd.notnull(m2[col])):
- m2[col] = m2[col].fillna(m2[col].mean)
- print(m2)
+    m2 = movie.copy # 批量填充：每列用其均值
+    for col in m2.columns:
+        if not np.all(pd.notnull(m2[col])):
+            m2[col] = m2[col].fillna(m2[col].mean)
+            print(m2)
 
- wis = pd.DataFrame({'col': ['5', '?', '3', '?', '7']}) # 伪缺失标记
- wis = wis.replace(to_replace='?', value=np.nan) # 先转标准 NaN
- print(wis.dropna) # 再统一处理
+            wis = pd.DataFrame({'col': ['5', '?', '3', '?', '7']}) # 伪缺失标记
+            wis = wis.replace(to_replace='?', value=np.nan) # 先转标准 NaN
+            print(wis.dropna) # 再统一处理
 
- # ================= 7. 合并：concat 与 merge =================
- top = pd.DataFrame({'城市': ['上海', '北京'], '温度': [18, 3]})
- bottom = pd.DataFrame({'城市': ['广州', '深圳'], '温度': [26, 27]})
- print(pd.concat([top, bottom], ignore_index=True)) # 行变多
- print(pd.concat([top, top], axis=1)) # 列变多
+            # ================= 7. 合并：concat 与 merge =================
+            top = pd.DataFrame({'城市': ['上海', '北京'], '温度': [18, 3]})
+            bottom = pd.DataFrame({'城市': ['广州', '深圳'], '温度': [26, 27]})
+            print(pd.concat([top, bottom], ignore_index=True)) # 行变多
+            print(pd.concat([top, top], axis=1)) # 列变多
 
- left = pd.DataFrame({'key1': ['K0', 'K0', 'K1', 'K2'], 'key2': ['K0', 'K1', 'K0', 'K1'],
- 'A': ['A0', 'A1', 'A2', 'A3']})
- right = pd.DataFrame({'key1': ['K0', 'K1', 'K1', 'K2'], 'key2': ['K0', 'K0', 'K0', 'K0'],
- 'B': ['B0', 'B1', 'B2', 'B3']})
- print(pd.merge(left, right, on=['key1', 'key2'])) # inner（默认）
- print(pd.merge(left, right, how='left', on=['key1', 'key2'])) # 左表全集
- print(pd.merge(left, right, how='right', on=['key1', 'key2'])) # 右表全集
- print(pd.merge(left, right, how='outer', on=['key1', 'key2'])) # 两侧并集
+            left = pd.DataFrame({'key1': ['K0', 'K0', 'K1', 'K2'], 'key2': ['K0', 'K1', 'K0', 'K1'],
+            'A': ['A0', 'A1', 'A2', 'A3']})
+            right = pd.DataFrame({'key1': ['K0', 'K1', 'K1', 'K2'], 'key2': ['K0', 'K0', 'K0', 'K0'],
+            'B': ['B0', 'B1', 'B2', 'B3']})
+            print(pd.merge(left, right, on=['key1', 'key2'])) # inner（默认）
+            print(pd.merge(left, right, how='left', on=['key1', 'key2'])) # 左表全集
+            print(pd.merge(left, right, how='right', on=['key1', 'key2'])) # 右表全集
+            print(pd.merge(left, right, how='outer', on=['key1', 'key2'])) # 两侧并集
 ```
 
 ## 3. 常见坑

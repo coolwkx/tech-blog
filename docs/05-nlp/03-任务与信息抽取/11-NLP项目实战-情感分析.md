@@ -234,9 +234,9 @@ STOPWORDS = {"的", "了", "在", "是", "我", "有", "和", "就", "都", "也
 KEEP_WORDS = {"不", "没", "无", "但", "但是", "不过", "然而", "差", "好"}
 
 def preprocess(text: str) -> str:
- words = [w for w in jieba.lcut(text)
- if w.strip and (w in KEEP_WORDS or w not in STOPWORDS)]
- return "".join(words)
+    words = [w for w in jieba.lcut(text)
+    if w.strip and (w in KEEP_WORDS or w not in STOPWORDS)]
+    return "".join(words)
 
 df["words"] = df["sentence"].apply(preprocess)
 print("\n== 预处理示例 ==")
@@ -276,24 +276,24 @@ print(confusion_matrix(y_test, pred))
 # 阈值敏感性：不同阈值下的表现
 print("\n== 阈值敏感性 ==")
 for thr in [0.3, 0.4, 0.5, 0.6, 0.7]:
- p = (proba >= thr).astype(int)
- tp = int(((p == 1) & (y_test == 1)).sum)
- fp = int(((p == 1) & (y_test == 0)).sum)
- fn = int(((p == 0) & (y_test == 1)).sum)
- precision = tp / (tp + fp) if tp + fp else 0.0
- recall = tp / (tp + fn) if tp + fn else 0.0
- print(f"thr={thr:.1f} P={precision:.3f} R={recall:.3f} acc={accuracy_score(y_test, p):.3f}")
+    p = (proba >= thr).astype(int)
+    tp = int(((p == 1) & (y_test == 1)).sum)
+    fp = int(((p == 1) & (y_test == 0)).sum)
+    fn = int(((p == 0) & (y_test == 1)).sum)
+    precision = tp / (tp + fp) if tp + fp else 0.0
+    recall = tp / (tp + fn) if tp + fn else 0.0
+    print(f"thr={thr:.1f} P={precision:.3f} R={recall:.3f} acc={accuracy_score(y_test, p):.3f}")
 
- # ---------- ⑥ 错误分析与特征重要性 ----------
- print("\n== 错例（含概率，便于判断是标注问题还是模型问题） ==")
- for text, true, p, pr in zip(X_test, y_test, pred, proba):
- if true != p:
- print(f" 真实={true} 预测={p} P(正面)={pr:.3f} 文本={text}")
+    # ---------- ⑥ 错误分析与特征重要性 ----------
+    print("\n== 错例（含概率，便于判断是标注问题还是模型问题） ==")
+    for text, true, p, pr in zip(X_test, y_test, pred, proba):
+        if true != p:
+            print(f" 真实={true} 预测={p} P(正面)={pr:.3f} 文本={text}")
 
- names = np.array(vec.get_feature_names_out)
- coef = clf.coef_[0]
- print("\n推动【正面】的关键词:", list(names[np.argsort(coef)[-8:]][::-1]))
- print("推动【消极】的关键词:", list(names[np.argsort(coef)[:8]]))
+            names = np.array(vec.get_feature_names_out)
+            coef = clf.coef_[0]
+            print("\n推动【正面】的关键词:", list(names[np.argsort(coef)[-8:]][::-1]))
+            print("推动【消极】的关键词:", list(names[np.argsort(coef)[:8]]))
 ```
 
 对照真实项目：把 `raw` 换成 `pd.read_csv("train.tsv", sep="\t")`、把 `df.columns` 对齐为 `sentence/label` 即可，其余逻辑完全一致（注意真实数据的 `train.tsv` 是 `sentence \t label` 两列）。
@@ -310,52 +310,52 @@ DEGREE = {"非常": 1.5, "特别": 1.5, "很": 1.3, "太": 1.3,
 CONTRAST = {"但", "但是", "不过", "然而", "可是", "只是", "可惜"}
 
 def negate_join(text: str, window: int = 2) -> str:
- """把否定词与后 window 个词拼接成新 token，让词袋也能感知否定。
- 例: '服务 不 好' -> '服务 不_好'
- """
- words = list(jieba.lcut(text))
- out, i = [], 0
- while i < len(words):
- if words[i] in NEGATIONS:
- j = min(i + window, len(words))
- merged = "_".join(words[i:j])
- out.append(merged)
- i = j
- else:
- out.append(words[i])
- i += 1
- return "".join(out)
+    """把否定词与后 window 个词拼接成新 token，让词袋也能感知否定。
+    例: '服务 不 好' -> '服务 不_好'
+    """
+    words = list(jieba.lcut(text))
+    out, i = [], 0
+    while i < len(words):
+        if words[i] in NEGATIONS:
+            j = min(i + window, len(words))
+            merged = "_".join(words[i:j])
+            out.append(merged)
+            i = j
+        else:
+            out.append(words[i])
+            i += 1
+            return "".join(out)
 
- def polarity_features(text: str) -> dict:
- """抽出可用于树模型/线性模型的显式情感特征（规则词典原型）"""
- words = list(jieba.lcut(text))
- POS = {"好", "满意", "推荐", "干净", "方便", "舒服", "不错", "热情"}
- NEG = {"差", "脏", "冷漠", "陈旧", "吵", "异味", "不耐烦"}
+        def polarity_features(text: str) -> dict:
+            """抽出可用于树模型/线性模型的显式情感特征（规则词典原型）"""
+            words = list(jieba.lcut(text))
+            POS = {"好", "满意", "推荐", "干净", "方便", "舒服", "不错", "热情"}
+            NEG = {"差", "脏", "冷漠", "陈旧", "吵", "异味", "不耐烦"}
 
- score = 0.0
- for k, w in enumerate(words):
- if w in POS:
- polarity = 1.0
- # 若前 2 个词内出现否定词，极性翻转
- if any(p in NEGATIONS for p in words[max(0, k - 2):k]):
- polarity = -1.0
- # 若前一个词是程度副词，按权重缩放
- degree = DEGREE.get(words[k - 1], 1.0) if k > 0 else 1.0
- score += polarity * degree
- elif w in NEG:
- score -= 1.0
+            score = 0.0
+            for k, w in enumerate(words):
+                if w in POS:
+                    polarity = 1.0
+                    # 若前 2 个词内出现否定词，极性翻转
+                    if any(p in NEGATIONS for p in words[max(0, k - 2):k]):
+                        polarity = -1.0
+                        # 若前一个词是程度副词，按权重缩放
+                        degree = DEGREE.get(words[k - 1], 1.0) if k > 0 else 1.0
+                        score += polarity * degree
+                    elif w in NEG:
+                        score -= 1.0
 
- return {
- "n_negation": sum(w in NEGATIONS for w in words),
- "n_contrast": sum(w in CONTRAST for w in words),
- "degree_sum": sum(DEGREE.get(w, 0.0) for w in words),
- "rule_score": round(score, 2),
- "has_contrast": int(any(w in CONTRAST for w in words)),
- }
+                        return {
+                    "n_negation": sum(w in NEGATIONS for w in words),
+                    "n_contrast": sum(w in CONTRAST for w in words),
+                    "degree_sum": sum(DEGREE.get(w, 0.0) for w in words),
+                    "rule_score": round(score, 2),
+                    "has_contrast": int(any(w in CONTRAST for w in words)),
+                    }
 
- samples = ["服务 不 好", "房间 非常 干净 ， 但 服务 太 差", "不 推荐 这家 酒店"]
- for s in samples:
- print(f"{s!r}\n 否定拼接 -> {negate_join(s)}\n 特征 -> {polarity_features(s)}\n")
+                    samples = ["服务 不 好", "房间 非常 干净 ， 但 服务 太 差", "不 推荐 这家 酒店"]
+                    for s in samples:
+                        print(f"{s!r}\n 否定拼接 -> {negate_join(s)}\n 特征 -> {polarity_features(s)}\n")
 ```
 
 `negate_join` 的效果可以用对照实验量化：分别用「原始分词」与「否定拼接后」训练同一个模型，比较验证集 macro-F1，就能确定这个改动是否值得保留——**不要凭感觉加特征**。

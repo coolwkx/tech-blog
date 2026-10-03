@@ -135,7 +135,7 @@ messages = [system, user]
 
  `parse_response(response)` 的两段式写法（已修正原文拼写）：
 
-```python
+```text
 """Function Calling 单一函数示例：查询实时天气。
 
 依赖：pip install zhipuai requests python-dotenv
@@ -316,83 +316,83 @@ description: SQL查询提取信息以回答用户的问题。
 import json
 
 plane_number = {
- "北京": {"广州": "356", "深圳": "126", "郑州": "1123"},
- "郑州": {"北京": "1123", "天津": "3661"},
+"北京": {"广州": "356", "深圳": "126", "郑州": "1123"},
+"郑州": {"北京": "1123", "天津": "3661"},
 }
 
 def get_plane_number(date: str, start: str, end: str):
- """根据始发地、目的地和日期，查询对应日期的航班号"""
- destinations = plane_number.get(start)
- if not destinations or end not in destinations:
- return {"error": "未查询到 %s → %s 的航班" % (start, end)}
- number = destinations[end]
- return {"date": date, "number": number}
+    """根据始发地、目的地和日期，查询对应日期的航班号"""
+    destinations = plane_number.get(start)
+    if not destinations or end not in destinations:
+        return {"error": "未查询到 %s → %s 的航班" % (start, end)}
+    number = destinations[end]
+    return {"date": date, "number": number}
 
 def get_ticket_price(date: str, number: str):
- """查询某航班在某日的价格"""
- price_table = {"1123": "668", "356": "520", "126": "430"}
- if number not in price_table:
- return {"error": "未查询到航班 %s 的票价" % number}
- return {"ticket_price": price_table[number]}
+    """查询某航班在某日的价格"""
+    price_table = {"1123": "668", "356": "520", "126": "430"}
+    if number not in price_table:
+        return {"error": "未查询到航班 %s 的票价" % number}
+    return {"ticket_price": price_table[number]}
 
 FUNCTION_MAP = {
- "get_plane_number": get_plane_number,
- "get_ticket_price": get_ticket_price,
+"get_plane_number": get_plane_number,
+"get_ticket_price": get_ticket_price,
 }
 
 tools = [
- {
- "type": "function",
- "function": {
- "name": "get_plane_number",
- "description": "根据始发地、目的地和日期，查询对应日期的航班号",
- "parameters": {
- "type": "object",
- "properties": {
- "start": {"type": "string", "description": "出发地"},
- "end": {"type": "string", "description": "目的地"},
- "date": {"type": "string", "description": "日期"},
- },
- "required": ["start", "end", "date"],
- },
- },
- },
- {
- "type": "function",
- "function": {
- "name": "get_ticket_price",
- "description": "查询某航班在某日的价格",
- "parameters": {
- "type": "object",
- "properties": {
- "number": {"type": "string", "description": "航班号"},
- "date": {"type": "string", "description": "日期"},
- },
- "required": ["number", "date"],
- },
- },
- },
+{
+"type": "function",
+"function": {
+"name": "get_plane_number",
+"description": "根据始发地、目的地和日期，查询对应日期的航班号",
+"parameters": {
+"type": "object",
+"properties": {
+"start": {"type": "string", "description": "出发地"},
+"end": {"type": "string", "description": "目的地"},
+"date": {"type": "string", "description": "日期"},
+},
+"required": ["start", "end", "date"],
+},
+},
+},
+{
+"type": "function",
+"function": {
+"name": "get_ticket_price",
+"description": "查询某航班在某日的价格",
+"parameters": {
+"type": "object",
+"properties": {
+"number": {"type": "string", "description": "航班号"},
+"date": {"type": "string", "description": "日期"},
+},
+"required": ["number", "date"],
+},
+},
+},
 ]
 
 def parse_function_call(model_response):
- """把模型回复里的所有 tool_call 都执行掉，返回结果列表"""
- results = []
- message = model_response.choices[0].message
- if not message.tool_calls:
- return [""]
- for tool_call in message.tool_calls:
- args = json.loads(tool_call.function.arguments)
- func = FUNCTION_MAP.get(tool_call.function.name)
- results.append(func(**args) if func else {"error": "未知函数"})
- return results
+    """把模型回复里的所有 tool_call 都执行掉，返回结果列表"""
+    results = []
+    message = model_response.choices[0].message
+    if not message.tool_calls:
+        return [""]
+    for tool_call in message.tool_calls:
+        args = json.loads(tool_call.function.arguments)
+        func = FUNCTION_MAP.get(tool_call.function.name)
+        results.append(func(**args) if func else {"error": "未知函数"})
+        return results
 
-if __name__ == "__main__":
- # 手工模拟「模型已经决定调用 get_plane_number」这一轮
- first = get_plane_number(date="2024-04-02", start="郑州", end="北京")
- print("第 1 轮结果:", json.dumps(first, ensure_ascii=False))
- # 把上一轮结果里的航班号喂给第二个工具（真实场景由模型自动完成这步）
- second = get_ticket_price(date="2024-04-02", number=first["number"])
- print("第 2 轮结果:", json.dumps(second, ensure_ascii=False))
+    if __name__ == "__main__":
+        # 手工模拟「模型已经决定调用 get_plane_number」这一轮
+        first = get_plane_number(date="2024-04-02", start="郑州", end="北京")
+        print("第 1 轮结果:", json.dumps(first, ensure_ascii=False))
+        # 把上一轮结果里的航班号喂给第二个工具（真实场景由模型自动完成这步）
+        second = get_ticket_price(date="2024-04-02", number=first["number"])
+        print("第 2 轮结果:", json.dumps(second, ensure_ascii=False))
 ```
 
 预期输出（结果展示）：
@@ -422,78 +422,78 @@ import pymysql
 
 database_schema_string = """
 CREATE TABLE `emp` (
- `empno` int DEFAULT NULL, -- 员工编号
- `ename` varchar(50) DEFAULT NULL, -- 员工姓名
- `job` varchar(50) DEFAULT NULL, -- 员工工作
- `mgr` int DEFAULT NULL, -- 员工领导
- `hiredate` date DEFAULT NULL, -- 员工入职日期
- `sal` int DEFAULT NULL, -- 员工的月薪
- `comm` int DEFAULT NULL, -- 员工年终奖
- `deptno` int DEFAULT NULL -- 员工部门编号
+`empno` int DEFAULT NULL, -- 员工编号
+`ename` varchar(50) DEFAULT NULL, -- 员工姓名
+`job` varchar(50) DEFAULT NULL, -- 员工工作
+`mgr` int DEFAULT NULL, -- 员工领导
+`hiredate` date DEFAULT NULL, -- 员工入职日期
+`sal` int DEFAULT NULL, -- 员工的月薪
+`comm` int DEFAULT NULL, -- 员工年终奖
+`deptno` int DEFAULT NULL -- 员工部门编号
 );
 CREATE TABLE `DEPT` (
- `DEPTNO` int NOT NULL, -- 部门编码
- `DNAME` varchar(14) DEFAULT NULL, -- 部门名称
- `LOC` varchar(13) DEFAULT NULL, -- 地点
- PRIMARY KEY (`DEPTNO`)
+`DEPTNO` int NOT NULL, -- 部门编码
+`DNAME` varchar(14) DEFAULT NULL, -- 部门名称
+`LOC` varchar(13) DEFAULT NULL, -- 地点
+PRIMARY KEY (`DEPTNO`)
 );
 """
 
 def ask_database(query):
- """连接数据库，进行查询"""
- if not re.match(r"^\s*select\b", query, flags=re.IGNORECASE):
- return json.dumps({"error": "仅允许 SELECT 查询"}, ensure_ascii=False)
- if ";" in query.rstrip().rstrip(";"):
- return json.dumps({"error": "禁止多语句执行"}, ensure_ascii=False)
+    """连接数据库，进行查询"""
+    if not re.match(r"^\s*select\b", query, flags=re.IGNORECASE):
+        return json.dumps({"error": "仅允许 SELECT 查询"}, ensure_ascii=False)
+    if ";" in query.rstrip().rstrip(";"):
+        return json.dumps({"error": "禁止多语句执行"}, ensure_ascii=False)
 
- conn = pymysql.connect(
- host="localhost", port=3306, user="root", password="123456",
- database="it_heima", charset="utf8mb4",
- cursorclass=pymysql.cursors.DictCursor,
- )
- try:
- with conn.cursor() as cursor:
- cursor.execute(query)
- result = cursor.fetchall()
- return json.dumps(result, ensure_ascii=False, default=str)
- finally:
- conn.close()
+    conn = pymysql.connect(
+    host="localhost", port=3306, user="root", password="123456",
+    database="it_heima", charset="utf8mb4",
+    cursorclass=pymysql.cursors.DictCursor,
+    )
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(query)
+            result = cursor.fetchall()
+            return json.dumps(result, ensure_ascii=False, default=str)
+    finally:
+        conn.close()
 
-tools = [
- {
- "type": "function",
- "function": {
- "name": "ask_database",
- "description": (
- "使用此函数回答业务问题，要求输出是一个SQL查询语句。"
- "SQL查询提取信息以回答用户的问题。"
- "查询应该以纯文本返回，而不是JSON。"
- "SQL应该使用以下数据库模式编写: %s" % database_schema_string
- ),
- "parameters": {
- "type": "object",
- "properties": {
- "query": {"type": "string", "description": "需要执行的 SQL 语句"}
- },
- "required": ["query"],
- },
- },
- }
-]
+        tools = [
+        {
+        "type": "function",
+        "function": {
+        "name": "ask_database",
+        "description": (
+        "使用此函数回答业务问题，要求输出是一个SQL查询语句。"
+        "SQL查询提取信息以回答用户的问题。"
+        "查询应该以纯文本返回，而不是JSON。"
+        "SQL应该使用以下数据库模式编写: %s" % database_schema_string
+        ),
+        "parameters": {
+        "type": "object",
+        "properties": {
+        "query": {"type": "string", "description": "需要执行的 SQL 语句"}
+        },
+        "required": ["query"],
+        },
+        },
+        }
+        ]
 
-available_functions = {"ask_database": ask_database}
+        available_functions = {"ask_database": ask_database}
 
-def parse_response(response):
- """根据模型回复决定是否调用工具，返回工具执行结果"""
- message = response.choices[0].message
- if not message.tool_calls:
- return None
- tool_call = message.tool_calls[0]
- args = json.loads(tool_call.function.arguments)
- return available_functions[tool_call.function.name](**args)
+        def parse_response(response):
+            """根据模型回复决定是否调用工具，返回工具执行结果"""
+            message = response.choices[0].message
+            if not message.tool_calls:
+                return None
+            tool_call = message.tool_calls[0]
+            args = json.loads(tool_call.function.arguments)
+            return available_functions[tool_call.function.name](**args)
 
-if __name__ == "__main__":
- print(ask_database("SELECT ename, sal FROM emp ORDER BY sal DESC LIMIT 1"))
+        if __name__ == "__main__":
+            print(ask_database("SELECT ename, sal FROM emp ORDER BY sal DESC LIMIT 1"))
 ```
 
 预期输出：

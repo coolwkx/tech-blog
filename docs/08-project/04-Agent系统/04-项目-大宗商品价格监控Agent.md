@@ -1,4 +1,4 @@
-# 项目实战笔记 04：黄金价格监控 Agent
+# 项目实战笔记 04：大宗商品价格监控 Agent
 
 > **一句话总结**：一个只有几百行的轻量自动化 Agent —— 多数据源容灾抓价 → 状态机判断"该买/该卖" → Server酱推到微信 → JSON 落盘存历史 → Flask 出看板与日报，跑在无人值守的定时循环里。
 > **前置知识**：Python `requests` 会话与超时、Web API 返回格式的解析技巧、简单的状态机与去重通知思想、Flask 路由与模板、`json` 文件持久化。
@@ -11,7 +11,7 @@
 
 ### 1.1 需求
 
-黄金积存是很多普通人参与的理财方式，价格每天波动。人工盯盘的问题很实在：
+大宗商品价格每天波动，钢材、铜等品种的报价直接关系到贸易与加工企业的成本。人工盯盘的问题很实在：
 
 - 一天要看很多次，价格到了又想不起来看；
 - 看到价格了还要自己算"比昨天涨了多少""离我的心理价位还差多少"；
@@ -21,10 +21,10 @@
 
 | 需求 | 本项目对应功能 | 实现文件 |
 | --- | --- | --- |
-| 盯价 | 定时循环抓取多源金价，容灾降级 | `main_monitor.py` |
+| 盯价 | 定时循环抓取多源报价，容灾降级 | `main_monitor.py` |
 | 判势 | 阈值状态机 + 近 12 期趋势判断 | `main_monitor.py` / `ai_analysis.py` |
 | 提醒 | Server酱推送微信，状态变化或冷却期满才发 | `main_monitor.py` |
-| 留痕 | `gold_history.json` 追加历史、`gold_state.json` 存状态 | 全部模块 |
+| 留痕 | `commodity_history.json` 追加历史、`commodity_state.json` 存状态 | 全部模块 |
 | 展示 | Flask 看板画价格曲线 + 阈值参考线 | `dashboard.py` |
 | 汇报 | 每日行情日报推微信 | `daily_report.py` |
 
@@ -33,9 +33,9 @@
 它具备 Agent 的最小闭环，虽然不含 LLM：
 
 ```text
-感知（Perception） → 从 5+N 个数据源抓取当前金价
+感知（Perception） → 从 5+N 个数据源抓取当前报价
 决策（Reasoning） → 与买入/卖出阈值比较，判断状态（buy/sell/normal）
-记忆（Memory） → gold_state.json 记上次价格与上次通知时间；gold_history.json 记历史
+记忆（Memory） → commodity_state.json 记上次价格与上次通知时间；commodity_history.json 记历史
 行动（Action） → 通过 Server酱推送微信
 ```
 
@@ -52,7 +52,7 @@
 - `price > sell_threshold(900)` → 状态 `sell`，"价格高于卖出参考价，注意风险"；
 - 其余 → 状态 `normal`。
 
-**注意措辞是"参考价"而不是"建议买入"**，`ai_analysis.py` 的输出末尾也固定带上"仅为行情分析，不构成投资建议"。做金融相关的工具，这条免责声明不是形式主义——它明确了产品是"信息提示工具"而非"投资顾问"。
+**注意措辞是"参考价"而不是"建议买入"**，`ai_analysis.py` 的输出末尾也固定带上"仅为行情分析，不构成投资建议"。做行情类的工具，这条免责声明不是形式主义——它明确了产品是"信息提示工具"而非"投资顾问"。
 
 ## 2. 技术架构
 
@@ -63,7 +63,7 @@
  │ main_monitor.py │
  │ │
  定时循环 │ while True: │
- (check_interval) │ price = get_gold_price ────────┐ │
+ (check_interval) │ price = get_commodity_price ────────┐ │
  │ change = (price-last)/last*100 │ │
  │ 与 buy/sell 阈值比较 → status │ │
  │ ┌──────────────────────────────┐ │ │
@@ -72,12 +72,12 @@
  │ │ 否则 → 跳过（不打扰用户） │ │ │
  │ └──────────────┬───────────────┘ │ │
  │ │ │ │
- │ save_state(gold_state.json) │ │
+ │ save_state(commodity_state.json) │ │
  │ time.sleep(check_interval) │ │
  └───────────────────────────────────────┘ │
  │
  ┌───────────────────────────────────────────────────────┘
- │ get_gold_price：三级数据源依次降级
+ │ get_commodity_price：三级数据源依次降级
  ▼
  ┌────────────────────────┐
  │ 一级：工银积存金 API×2 │ 106.54.190.155:886
@@ -87,7 +87,7 @@
  │ 二级：和讯/中金在线/ │ quote.hexun.com、data.cnfol.com
  │ 上金所/Wind/腾讯 │ sge.com.cn、qt.gtimg.cn
  ├────────────────────────┤
- │ 三级：新浪期货页/金融界/│ 页面正则抓取（最不稳定）
+ │ 三级：新浪期货页/我的钢铁网/│ 页面正则抓取（最不稳定）
  │ 同花顺 │
  └───────────┬────────────┘
  │ 全部失败
@@ -96,7 +96,7 @@
  │
  ┌──────┴──────────────────────────────┐
  ▼ ▼
- Server酱推送 gold_history.json 追加
+ Server酱推送 commodity_history.json 追加
  sctapi.ftqq.com/<key>.send {time, price}，保留最近 N 条
  │ │
  ▼ ▼
@@ -169,7 +169,7 @@ more_apis (三级, 3 个) ：直接正则抓 HTML 页面，最脆弱
 
 ```text
 # main_monitor.py（精简）
-def get_gold_price:
+def get_commodity_price:
  headers = {
  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) ... Chrome/120.0.0.0 Safari/537.36",
  "Referer": "https://finance.sina.com.cn/",
@@ -218,7 +218,7 @@ def get_gold_price:
  print("数据源 %s 获取失败: %s" % (api["name"], e))
  continue
 
- print("错误: 所有数据源均失败，无法获取黄金价格")
+ print("错误: 所有数据源均失败，无法获取大宗商品价格")
  return None
 ```
 
@@ -226,24 +226,24 @@ def get_gold_price:
 
 1. **`session.timeout = 15` 而不是依赖默认值**：`requests` 默认**没有超时**，一个卡住的源会让整个循环永久挂起。定时任务里这是致命问题。
 2. **每个源独立 `try/except` 并 `continue`**：一个源的解析异常绝不能中断整轮降级。
-3. **`if price < 200: continue`** 这条"魔法数字"校验：不同数据源返回的可能是"元/克"，也可能是"元/盎司"或股票价格（比如 `qt.gtimg.cn/q=sh600547` 返回的是山东黄金的**股价**，不是金价！）。用一个数量级下限把明显不合理的值挡掉，是**最便宜的防错手段**。更好的做法是按数据源分别设合理区间，而不是一个全局数字。
+3. **`if price < 200: continue`** 这条"魔法数字"校验：不同数据源返回的可能是"元/吨"，也可能是"元/千克"或股票价格（比如 `qt.gtimg.cn/q=sh600019` 返回的是宝钢股份的**股价**，不是钢价！）。用一个数量级下限把明显不合理的值挡掉，是**最便宜的防错手段**。更好的做法是按数据源分别设合理区间，而不是一个全局数字。
 4. **`text.endswith('=""')`**：新浪 `hq.sinajs.cn` 在标的无数据时会返回 `var hq_str_AU9999="";`。不判断这一点，`t.split(',')[3]` 会抛 `IndexError`——虽然被 try 接住了，但会白白消耗一次请求。
 
 ### 4.2 状态机与通知去重
 
 ```text
-# main_monitor.py: monitor_gold（精简）
-def monitor_gold:
+# main_monitor.py: monitor_commodity（精简）
+def monitor_commodity:
  config = load_config
  buy_threshold = config.get("buy_threshold", 800)
  sell_threshold = config.get("sell_threshold", 900)
  check_interval = config.get("check_interval_seconds", 300)
  notify_interval = config.get("notify_interval_seconds", 3600)
 
- state = load_state # 从 gold_state.json 恢复：last_price / last_status / last_notify_time
+ state = load_state # 从 commodity_state.json 恢复：last_price / last_status / last_notify_time
 
  while True:
- price = get_gold_price
+ price = get_commodity_price
  now = time.time
 
  if price is not None:
@@ -252,12 +252,12 @@ def monitor_gold:
  status, title, content = "normal", None, None
  if price < buy_threshold:
  status = "buy"
- title = "🟡 黄金买入提醒"
- content = ("当前黄金价格：%.2f 元/克\n\n""价格低于买入参考价：%d 元/克\n""相比上次变化：%.2f%%\n\n""请关注黄金行情变化。") % (price, buy_threshold, change)
+ title = "🟡 大宗商品买入提醒"
+ content = ("当前大宗商品价格：%.2f 元/吨\n\n""价格低于买入参考价：%d 元/吨\n""相比上次变化：%.2f%%\n\n""请关注大宗商品行情变化。") % (price, buy_threshold, change)
  elif price > sell_threshold:
  status = "sell"
- title = "🔴 黄金卖出提醒"
- content = ("当前黄金价格：%.2f 元/克\n\n""价格高于卖出参考价：%d 元/克\n""相比上次变化：%.2f%%\n\n""请关注黄金行情变化。") % (price, sell_threshold, change)
+ title = "🔴 大宗商品卖出提醒"
+ content = ("当前大宗商品价格：%.2f 元/吨\n\n""价格高于卖出参考价：%d 元/吨\n""相比上次变化：%.2f%%\n\n""请关注大宗商品行情变化。") % (price, sell_threshold, change)
 
  # ① 状态跃迁 → 立即通知
  if status != state.get("last_status"):
@@ -286,7 +286,7 @@ def monitor_gold:
 ### 4.3 状态持久化
 
 ```text
-STATE_FILE = os.path.join(os.path.dirname(__file__), "gold_state.json")
+STATE_FILE = os.path.join(os.path.dirname(__file__), "commodity_state.json")
 
 def load_state:
  try:
@@ -312,9 +312,9 @@ def save_state(state):
 
 ```python
 # main_monitor.py 尾部扩展
-HISTORY_FILE = os.path.join(os.path.dirname(__file__), "gold_history.json")
+HISTORY_FILE = os.path.join(os.path.dirname(__file__), "commodity_history.json")
 
-def save_gold_history(price):
+def save_commodity_history(price):
  history = json.load(open(HISTORY_FILE, encoding="utf-8")) if os.path.exists(HISTORY_FILE) else []
  history.append({"time": time.strftime("%Y-%m-%d %H:%M:%S"), "price": price})
  history = history[-20000:] # 滚动窗口，防止文件无限增长
@@ -335,8 +335,8 @@ def create_daily_report:
  current, high, low = prices[-1], max(prices), min(prices)
  change = (current - prices[0]) / prices[0] * 100
 
- report = f"📊 黄金每日行情\n\n日期：\n{today}\n\n当前价格：\n{current:.2f} 元/克\n..."
- report += analyze_gold(history) # 追加规则化的趋势/风险/操作参考
+ report = f"📊 大宗商品每日行情\n\n日期：\n{today}\n\n当前价格：\n{current:.2f} 元/吨\n..."
+ report += analyze_commodity(history) # 追加规则化的趋势/风险/操作参考
  report += "\n⚠️ 以上内容仅为行情分析，不构成投资建议\n"
  return report
 ```
@@ -344,7 +344,7 @@ def create_daily_report:
 趋势判断（`ai_analysis.py`）：
 
 ```text
-def analyze_gold:
+def analyze_commodity:
  history = load_history
  if len(history) < 2:
  return "暂无足够数据进行趋势分析"
@@ -368,7 +368,7 @@ def analyze_gold:
  ...
 ```
 
-**`high * 0.98` 与 `low * 1.02` 是相对阈值而不是绝对阈值**：金价在 400 和 900 时，"接近高位"的绝对差距完全不同。用百分比表达"接近"，才能让同一套代码在不同价格水平下都说得通。这是写规则引擎时很容易忽略的一点。
+**`high * 0.98` 与 `low * 1.02` 是相对阈值而不是绝对阈值**：大宗商品价格在 400 和 900 时，"接近高位"的绝对差距完全不同。用百分比表达"接近"，才能让同一套代码在不同价格水平下都说得通。这是写规则引擎时很容易忽略的一点。
 
 ### 4.5 Flask 看板：把历史画成图
 
@@ -415,7 +415,7 @@ new Chart(ctx, {
  data:{
  labels: {{labels|safe}}, // Jinja2 的 safe：不过 HTML 转义
  datasets:[
- { label:'黄金价格', data:{{values|safe}}, tension:0.3 },
+ { label:'大宗商品价格', data:{{values|safe}}, tension:0.3 },
  { label:'买入参考', data:Array({{count}}).fill({{buy}}), borderDash:[5,5] },
  { label:'卖出参考', data:Array({{count}}).fill({{sell}}), borderDash:[5,5] }
  ]
@@ -431,11 +431,11 @@ new Chart(ctx, {
 
 ```python
 if __name__ == "__main__":
- import sys
- if len(sys.argv) > 1 and sys.argv[1] == "monitor":
- monitor_gold # python main_monitor.py monitor → 常驻监控
- else:
- check_price_once # python main_monitor.py → 查一次就退出
+    import sys
+    if len(sys.argv) > 1 and sys.argv[1] == "monitor":
+        monitor_commodity # python main_monitor.py monitor → 常驻监控
+    else:
+        check_price_once # python main_monitor.py → 查一次就退出
 ```
 
 **为什么保留"查一次"模式**：定时任务（Windows 计划任务 / Linux cron / GitHub Actions）通常是"执行一次就退出"的模型，不需要常驻进程。提供单次模式，脚本就能被任意外部调度器调用，灵活性远高于内置 `while True`。这是写自动化脚本时很实用的一个模式：
@@ -448,21 +448,21 @@ if __name__ == "__main__":
 | 现象 | 根因 | 解决 | 如何预防 |
 | --- | --- | --- | --- |
 | 监控进程某天起完全不工作了 | `requests.get` 没有超时，某个数据源不响应把循环卡死 | 显式设 `session.timeout = 15` | **所有网络请求必须显式设超时**，默认值不是"安全值"而是"无限等待" |
-| 抓到的"金价"只有 6 块钱 | 备用源 `qt.gtimg.cn/q=sh600547` 返回的是山东黄金的**股票价格**，字段位置恰好也是 `split('~')[3]` | 加合理性下限校验 `if price < 200: continue` | 多源容灾时，各源的"数值语义"可能不同（元/克 vs 元/盎司 vs 股价）；校验要按源分别设，别用一个全局阈值 |
+| 抓到的"报价"只有 6 块钱 | 备用源 `qt.gtimg.cn/q=sh600019` 返回的是宝钢股份的**股票价格**，字段位置恰好也是 `split('~')[3]` | 加合理性下限校验 `if price < 200: continue` | 多源容灾时，各源的"数值语义"可能不同（元/吨 vs 元/千克 vs 股价）；校验要按源分别设，别用一个全局阈值 |
 | 每 5 分钟收到一条一模一样的微信 | 没有状态记忆与冷却期判断，每轮都发 | 状态变化才发；状态未变则等 `notify_interval` | 通知系统的第一原则：**只在信息增量出现时打扰用户** |
-| 重启后马上又发了一条重复通知 | 状态只存在内存变量里，重启即丢 | 状态落到 `gold_state.json`，启动时 `load_state` 恢复 | 任何"去重/限流"逻辑依赖的状态都必须持久化 |
+| 重启后马上又发了一条重复通知 | 状态只存在内存变量里，重启即丢 | 状态落到 `commodity_state.json`，启动时 `load_state` 恢复 | 任何"去重/限流"逻辑依赖的状态都必须持久化 |
 | 抓到的价格是 `None` 但程序继续往下跑，把 `None` 写进了历史 | 未对 `price is not None` 做分支保护 | 把整个判断+落盘逻辑放进 `if price is not None:` 块内 | 外部数据必须"先校验后使用"，`None` 要当成一个独立的失败态处理 |
 | 新浪接口返回 `var hq_str_AU9999="";`，解析报 IndexError | 接口无数据时返回空串，字段数不足 | `if not text or text.endswith('=""'): continue` | 对接第三方接口时，**先摸清它的"空数据长什么样"**，再写 parser |
 | 看板图表不显示，浏览器控制台报语法错误 | Jinja2 把 `json.dumps` 产出的双引号转义成了 `&quot;` | 模板里写 `{{labels|safe}}`（或改用 `tojson`） | 把 JSON 注入 `<script>` 时，转义问题一定要单独验证 |
 | 中文站点抓到乱码 | 未设 `response.encoding`，`requests` 猜错编码 | 显式 `response.encoding = "utf-8"` | 中文页面/接口一律显式指定编码 |
-| `gold_history.json` 越跑越大，读写越来越慢 | 无上限追加 | `history = history[-20000:]` 滚动窗口 | 用文件做时序存储时，**必须设容量上限或做归档** |
+| `commodity_history.json` 越跑越大，读写越来越慢 | 无上限追加 | `history = history[-20000:]` 滚动窗口 | 用文件做时序存储时，**必须设容量上限或做归档** |
 | `sc_key` 这类密钥被提交到了 Git | 直接写进 `config.json` 并入库 | 把 `config.json` 加进 `.gitignore`，提供 `config.example.json` | 密钥与代码分离；仓库里只放示例值 |
 | 价格明明越过了阈值却没提醒 | 阈值改动后忘记重启进程；或通知在异常中被跳过 | 每次发送失败时**不更新** `last_notify_time`，下轮自动重试 | 通知发出与"标记已发"必须在同一个成功判定内完成 |
 | 数据源全部失败时静默无输出 | 只 `return None`，外层也没告警 | 打印明确错误 + 日志；重要场景可加"连续 N 次失败则告警" | **静默失败比报错更危险**，尤其是无人值守的定时任务 |
 
 ## 6. 可复用经验
 
-1. **多数据源降级（fallback chain）是抓取类项目的标准骨架。** 把每个源写成 `{name, url, parser}` 三件套放进列表，外层统一处理"请求 → 校验 → 解析 → 成功即返回"，新增源只是加一行。这个模式可以直接复用到任何行情、天气、汇率、物流轨迹的抓取上。
+1. **多数据源降级（fallback chain）是抓取类项目的标准骨架。** 把每个源写成 `{name, url, parser}` 三件套放进列表，外层统一处理"请求 → 校验 → 解析 → 成功即返回"，新增源只是加一行。这个模式可以直接复用到任何行情、天气、汇率、运价的抓取上。
 2. **外部数据必须过"合理性校验"才能进业务逻辑。** 状态码 200 不代表内容可用；字段能解析出 float 不代表数值有意义。下限/上限校验、量纲检查、时间新鲜度检查，成本极低但能挡住大部分脏数据事故。
 3. **通知类系统 = 触发条件 × 去重策略 × 持久化状态。** 三者缺一不可：没触发条件就没价值，没去重就变骚扰，没持久化就重启即失效。更成熟的做法还可以加"静默时段"（夜间不推送）和"分级通知"（越界一级 / 极端行情二级）。
 4. **状态机和阈值参数要分离。** 状态定义（normal/buy/sell）写在代码里，阈值写在配置里。这样改参考价不需要改代码，也便于未来做"每人一套阈值"的个性化。
@@ -480,8 +480,8 @@ if __name__ == "__main__":
 
 ```text
 一级（5 个）：结构化接口 —— 工银积存金 JSON API ×2、新浪财经行情串 AU9999 / AUTD / AU100G
-二级（5 个）：财经站点接口 —— 和讯、中金在线、上海黄金交易所、Wind、腾讯
-三级（3 个）：HTML 页面正则抓取 —— 新浪期货页、金融界、同花顺
+二级（5 个）：财经站点接口 —— 和讯、中金在线、上海期货交易所、Wind、腾讯
+三级（3 个）：HTML 页面正则抓取 —— 新浪期货页、我的钢铁网、同花顺
 ```
 
 每一级内部按顺序尝试，任一个成功就立即 `return`，不再往下试。每个源独立 `try/except` + `continue`，单个源的网络异常或解析失败都不影响后续降级。全部失败则 `return None`，外层跳过本轮（既不写历史也不发通知），避免用脏数据污染状态。
@@ -501,7 +501,7 @@ if __name__ == "__main__":
 - 数据规模：每 5 分钟一条，一年约 10 万条，单机 JSON 滚动保留 2 万条完全够；
 - 访问模式：只有"追加 + 全量读最近 N 条"，没有复杂查询、没有并发写；
 - 部署成本：个人项目的核心诉求是"随便扔到哪台机器都能跑"。引入 DB 意味着要装、要备份、要迁移，收益为零；
-- 可调试性：`gold_history.json` 能直接用记事本打开、能进 Git 做 diff，这是 DB 给不了的。
+- 可调试性：`commodity_history.json` 能直接用记事本打开、能进 Git 做 diff，这是 DB 给不了的。
 
 **边界在哪**：一旦出现多个进程并发写（比如同时跑监控和日报生成）、需要按时间范围或价格区间查询、或数据量突破几十万条，就该换 SQLite。JSON 读写是 O(文件大小) 的全量操作，而 SQLite 是 O(log n) 索引查询。迁移成本很低（`json.load` 换成 `sqlite3` 三行），所以"先用 JSON 后换 DB"是合理的演进路径，不是技术债。
 
@@ -528,7 +528,7 @@ else:
 - 条件一保证**不漏**：只要越过参考线就立刻告知；
 - 条件二保证**不过量**：如果价格长期在低位徘徊，最多每小时（`notify_interval=3600`）提醒一次，而不是每 5 分钟一次。
 
-**持久化**：`last_status` 和 `last_notify_time` 存在 `gold_state.json`，进程重启后语义连续。这一点很关键——如果用内存变量，每次重启都会"忘记上次已经提醒过"，立刻再发一条。
+**持久化**：`last_status` 和 `last_notify_time` 存在 `commodity_state.json`，进程重启后语义连续。这一点很关键——如果用内存变量，每次重启都会"忘记上次已经提醒过"，立刻再发一条。
 
 **两个细节决定成败**：
 
@@ -545,7 +545,7 @@ else:
 </details>
 
 <details>
-<summary><b>Q3：这个项目叫"黄金价格监控 Agent"，它算 Agent 吗？如果让你升级成真正的 AI Agent 会怎么做？</b></summary>
+<summary><b>Q3：这个项目叫"大宗商品价格监控 Agent"，它算 Agent 吗？如果让你升级成真正的 AI Agent 会怎么做？</b></summary>
 
 **先说结论：按"感知-决策-记忆-行动"的最小闭环定义，它算一个（非常朴素的）Agent；但它不含任何 LLM，所以不是当下语境里通常说的"智能体"。**
 
@@ -553,14 +553,14 @@ else:
 
 | 能力 | 本项目实现 | 局限 |
 | --- | --- | --- |
-| 感知 | `get_gold_price` 从 13 个源降级抓价 | 只感知价格这一个标量信号 |
+| 感知 | `get_commodity_price` 从 13 个源降级抓价 | 只感知价格这一个标量信号 |
 | 决策 | 阈值状态机 + 近 12 期规则判断 | 规则固定，不理解任何"为什么" |
-| 记忆 | `gold_state.json`（短期状态）+ `gold_history.json`（长期历史） | 只存数值，没有语义记忆 |
+| 记忆 | `commodity_state.json`（短期状态）+ `commodity_history.json`（长期历史） | 只存数值，没有语义记忆 |
 | 行动 | Server酱推送 + 每天生成日报 | 行动空间只有"发消息"一种 |
 
 **升级成真正的 AI Agent 的路径**，我会分三层来加：
 
-**第一层：让"感知"更丰富。** 现在只看价格，但金价受美元指数、美债收益率、地缘政治、央行购金等影响。接入新闻标题（财经 RSS / 财联社）、汇率、美债收益率，让 Agent 的输入从一维标量变成多模态信号。
+**第一层：让"感知"更丰富。** 现在只看价格，但钢价受铁矿石价格、宏观需求、库存、地产开工等影响。接入新闻标题（财经 RSS / 财联社）、汇率、美债收益率，让 Agent 的输入从一维标量变成多模态信号。
 
 **第二层：让"决策"从规则变成推理。** 把"价格 + 近期走势 + 今日相关新闻标题"拼成 prompt 交给 LLM，让它输出结构化的判断（趋势方向、置信度、主要驱动因素）。这里要用 **Function Calling / 结构化输出**把结论约束成 JSON schema，而不是让它自由发挥——因为下游要消费这个结论。同时保留规则引擎作为**基线**和**兜底**：LLM 不可用时退回阈值判断，这也让"加 LLM 到底有没有用"变得可对比。
 
@@ -579,7 +579,7 @@ else:
 - Chart.js 折线图配置：`borderDash`、`fill`、时间轴处理
 - Flask 官方文档：`render_template_string`、Jinja2 的 `tojson` 过滤器与自动转义
 - 本仓库同目录：[01-项目-RAG问答系统](01-项目-RAG问答系统.md)（对比"有 LLM 的系统"架构差异）
-- 配套代码：`gold-monitor-v1.0/main_monitor.py`、`ai_analysis.py`、`dashboard.py`、`daily_report.py`、`config.json`
+- 配套代码：`commodity-monitor-v1.0/main_monitor.py`、`ai_analysis.py`、`dashboard.py`、`daily_report.py`、`config.json`
 
 ---
 [⬅️ 返回本目录索引](README.md)

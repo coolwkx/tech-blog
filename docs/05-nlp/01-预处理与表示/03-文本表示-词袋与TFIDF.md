@@ -213,34 +213,34 @@ N, V = len(docs_tokens), len(vocab)
 # 2) 文档频率 DF
 df = Counter
 for doc in docs_tokens:
- df.update(set(doc))
+    df.update(set(doc))
 
- # 3) 平滑 IDF: log((1+N)/(1+df)) + 1
- idf = {w: math.log((1 + N) / (1 + df[w])) + 1 for w in vocab}
+    # 3) 平滑 IDF: log((1+N)/(1+df)) + 1
+    idf = {w: math.log((1 + N) / (1 + df[w])) + 1 for w in vocab}
 
- # 4) TF-IDF（TF 用对数变体 1+log f）+ L2 归一化
- matrix = np.zeros((N, V))
- for i, doc in enumerate(docs_tokens):
- tf = Counter(doc)
- for w, f in tf.items:
- matrix[i, word2id[w]] = (1 + math.log(f)) * idf[w]
- norm = np.linalg.norm(matrix[i])
- if norm > 0:
- matrix[i] /= norm
+    # 4) TF-IDF（TF 用对数变体 1+log f）+ L2 归一化
+    matrix = np.zeros((N, V))
+    for i, doc in enumerate(docs_tokens):
+        tf = Counter(doc)
+        for w, f in tf.items:
+            matrix[i, word2id[w]] = (1 + math.log(f)) * idf[w]
+            norm = np.linalg.norm(matrix[i])
+            if norm > 0:
+                matrix[i] /= norm
 
- print("词表:", vocab)
- for w in vocab:
- print(f" IDF({w}) = {idf[w]:.4f}")
- print("\nTF-IDF 矩阵:\n", np.round(matrix, 4))
+                print("词表:", vocab)
+                for w in vocab:
+                    print(f" IDF({w}) = {idf[w]:.4f}")
+                    print("\nTF-IDF 矩阵:\n", np.round(matrix, 4))
 
- # 5) 用余弦相似度做检索（归一化后点积即余弦）
- query = "猫 鱼".split
- q = np.zeros(V)
- for w in query:
- if w in word2id:
- q[word2id[w]] = 1.0 * idf[w]
- q /= np.linalg.norm(q)
- print("\n与查询的相似度:", np.round(matrix @ q, 4))
+                    # 5) 用余弦相似度做检索（归一化后点积即余弦）
+                    query = "猫 鱼".split
+                    q = np.zeros(V)
+                    for w in query:
+                        if w in word2id:
+                            q[word2id[w]] = 1.0 * idf[w]
+                            q /= np.linalg.norm(q)
+                            print("\n与查询的相似度:", np.round(matrix @ q, 4))
 ```
 
 ### 3.2 与 sklearn 对照（验证两者的差异）
