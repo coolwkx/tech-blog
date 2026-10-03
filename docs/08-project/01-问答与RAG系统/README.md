@@ -11,12 +11,15 @@
 
 ## 本章要回答的问题
 
-- 项目目标与业务背景
-- 技术架构
-- 关键技术选型与理由
-- 项目目标与业务背景
-- 技术架构
-- 关键技术选型与理由
+**01 项目实战笔记 01：法律咨询 RAG 问答系统**
+- 独立设计一套"分层切分（父块 + 子块）+ 混合检索 + 重排序"的 RAG 检索链路；
+- 用 QueryClassifier 做查询路由，把"闲聊/常识"与"专业咨询"分流，省掉无效检索开销；
+- 用 RAGAS 的四个指标量化评估自己的 RAG 系统，而不是靠"感觉回答得还行"。
+
+**02 项目实战笔记 05：企业内部制度问答助手**
+- 用 LangChain 的 `Loader → Splitter → Embeddings → VectorStore → Retriever → Chain` 六件套在半小时内跑通一个 RAG Demo；
+- 理解 `chunk_size` / `chunk_overlap` / `k` 三个参数对问答效果的实际影响，并能解释为什么；
+- 用 `ConversationalRetrievalChain` + Streamlit 做出一个带多轮记忆的问答界面。
 
 状态说明：✅ 已完成 ｜ 🚧 编写中 ｜ 📝 计划中
 

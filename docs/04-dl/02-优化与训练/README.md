@@ -12,15 +12,20 @@
 
 ## 本章要回答的问题
 
-- 核心思想
-- 算法细节
-- 可运行示例
-- 核心思想
-- 算法细节
-- 可运行示例
-- 核心思想
-- 算法细节
-- 可运行示例
+**01 激活函数与损失函数**
+- 用 MSE 训练分类器
+- `CrossEntropyLoss` 前又加 `Softmax`
+- `nn.NLLLoss` 前忘 `log_softmax`
+
+**02 优化器与正则化**
+- 把"局部最小"当主要敌人、忽略鞍点
+- 大 batch 直接配大学习率
+- 忘记 `model.eval`
+
+**03 深度学习框架实践**
+- 忘记 `optimizer.zero_grad()`
+- 用 `loss.item()` 去 backward
+- 在 `no_grad()` 里算 loss 后 backward
 
 状态说明：✅ 已完成 ｜ 🚧 编写中 ｜ 📝 计划中
 

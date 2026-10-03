@@ -99,250 +99,250 @@ nav:
       - 领域目录: 01-python/README.md
       - "基础与语法":
           - 本节目录: 01-python/01-基础与语法/README.md
-          - "Python 数据模型与对象语义": 01-python/01-基础与语法/01-Python数据模型与对象语义.md
-          - "基础语法与数据类型": 01-python/01-基础与语法/01-基础语法与数据类型.md
+          - "01 Python 数据模型与对象语义": 01-python/01-基础与语法/01-Python数据模型与对象语义.md
+          - "02 基础语法与数据类型": 01-python/01-基础与语法/01-基础语法与数据类型.md
       - "函数与装饰器":
           - 本节目录: 01-python/02-函数与装饰器/README.md
-          - "函数与作用域": 01-python/02-函数与装饰器/02-函数与作用域.md
-          - "装饰器与生成器": 01-python/02-函数与装饰器/06-装饰器与生成器.md
+          - "01 函数与作用域": 01-python/02-函数与装饰器/02-函数与作用域.md
+          - "02 装饰器与生成器": 01-python/02-函数与装饰器/06-装饰器与生成器.md
       - "面向对象与数据模型":
           - 本节目录: 01-python/03-面向对象与数据模型/README.md
-          - "面向对象编程": 01-python/03-面向对象与数据模型/03-面向对象编程.md
-          - "文件与异常处理": 01-python/03-面向对象与数据模型/04-文件与异常处理.md
+          - "01 面向对象编程": 01-python/03-面向对象与数据模型/03-面向对象编程.md
+          - "02 文件与异常处理": 01-python/03-面向对象与数据模型/04-文件与异常处理.md
       - "并发与网络":
           - 本节目录: 01-python/04-并发与网络/README.md
-          - "并发编程：进程与线程": 01-python/04-并发与网络/08-并发编程-进程与线程.md
-          - "网络编程": 01-python/04-并发与网络/09-网络编程.md
+          - "01 并发编程：进程与线程": 01-python/04-并发与网络/08-并发编程-进程与线程.md
+          - "02 网络编程": 01-python/04-并发与网络/09-网络编程.md
       - "工程化与实践":
           - 本节目录: 01-python/05-工程化与实践/README.md
-          - "模块与包管理": 01-python/05-工程化与实践/05-模块与包管理.md
-          - "迭代器与内置函数": 01-python/05-工程化与实践/07-迭代器与内置函数.md
-          - "NumPy 入门": 01-python/05-工程化与实践/11-NumPy入门.md
-          - "Pandas 数据处理": 01-python/05-工程化与实践/12-Pandas数据处理.md
+          - "01 模块与包管理": 01-python/05-工程化与实践/05-模块与包管理.md
+          - "02 迭代器与内置函数": 01-python/05-工程化与实践/07-迭代器与内置函数.md
+          - "03 NumPy 入门": 01-python/05-工程化与实践/11-NumPy入门.md
+          - "04 Pandas 数据处理": 01-python/05-工程化与实践/12-Pandas数据处理.md
       - "CPython 内部机制与算法":
           - 本节目录: 01-python/06-CPython与算法/README.md
-          - "数据结构与算法基础": 01-python/06-CPython与算法/10-数据结构与算法基础.md
+          - "01 数据结构与算法基础": 01-python/06-CPython与算法/10-数据结构与算法基础.md
       - "速查与面试":
           - 本节目录: 01-python/90-cheatsheet/README.md
-          - "速查表 · Cheatsheet": 01-python/90-cheatsheet/cheatsheet.md
-          - "术语表 · Glossary": 01-python/90-cheatsheet/glossary.md
-          - "高频面试题库": 01-python/90-cheatsheet/interview.md
-          - "必读论文清单": 01-python/90-cheatsheet/papers.md
+          - "01 速查表 · Cheatsheet": 01-python/90-cheatsheet/cheatsheet.md
+          - "02 术语表 · Glossary": 01-python/90-cheatsheet/glossary.md
+          - "03 高频面试题库": 01-python/90-cheatsheet/interview.md
+          - "04 必读论文清单": 01-python/90-cheatsheet/papers.md
   - "📦 数据处理与统计":
       - 领域目录: 02-data/README.md
       - "Linux 与 SQL":
           - 本节目录: 02-data/01-Linux与SQL/README.md
-          - "Linux 基础命令": 02-data/01-Linux与SQL/01-Linux基础命令.md
-          - "Linux 实用操作": 02-data/01-Linux与SQL/02-Linux实用操作.md
-          - "MySQL 基础与 SQL 语法": 02-data/01-Linux与SQL/03-MySQL基础与SQL语法.md
-          - "MySQL 进阶-索引与优化": 02-data/01-Linux与SQL/04-MySQL进阶-索引与优化.md
+          - "01 Linux 基础命令": 02-data/01-Linux与SQL/01-Linux基础命令.md
+          - "02 Linux 实用操作": 02-data/01-Linux与SQL/02-Linux实用操作.md
+          - "03 MySQL 基础与 SQL 语法": 02-data/01-Linux与SQL/03-MySQL基础与SQL语法.md
+          - "04 MySQL 进阶-索引与优化": 02-data/01-Linux与SQL/04-MySQL进阶-索引与优化.md
       - "NumPy 与 Pandas":
           - 本节目录: 02-data/02-NumPy与Pandas/README.md
-          - "NumPy 数值计算": 02-data/02-NumPy与Pandas/05-NumPy数值计算.md
-          - "Pandas 数据清洗": 02-data/02-NumPy与Pandas/06-Pandas数据清洗.md
-          - "Pandas 分组聚合与透视": 02-data/02-NumPy与Pandas/07-Pandas分组聚合与透视.md
+          - "01 NumPy 数值计算": 02-data/02-NumPy与Pandas/05-NumPy数值计算.md
+          - "02 Pandas 数据清洗": 02-data/02-NumPy与Pandas/06-Pandas数据清洗.md
+          - "03 Pandas 分组聚合与透视": 02-data/02-NumPy与Pandas/07-Pandas分组聚合与透视.md
       - "可视化与统计":
           - 本节目录: 02-data/03-可视化与统计/README.md
-          - "数据可视化-matplotlib 与 seaborn": 02-data/03-可视化与统计/08-数据可视化-matplotlib与seaborn.md
-          - "统计分析基础": 02-data/03-可视化与统计/09-统计分析基础.md
+          - "01 数据可视化-matplotlib 与 seaborn": 02-data/03-可视化与统计/08-数据可视化-matplotlib与seaborn.md
+          - "02 统计分析基础": 02-data/03-可视化与统计/09-统计分析基础.md
       - "分析实战":
           - 本节目录: 02-data/04-分析实战/README.md
-          - "RFM 用户价值分析实战": 02-data/04-分析实战/10-RFM用户价值分析实战.md
-          - "数据分析项目流程": 02-data/04-分析实战/11-数据分析项目流程.md
+          - "01 RFM 用户价值分析实战": 02-data/04-分析实战/10-RFM用户价值分析实战.md
+          - "02 数据分析项目流程": 02-data/04-分析实战/11-数据分析项目流程.md
   - "📊 机器学习":
       - 领域目录: 03-ml/README.md
       - "基础与特征工程":
           - 本节目录: 03-ml/01-基础与特征工程/README.md
-          - "机器学习核心概念与偏差方差分解": 03-ml/01-基础与特征工程/01-机器学习核心概念与偏差方差分解.md
-          - "机器学习概述与流程": 03-ml/01-基础与特征工程/01-机器学习概述与流程.md
-          - "特征工程": 03-ml/01-基础与特征工程/09-特征工程.md
+          - "01 机器学习核心概念与偏差方差分解": 03-ml/01-基础与特征工程/01-机器学习核心概念与偏差方差分解.md
+          - "02 机器学习概述与流程": 03-ml/01-基础与特征工程/01-机器学习概述与流程.md
+          - "03 特征工程": 03-ml/01-基础与特征工程/09-特征工程.md
       - "经典算法":
           - 本节目录: 03-ml/02-经典算法/README.md
-          - "KNN 算法": 03-ml/02-经典算法/02-KNN算法.md
-          - "线性回归": 03-ml/02-经典算法/03-线性回归.md
-          - "逻辑回归": 03-ml/02-经典算法/04-逻辑回归.md
-          - "决策树": 03-ml/02-经典算法/05-决策树.md
+          - "01 KNN 算法": 03-ml/02-经典算法/02-KNN算法.md
+          - "02 线性回归": 03-ml/02-经典算法/03-线性回归.md
+          - "03 逻辑回归": 03-ml/02-经典算法/04-逻辑回归.md
+          - "04 决策树": 03-ml/02-经典算法/05-决策树.md
       - "评估与调优":
           - 本节目录: 03-ml/03-评估与调优/README.md
-          - "模型评估与调优": 03-ml/03-评估与调优/08-模型评估与调优.md
+          - "01 模型评估与调优": 03-ml/03-评估与调优/08-模型评估与调优.md
       - "集成学习与无监督":
           - 本节目录: 03-ml/04-集成与无监督/README.md
-          - "集成学习": 03-ml/04-集成与无监督/06-集成学习.md
-          - "KMeans 聚类": 03-ml/04-集成与无监督/07-KMeans聚类.md
+          - "01 集成学习": 03-ml/04-集成与无监督/06-集成学习.md
+          - "02 KMeans 聚类": 03-ml/04-集成与无监督/07-KMeans聚类.md
       - "案例与面试":
           - 本节目录: 03-ml/06-案例与面试/README.md
-          - "数据挖掘案例：电力负荷预测": 03-ml/06-案例与面试/10-数据挖掘案例-电力负荷预测.md
+          - "01 数据挖掘案例：电力负荷预测": 03-ml/06-案例与面试/10-数据挖掘案例-电力负荷预测.md
       - "速查与面试":
           - 本节目录: 03-ml/90-cheatsheet/README.md
-          - "速查表 · Cheatsheet": 03-ml/90-cheatsheet/cheatsheet.md
-          - "术语表 · Glossary": 03-ml/90-cheatsheet/glossary.md
-          - "高频面试题库": 03-ml/90-cheatsheet/interview.md
-          - "必读论文清单": 03-ml/90-cheatsheet/papers.md
+          - "01 速查表 · Cheatsheet": 03-ml/90-cheatsheet/cheatsheet.md
+          - "02 术语表 · Glossary": 03-ml/90-cheatsheet/glossary.md
+          - "03 高频面试题库": 03-ml/90-cheatsheet/interview.md
+          - "04 必读论文清单": 03-ml/90-cheatsheet/papers.md
   - "🧠 深度学习":
       - 领域目录: 04-dl/README.md
       - "基础与反向传播":
           - 本节目录: 04-dl/01-基础与反向传播/README.md
-          - "反向传播与计算图": 04-dl/01-基础与反向传播/01-反向传播与计算图.md
-          - "神经网络基础": 04-dl/01-基础与反向传播/01-神经网络基础.md
-          - "反向传播与梯度下降": 04-dl/01-基础与反向传播/03-反向传播与梯度下降.md
+          - "01 反向传播与计算图": 04-dl/01-基础与反向传播/01-反向传播与计算图.md
+          - "02 神经网络基础": 04-dl/01-基础与反向传播/01-神经网络基础.md
+          - "03 反向传播与梯度下降": 04-dl/01-基础与反向传播/03-反向传播与梯度下降.md
       - "优化与训练":
           - 本节目录: 04-dl/02-优化与训练/README.md
-          - "激活函数与损失函数": 04-dl/02-优化与训练/02-激活函数与损失函数.md
-          - "优化器与正则化": 04-dl/02-优化与训练/04-优化器与正则化.md
-          - "深度学习框架实践": 04-dl/02-优化与训练/07-深度学习框架实践.md
+          - "01 激活函数与损失函数": 04-dl/02-优化与训练/02-激活函数与损失函数.md
+          - "02 优化器与正则化": 04-dl/02-优化与训练/04-优化器与正则化.md
+          - "03 深度学习框架实践": 04-dl/02-优化与训练/07-深度学习框架实践.md
       - "CNN 与视觉":
           - 本节目录: 04-dl/03-CNN与视觉/README.md
-          - "CNN 卷积神经网络": 04-dl/03-CNN与视觉/05-CNN卷积神经网络.md
+          - "01 CNN 卷积神经网络": 04-dl/03-CNN与视觉/05-CNN卷积神经网络.md
       - "序列与注意力":
           - 本节目录: 04-dl/04-序列与注意力/README.md
-          - "RNN 与序列模型": 04-dl/04-序列与注意力/06-RNN与序列模型.md
+          - "01 RNN 与序列模型": 04-dl/04-序列与注意力/06-RNN与序列模型.md
       - "速查与面试":
           - 本节目录: 04-dl/90-cheatsheet/README.md
-          - "速查表 · Cheatsheet": 04-dl/90-cheatsheet/cheatsheet.md
-          - "术语表 · Glossary": 04-dl/90-cheatsheet/glossary.md
-          - "高频面试题库": 04-dl/90-cheatsheet/interview.md
-          - "必读论文清单": 04-dl/90-cheatsheet/papers.md
+          - "01 速查表 · Cheatsheet": 04-dl/90-cheatsheet/cheatsheet.md
+          - "02 术语表 · Glossary": 04-dl/90-cheatsheet/glossary.md
+          - "03 高频面试题库": 04-dl/90-cheatsheet/interview.md
+          - "04 必读论文清单": 04-dl/90-cheatsheet/papers.md
   - "📝 自然语言处理":
       - 领域目录: 05-nlp/README.md
       - "预处理与文本表示":
           - 本节目录: 05-nlp/01-预处理与表示/README.md
-          - "NLP 概述与文本预处理": 05-nlp/01-预处理与表示/01-NLP概述与文本预处理.md
-          - "文本预处理与分词全流程": 05-nlp/01-预处理与表示/01-文本预处理与分词全流程.md
-          - "中文分词与子词分词": 05-nlp/01-预处理与表示/02-中文分词与子词分词.md
-          - "文本表示：词袋与 TF-IDF": 05-nlp/01-预处理与表示/03-文本表示-词袋与TFIDF.md
-          - "词向量：Word2Vec 与 FastText": 05-nlp/01-预处理与表示/04-词向量-Word2Vec与FastText.md
+          - "01 NLP 概述与文本预处理": 05-nlp/01-预处理与表示/01-NLP概述与文本预处理.md
+          - "02 文本预处理与分词全流程": 05-nlp/01-预处理与表示/01-文本预处理与分词全流程.md
+          - "03 中文分词与子词分词": 05-nlp/01-预处理与表示/02-中文分词与子词分词.md
+          - "04 文本表示：词袋与 TF-IDF": 05-nlp/01-预处理与表示/03-文本表示-词袋与TFIDF.md
+          - "05 词向量：Word2Vec 与 FastText": 05-nlp/01-预处理与表示/04-词向量-Word2Vec与FastText.md
       - "序列建模与 Transformer":
           - 本节目录: 05-nlp/02-序列建模与Transformer/README.md
-          - "RNN 与 LSTM 文本建模": 05-nlp/02-序列建模与Transformer/07-RNN与LSTM文本建模.md
-          - "Attention 与 Transformer": 05-nlp/02-序列建模与Transformer/08-Attention与Transformer.md
-          - "BERT 与预训练模型": 05-nlp/02-序列建模与Transformer/09-BERT与预训练模型.md
+          - "01 RNN 与 LSTM 文本建模": 05-nlp/02-序列建模与Transformer/07-RNN与LSTM文本建模.md
+          - "02 Attention 与 Transformer": 05-nlp/02-序列建模与Transformer/08-Attention与Transformer.md
+          - "03 BERT 与预训练模型": 05-nlp/02-序列建模与Transformer/09-BERT与预训练模型.md
       - "任务与信息抽取":
           - 本节目录: 05-nlp/03-任务与信息抽取/README.md
-          - "文本分类实战": 05-nlp/03-任务与信息抽取/05-文本分类实战.md
-          - "序列标注与实体识别": 05-nlp/03-任务与信息抽取/06-序列标注与实体识别.md
-          - "文本相似度与语义匹配": 05-nlp/03-任务与信息抽取/10-文本相似度与语义匹配.md
-          - "NLP 项目实战：情感分析": 05-nlp/03-任务与信息抽取/11-NLP项目实战-情感分析.md
-          - "NLP 项目实战：医疗文本分类": 05-nlp/03-任务与信息抽取/12-NLP项目实战-医疗文本分类.md
+          - "01 文本分类实战": 05-nlp/03-任务与信息抽取/05-文本分类实战.md
+          - "02 序列标注与实体识别": 05-nlp/03-任务与信息抽取/06-序列标注与实体识别.md
+          - "03 文本相似度与语义匹配": 05-nlp/03-任务与信息抽取/10-文本相似度与语义匹配.md
+          - "04 NLP 项目实战：情感分析": 05-nlp/03-任务与信息抽取/11-NLP项目实战-情感分析.md
+          - "05 NLP 项目实战：医疗文本分类": 05-nlp/03-任务与信息抽取/12-NLP项目实战-医疗文本分类.md
       - "速查与面试":
           - 本节目录: 05-nlp/90-cheatsheet/README.md
-          - "速查表 · Cheatsheet": 05-nlp/90-cheatsheet/cheatsheet.md
-          - "术语表 · Glossary": 05-nlp/90-cheatsheet/glossary.md
-          - "高频面试题库": 05-nlp/90-cheatsheet/interview.md
-          - "必读论文清单": 05-nlp/90-cheatsheet/papers.md
+          - "01 速查表 · Cheatsheet": 05-nlp/90-cheatsheet/cheatsheet.md
+          - "02 术语表 · Glossary": 05-nlp/90-cheatsheet/glossary.md
+          - "03 高频面试题库": 05-nlp/90-cheatsheet/interview.md
+          - "04 必读论文清单": 05-nlp/90-cheatsheet/papers.md
   - "🤖 大语言模型":
       - 领域目录: 06-llm/README.md
       - "架构与预训练":
           - 本节目录: 06-llm/01-架构与预训练/README.md
-          - "Attention 机制详解": 06-llm/01-架构与预训练/01-Attention机制详解.md
-          - "大模型基础与演进": 06-llm/01-架构与预训练/01-大模型基础与演进.md
-          - "Transformer 与注意力机制": 06-llm/01-架构与预训练/02-Transformer与注意力机制.md
-          - "主流大模型对比": 06-llm/01-架构与预训练/03-主流大模型对比.md
+          - "01 Attention 机制详解": 06-llm/01-架构与预训练/01-Attention机制详解.md
+          - "02 大模型基础与演进": 06-llm/01-架构与预训练/01-大模型基础与演进.md
+          - "03 Transformer 与注意力机制": 06-llm/01-架构与预训练/02-Transformer与注意力机制.md
+          - "04 主流大模型对比": 06-llm/01-架构与预训练/03-主流大模型对比.md
       - "微调与对齐":
           - 本节目录: 06-llm/02-微调与对齐/README.md
-          - "微调基础与决策": 06-llm/02-微调与对齐/01-微调基础与决策.md
-          - "全参微调与显存账本": 06-llm/02-微调与对齐/02-全参微调与显存账本.md
-          - "LoRA 原理与工程实践": 06-llm/02-微调与对齐/03-LoRA原理与工程实践.md
-          - "QLoRA 与量化微调": 06-llm/02-微调与对齐/04-QLoRA与量化微调.md
-          - "SFT 训练循环与框架": 06-llm/02-微调与对齐/05-SFT训练循环与框架.md
-          - "指令数据构造与清洗": 06-llm/02-微调与对齐/06-指令数据构造与清洗.md
-          - "微调效果评估与灾难性遗忘": 06-llm/02-微调与对齐/07-微调效果评估与灾难性遗忘.md
-          - "微调面试专题": 06-llm/02-微调与对齐/08-微调面试专题.md
+          - "01 微调基础与决策": 06-llm/02-微调与对齐/01-微调基础与决策.md
+          - "02 全参微调与显存账本": 06-llm/02-微调与对齐/02-全参微调与显存账本.md
+          - "03 LoRA 原理与工程实践": 06-llm/02-微调与对齐/03-LoRA原理与工程实践.md
+          - "04 QLoRA 与量化微调": 06-llm/02-微调与对齐/04-QLoRA与量化微调.md
+          - "05 SFT 训练循环与框架": 06-llm/02-微调与对齐/05-SFT训练循环与框架.md
+          - "06 指令数据构造与清洗": 06-llm/02-微调与对齐/06-指令数据构造与清洗.md
+          - "07 微调效果评估与灾难性遗忘": 06-llm/02-微调与对齐/07-微调效果评估与灾难性遗忘.md
+          - "08 微调面试专题": 06-llm/02-微调与对齐/08-微调面试专题.md
       - "对齐与后训练":
           - 本节目录: 06-llm/03-对齐与后训练/README.md
-          - "对齐概览与 RLHF": 06-llm/03-对齐与后训练/01-对齐概览与RLHF.md
-          - "奖励模型与偏好数据": 06-llm/03-对齐与后训练/02-奖励模型与偏好数据.md
-          - "DPO 与免强化学习对齐": 06-llm/03-对齐与后训练/03-DPO与免强化学习对齐.md
-          - "GRPO 与推理模型后训练": 06-llm/03-对齐与后训练/04-GRPO与推理模型后训练.md
+          - "01 对齐概览与 RLHF": 06-llm/03-对齐与后训练/01-对齐概览与RLHF.md
+          - "02 奖励模型与偏好数据": 06-llm/03-对齐与后训练/02-奖励模型与偏好数据.md
+          - "03 DPO 与免强化学习对齐": 06-llm/03-对齐与后训练/03-DPO与免强化学习对齐.md
+          - "04 GRPO 与推理模型后训练": 06-llm/03-对齐与后训练/04-GRPO与推理模型后训练.md
       - "推理与部署":
           - 本节目录: 06-llm/05-推理与部署/README.md
-          - "本地部署与 Ollama": 06-llm/05-推理与部署/06-本地部署与Ollama.md
+          - "01 本地部署与 Ollama": 06-llm/05-推理与部署/06-本地部署与Ollama.md
       - "提示工程":
           - 本节目录: 06-llm/06-提示工程/README.md
-          - "提示词工程": 06-llm/06-提示工程/04-提示词工程.md
-          - "大模型 API 与调用实践": 06-llm/06-提示工程/05-大模型API与调用实践.md
+          - "01 提示词工程": 06-llm/06-提示工程/04-提示词工程.md
+          - "02 大模型 API 与调用实践": 06-llm/06-提示工程/05-大模型API与调用实践.md
       - "检索增强 RAG":
           - 本节目录: 06-llm/07-检索增强RAG/README.md
-          - "向量数据库与 Milvus": 06-llm/07-检索增强RAG/07-向量数据库与Milvus.md
-          - "LangChain 基础": 06-llm/07-检索增强RAG/08-LangChain基础.md
-          - "RAG 系统构建": 06-llm/07-检索增强RAG/09-RAG系统构建.md
-          - "RAG 评估与优化": 06-llm/07-检索增强RAG/10-RAG评估与优化.md
+          - "01 向量数据库与 Milvus": 06-llm/07-检索增强RAG/07-向量数据库与Milvus.md
+          - "02 LangChain 基础": 06-llm/07-检索增强RAG/08-LangChain基础.md
+          - "03 RAG 系统构建": 06-llm/07-检索增强RAG/09-RAG系统构建.md
+          - "04 RAG 评估与优化": 06-llm/07-检索增强RAG/10-RAG评估与优化.md
       - "面试专题":
           - 本节目录: 06-llm/09-面试专题/README.md
-          - "大模型面试题库": 06-llm/09-面试专题/12-大模型面试题库.md
+          - "01 大模型面试题库": 06-llm/09-面试专题/12-大模型面试题库.md
       - "速查与面试":
           - 本节目录: 06-llm/90-cheatsheet/README.md
-          - "速查表 · Cheatsheet": 06-llm/90-cheatsheet/cheatsheet.md
-          - "术语表 · Glossary": 06-llm/90-cheatsheet/glossary.md
-          - "高频面试题库": 06-llm/90-cheatsheet/interview.md
-          - "必读论文清单": 06-llm/90-cheatsheet/papers.md
+          - "01 速查表 · Cheatsheet": 06-llm/90-cheatsheet/cheatsheet.md
+          - "02 术语表 · Glossary": 06-llm/90-cheatsheet/glossary.md
+          - "03 高频面试题库": 06-llm/90-cheatsheet/interview.md
+          - "04 必读论文清单": 06-llm/90-cheatsheet/papers.md
   - "🕹️ AI Agent":
       - 领域目录: 07-agent/README.md
       - "基础范式":
           - 本节目录: 07-agent/01-基础范式/README.md
-          - "Agent 基础范式与 ReAct 循环": 07-agent/01-基础范式/01-Agent基础范式与ReAct循环.md
-          - "从零实现一个最小 Agent": 07-agent/01-基础范式/01-从零实现一个最小Agent.md
+          - "01 Agent 基础范式与 ReAct 循环": 07-agent/01-基础范式/01-Agent基础范式与ReAct循环.md
+          - "02 从零实现一个最小 Agent": 07-agent/01-基础范式/01-从零实现一个最小Agent.md
       - "工具调用与规划":
           - 本节目录: 07-agent/02-工具与规划/README.md
-          - "Function-Calling 与工具调用": 07-agent/02-工具与规划/02-Function-Calling与工具调用.md
-          - "Agent 的规划与任务分解": 07-agent/02-工具与规划/04-Agent的规划与任务分解.md
+          - "01 Function-Calling 与工具调用": 07-agent/02-工具与规划/02-Function-Calling与工具调用.md
+          - "02 Agent 的规划与任务分解": 07-agent/02-工具与规划/04-Agent的规划与任务分解.md
       - "记忆与多智能体":
           - 本节目录: 07-agent/03-记忆与多智能体/README.md
-          - "LangChain 与工具编排": 07-agent/03-记忆与多智能体/03-LangChain与工具编排.md
-          - "Agent 的记忆与知识管理": 07-agent/03-记忆与多智能体/05-Agent的记忆与知识管理.md
-          - "RAG 作为 Agent 的知识获取手段": 07-agent/03-记忆与多智能体/06-RAG作为Agent的知识获取手段.md
+          - "01 LangChain 与工具编排": 07-agent/03-记忆与多智能体/03-LangChain与工具编排.md
+          - "02 Agent 的记忆与知识管理": 07-agent/03-记忆与多智能体/05-Agent的记忆与知识管理.md
+          - "03 RAG 作为 Agent 的知识获取手段": 07-agent/03-记忆与多智能体/06-RAG作为Agent的知识获取手段.md
       - "评估与工程化":
           - 本节目录: 07-agent/04-评估与工程化/README.md
-          - "Agent 工程化与可靠性设计": 07-agent/04-评估与工程化/07-Agent工程化与可靠性设计.md
+          - "01 Agent 工程化与可靠性设计": 07-agent/04-评估与工程化/07-Agent工程化与可靠性设计.md
       - "Agent 评测":
           - 本节目录: 07-agent/05-评测/README.md
-          - "为什么 Agent 评测比 LLM 评测难": 07-agent/05-评测/01-为什么Agent评测比LLM评测难.md
-          - "评测指标设计": 07-agent/05-评测/02-评测指标设计.md
-          - "评测方法-单元测试与 LLM 即裁判": 07-agent/05-评测/03-评测方法-单元测试与LLM即裁判.md
-          - "评测基准全景": 07-agent/05-评测/04-评测基准全景.md
-          - "RAG 与多轮对话评测": 07-agent/05-评测/05-RAG与多轮对话评测.md
+          - "01 为什么 Agent 评测比 LLM 评测难": 07-agent/05-评测/01-为什么Agent评测比LLM评测难.md
+          - "02 评测指标设计": 07-agent/05-评测/02-评测指标设计.md
+          - "03 评测方法-单元测试与 LLM 即裁判": 07-agent/05-评测/03-评测方法-单元测试与LLM即裁判.md
+          - "04 评测基准全景": 07-agent/05-评测/04-评测基准全景.md
+          - "05 RAG 与多轮对话评测": 07-agent/05-评测/05-RAG与多轮对话评测.md
       - "评测实战":
           - 本节目录: 07-agent/06-评测实战/README.md
-          - "项目复盘-AgentEvalLab": 07-agent/06-评测实战/01-项目复盘-AgentEvalLab.md
-          - "用 Manifest 保证评测可复现": 07-agent/06-评测实战/02-用Manifest保证评测可复现.md
-          - "失败归因与显著性检验实战": 07-agent/06-评测实战/03-失败归因与显著性检验实战.md
-          - "给一个真实 Agent 补评测": 07-agent/06-评测实战/04-给一个真实Agent补评测.md
+          - "01 项目复盘-AgentEvalLab": 07-agent/06-评测实战/01-项目复盘-AgentEvalLab.md
+          - "02 用 Manifest 保证评测可复现": 07-agent/06-评测实战/02-用Manifest保证评测可复现.md
+          - "03 失败归因与显著性检验实战": 07-agent/06-评测实战/03-失败归因与显著性检验实战.md
+          - "04 给一个真实 Agent 补评测": 07-agent/06-评测实战/04-给一个真实Agent补评测.md
       - "前沿与面试":
           - 本节目录: 07-agent/07-前沿与面试/README.md
-          - "大宗商品价格监控 Agent 项目复盘": 07-agent/07-前沿与面试/08-大宗商品价格监控Agent项目复盘.md
+          - "01 大宗商品价格监控 Agent 项目复盘": 07-agent/07-前沿与面试/08-大宗商品价格监控Agent项目复盘.md
       - "速查与面试":
           - 本节目录: 07-agent/90-cheatsheet/README.md
-          - "速查表 · Cheatsheet": 07-agent/90-cheatsheet/cheatsheet.md
-          - "术语表 · Glossary": 07-agent/90-cheatsheet/glossary.md
-          - "高频面试题库": 07-agent/90-cheatsheet/interview.md
-          - "必读论文清单": 07-agent/90-cheatsheet/papers.md
+          - "01 速查表 · Cheatsheet": 07-agent/90-cheatsheet/cheatsheet.md
+          - "02 术语表 · Glossary": 07-agent/90-cheatsheet/glossary.md
+          - "03 高频面试题库": 07-agent/90-cheatsheet/interview.md
+          - "04 必读论文清单": 07-agent/90-cheatsheet/papers.md
   - "🚀 项目实战":
       - 领域目录: 08-project/README.md
       - "问答与 RAG 系统":
           - 本节目录: 08-project/01-问答与RAG系统/README.md
-          - "项目实战笔记 01：法律咨询 RAG 问答系统": 08-project/01-问答与RAG系统/01-项目-法律咨询RAG问答系统.md
-          - "项目实战笔记 05：企业内部制度问答助手": 08-project/01-问答与RAG系统/05-项目-企业内部制度问答助手.md
+          - "01 项目实战笔记 01：法律咨询 RAG 问答系统": 08-project/01-问答与RAG系统/01-项目-法律咨询RAG问答系统.md
+          - "02 项目实战笔记 05：企业内部制度问答助手": 08-project/01-问答与RAG系统/05-项目-企业内部制度问答助手.md
       - "对话与生成系统":
           - 本节目录: 08-project/02-对话与生成系统/README.md
-          - "项目实战笔记 02：法律咨询问答机器人": 08-project/02-对话与生成系统/02-项目-法律咨询问答机器人.md
-          - "项目实战笔记 03：企业客服聊天机器人": 08-project/02-对话与生成系统/03-项目-企业客服聊天机器人.md
+          - "01 项目实战笔记 02：法律咨询问答机器人": 08-project/02-对话与生成系统/02-项目-法律咨询问答机器人.md
+          - "02 项目实战笔记 03：企业客服聊天机器人": 08-project/02-对话与生成系统/03-项目-企业客服聊天机器人.md
       - "文本分类系统":
           - 本节目录: 08-project/03-文本分类系统/README.md
-          - "项目实战笔记 06：电商评论分类（BERT+PET 与 BERT+P-Tuning）": 08-project/03-文本分类系统/06-项目-电商评论分类（BERT+PET与P-Tuning）.md
-          - "项目实战笔记 07：监管公告分类与信息抽取": 08-project/03-文本分类系统/07-项目-监管公告分类与信息抽取.md
-          - "项目实战笔记 08：新闻文本分类三方案对比（随机森林 / FastText / BERT）": 08-project/03-文本分类系统/08-项目-新闻文本分类三方案对比（随机森林FastTextBERT）.md
+          - "01 项目实战笔记 06：电商评论分类（BERT+PET 与 BERT+P-Tuning）": 08-project/03-文本分类系统/06-项目-电商评论分类（BERT+PET与P-Tuning）.md
+          - "02 项目实战笔记 07：监管公告分类与信息抽取": 08-project/03-文本分类系统/07-项目-监管公告分类与信息抽取.md
+          - "03 项目实战笔记 08：新闻文本分类三方案对比（随机森林 / FastText / BERT）": 08-project/03-文本分类系统/08-项目-新闻文本分类三方案对比（随机森林FastTextBERT）.md
       - "Agent 系统":
           - 本节目录: 08-project/04-Agent系统/README.md
-          - "项目实战笔记 04：大宗商品价格监控 Agent": 08-project/04-Agent系统/04-项目-大宗商品价格监控Agent.md
+          - "01 项目实战笔记 04：大宗商品价格监控 Agent": 08-project/04-Agent系统/04-项目-大宗商品价格监控Agent.md
   - "📡 前沿追踪":
       - 领域目录: 10-radar/README.md
       - "追踪方法":
           - 本节目录: 10-radar/01-追踪方法/README.md
-          - "这个栏目怎么用": 10-radar/01-追踪方法/01-这个栏目怎么用.md
-          - "新技术评估框架": 10-radar/01-追踪方法/02-新技术评估框架.md
+          - "01 这个栏目怎么用": 10-radar/01-追踪方法/01-这个栏目怎么用.md
+          - "02 新技术评估框架": 10-radar/01-追踪方法/02-新技术评估框架.md
       - "技术条目":
           - 本节目录: 10-radar/02-条目/README.md
-          - "Jev —— 把 Agent 的判断从「生成」里拆出来：不写字，只给带概率的判定": 10-radar/02-条目/2026-09-Jev-决策模型.md
-          - "Muse —— 把 Agent 安全从「模型对齐」改成「外部权限工程」": 10-radar/02-条目/2026-09-Muse-个人Agent.md
+          - "01 Jev —— 把 Agent 的判断从「生成」里拆出来：不写字，只给带概率的判定": 10-radar/02-条目/2026-09-Jev-决策模型.md
+          - "02 Muse —— 把 Agent 安全从「模型对齐」改成「外部权限工程」": 10-radar/02-条目/2026-09-Muse-个人Agent.md
       - "条目模板":
           - 本节目录: 10-radar/99-模板/README.md
-          - "技术名 —— 一句话说明它是什么": 10-radar/99-模板/radar-entry.md
+          - "01 技术名 —— 一句话说明它是什么": 10-radar/99-模板/radar-entry.md
