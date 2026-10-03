@@ -78,8 +78,8 @@ plugins:
       separator: '[\s\u200b\-、。，；：！？（）《》【】]'
 
 extra_javascript:
+  # mathjax.js 内部按顺序尝试多个 CDN 并自动回退，因此这里不再硬编码 CDN 地址
   - javascripts/mathjax.js
-  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
   # Mermaid：文本描述生成图示，GitHub 原生支持，站点通过此脚本渲染
   - javascripts/mermaid.js
   - https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js
