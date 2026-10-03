@@ -1,4 +1,4 @@
-# NumPy 与 Pandas
+# 02 NumPy 与 Pandas
 
 > 本章共 3 篇笔记。
 

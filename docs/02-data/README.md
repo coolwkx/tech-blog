@@ -6,12 +6,12 @@
 
 ## 系列目录
 
-| # | 系列 | 状态 |
-| --- | --- | --- |
-| 01 | [Linux 与 SQL](01-Linux与SQL/README.md) | ✅ 4 篇 |
-| 02 | [NumPy 与 Pandas](02-NumPy与Pandas/README.md) | ✅ 3 篇 |
-| 03 | [可视化与统计](03-可视化与统计/README.md) | ✅ 2 篇 |
-| 04 | [分析实战](04-分析实战/README.md) | ✅ 2 篇 |
+| 系列 | 状态 |
+| --- | --- |
+| [01 Linux 与 SQL](01-Linux与SQL/README.md) | ✅ 4 篇 |
+| [02 NumPy 与 Pandas](02-NumPy与Pandas/README.md) | ✅ 3 篇 |
+| [03 可视化与统计](03-可视化与统计/README.md) | ✅ 2 篇 |
+| [04 分析实战](04-分析实战/README.md) | ✅ 2 篇 |
 
 
 状态说明：✅ 已有内容 ｜ 📝 待补充
