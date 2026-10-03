@@ -578,7 +578,7 @@ else:
 - Server酱（ServerChan）推送 API 文档
 - Chart.js 折线图配置：`borderDash`、`fill`、时间轴处理
 - Flask 官方文档：`render_template_string`、Jinja2 的 `tojson` 过滤器与自动转义
-- 本仓库同目录：[01-项目-RAG问答系统](01-项目-RAG问答系统.md)（对比"有 LLM 的系统"架构差异）
+- 本仓库同目录：[01-项目-法律咨询RAG问答系统](../01-问答与RAG系统/01-项目-法律咨询RAG问答系统.md)（对比"有 LLM 的系统"架构差异）
 - 配套代码：`commodity-monitor-v1.0/main_monitor.py`、`ai_analysis.py`、`dashboard.py`、`daily_report.py`、`config.json`
 
 ---
