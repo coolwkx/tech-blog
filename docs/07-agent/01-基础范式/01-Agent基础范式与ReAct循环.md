@@ -1,5 +1,5 @@
 > **一句话总结**：AI Agent 本质是「用 LLM 当大脑、用工具当手脚、用记忆当上下文、用规划当路线」的代理系统（`AIAgent = LLM + Memory + Planning + Tools`），软件范式因此从「面向过程」迁移到「面向目标」。
-> **前置知识**：[../llm/05-大模型API与调用实践.md](../../06-llm/04-提示工程/05-大模型API与调用实践.md) 的消息角色与 API 调用、[../llm/04-提示词工程.md](../../06-llm/04-提示工程/04-提示词工程.md) 的 system prompt 用法、本目录 [02-Function-Calling与工具调用](../02-工具与规划/02-Function-Calling与工具调用.md)。
+> **前置知识**：[../llm/05-大模型API与调用实践.md](../../06-llm/06-提示工程/05-大模型API与调用实践.md) 的消息角色与 API 调用、[../llm/04-提示词工程.md](../../06-llm/06-提示工程/04-提示词工程.md) 的 system prompt 用法、本目录 [02-Function-Calling与工具调用](../02-工具与规划/02-Function-Calling与工具调用.md)。
 > **学完能做到**：
 > 1. 用一句话说清 Agent 与传统软件、与普通聊天机器人的区别，并画出「感知 → 规划 → 行动 → 观察」闭环。
 > 2. 说出 `Prompt / LLM / Memory / Planning / Action` 五要素各自在闭环里承担什么，以及 ReAct 的 Thought → Action → Observation 结构。
@@ -388,7 +388,7 @@ if __name__ == "__main__":
 | 模型编造工具返回结果（幻觉 Observation） | 把 Observation 也让模型生成，而不是真的执行工具 | Observation 必须由代码执行后原样回填，禁止模型改写 |
 | 把聊天机器人当成 Agent 汇报 | 只有记忆、没有 Planning 和 Action | 对照 1.6 节的呈现形式表，先确认「规划是模型做的」 |
 | 上下文越滚越长，超出模型窗口或成本飙升 | 每一步的 Thought/Action/Observation 都全量保留 | 对旧步骤做摘要压缩，或只保留最近 K 步（见 [05-Agent的记忆与知识管理](../03-记忆与多智能体/05-Agent的记忆与知识管理.md)） |
-| 简单任务也走 Agent，结果又慢又贵 | 用 Agent 解决单轮调用就能做的事 | 先判断任务是否需要多步与外部工具；单轮能答的直接走 [../llm/05-大模型API与调用实践.md](../../06-llm/04-提示工程/05-大模型API与调用实践.md) |
+| 简单任务也走 Agent，结果又慢又贵 | 用 Agent 解决单轮调用就能做的事 | 先判断任务是否需要多步与外部工具；单轮能答的直接走 [../llm/05-大模型API与调用实践.md](../../06-llm/06-提示工程/05-大模型API与调用实践.md) |
 | 工具执行报错后 Agent 直接崩溃 | 工具内部异常没有转换成 Observation | 工具函数内部 try/except，把错误信息作为 Observation 返回给模型，让模型自己纠错 |
 
 ---

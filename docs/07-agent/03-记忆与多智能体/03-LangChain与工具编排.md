@@ -1,5 +1,5 @@
 > **一句话总结**：LangChain 用六大组件（Models / Prompts / Memory / Indexes / Chains / Agents）为 LLM 应用提供统一接口，其中 **Agent = LLM 决策 + Tool 执行 + AgentExecutor 循环控制**；再往上，CrewAI 用 Agent / Task / Crew / Process / Tools 五件套把单个 Agent 扩展成多角色协作系统。
-> **前置知识**：[02-Function-Calling与工具调用](../02-工具与规划/02-Function-Calling与工具调用.md) 的工具协议、[01-Agent基础范式与ReAct循环](../01-基础范式/01-Agent基础范式与ReAct循环.md) 的 ReAct 结构、[../llm/08-LangChain基础.md](../../06-llm/05-检索增强RAG/08-LangChain基础.md)。
+> **前置知识**：[02-Function-Calling与工具调用](../02-工具与规划/02-Function-Calling与工具调用.md) 的工具协议、[01-Agent基础范式与ReAct循环](../01-基础范式/01-Agent基础范式与ReAct循环.md) 的 ReAct 结构、[../llm/08-LangChain基础.md](../../06-llm/07-检索增强RAG/08-LangChain基础.md)。
 > **学完能做到**：
 > 1. 说清 Agent、AgentExecutor、Tool、Toolkit 四者的分工，并选用 `zero-shot-react-description` / `conversational-react-description` 等代理类型。
 > 2. 用 `load_tools` + `initialize_agent` 跑通一个带数学计算工具的代理，并用 `@tool` 注册自己的工具。

@@ -577,7 +577,7 @@ step 3: （同一动作）-> [提前终止] 同一动作重复 3 次，判定为
 - [Toolformer: Language Models Can Teach Themselves to Use Tools](https://arxiv.org/abs/2302.04761)（Schick et al., 2023）——工具调用能力从何而来
 - [Plan-and-Solve Prompting](https://arxiv.org/abs/2305.04091)（Wang et al., 2023）——先规划后执行范式的代表性工作
 - [OpenAI Function Calling 官方文档](https://platform.openai.com/docs/guides/function-calling)——JSON Schema 声明与 `tool_calls` 的规范写法
-- 本仓库相关笔记：[02 工具调用与执行](../02-agent-tools/README.md)、[03 规划与任务分解](../03-agent-planning/README.md)、[术语表](../90-cheatsheet/glossary.md)
+- 本仓库相关笔记：[02 工具调用与执行](../02-工具与规划/README.md)、[03 规划与任务分解](../02-工具与规划/README.md)、[术语表](../90-cheatsheet/glossary.md)
 
 ---
 

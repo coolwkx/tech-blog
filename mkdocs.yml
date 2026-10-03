@@ -101,11 +101,12 @@ nav:
   - "🤖 大语言模型":
       - 领域目录: 06-llm/README.md
       - 架构与预训练: 06-llm/01-架构与预训练/README.md
-      - 推理与部署: 06-llm/03-推理与部署/README.md
-      - 提示工程: 06-llm/04-提示工程/README.md
-      - 检索增强 RAG: 06-llm/05-检索增强RAG/README.md
-      - 评估与前沿: 06-llm/06-评估与前沿/README.md
-      - 面试专题: 06-llm/07-面试专题/README.md
+      - 微调与对齐: 06-llm/02-微调与对齐/README.md
+      - 对齐与后训练: 06-llm/03-对齐与后训练/README.md
+      - 推理与部署: 06-llm/05-推理与部署/README.md
+      - 提示工程: 06-llm/06-提示工程/README.md
+      - 检索增强 RAG: 06-llm/07-检索增强RAG/README.md
+      - 面试专题: 06-llm/09-面试专题/README.md
       - 速查与面试: 06-llm/90-cheatsheet/README.md
   - "🕹️ AI Agent":
       - 领域目录: 07-agent/README.md
