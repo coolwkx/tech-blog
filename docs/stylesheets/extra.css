@@ -1,0 +1,278 @@
+/* ==========================================================================
+   技术复习笔记 · 自定义样式
+   目标：让 500 行量级的长文在屏幕上更好读
+   原则：提高行高与段间距、限制正文宽度、强化表格与代码块边界、降低视觉噪音
+   说明：只使用标准 CSS，不依赖 color-mix() 等新特性，保证老浏览器可用
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   0. 字体栈：中文优先用系统字体，避免加载 Google Fonts（国内不稳定）
+   -------------------------------------------------------------------------- */
+:root {
+  --note-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC",
+    "WenQuanYi Micro Hei", sans-serif;
+  --note-mono: "JetBrains Mono", "Cascadia Code", "Fira Code", Consolas,
+    "SF Mono", Menlo, "DejaVu Sans Mono", "Microsoft YaHei Mono", monospace;
+  --note-accent-weak: rgba(63, 81, 181, 0.06);
+  --note-accent-mid: rgba(63, 81, 181, 0.14);
+  --note-accent-line: rgba(63, 81, 181, 0.55);
+  --note-hairline: rgba(128, 128, 128, 0.22);
+  --note-zebra: rgba(128, 128, 128, 0.05);
+}
+
+.md-typeset {
+  font-family: var(--note-sans);
+}
+
+.md-typeset code,
+.md-typeset pre,
+.md-typeset kbd {
+  font-family: var(--note-mono);
+}
+
+/* --------------------------------------------------------------------------
+   1. 正文排版：最影响长文阅读体验的一组参数
+   -------------------------------------------------------------------------- */
+.md-typeset {
+  /* 行高 1.35 是默认值，中文长文偏挤；1.75 是舒适区 */
+  line-height: 1.75;
+  font-size: 0.82rem;
+  letter-spacing: 0.01em;
+}
+
+.md-typeset p {
+  margin: 1em 0;
+}
+
+/* 限制单行长度：一行超过约 45 个汉字就开始费眼 */
+.md-typeset > p,
+.md-typeset > ul,
+.md-typeset > ol {
+  max-width: 46em;
+}
+
+.md-typeset p + p {
+  margin-top: 1.1em;
+}
+
+.md-typeset strong {
+  font-weight: 700;
+  color: var(--md-typeset-color);
+}
+
+.md-typeset mark {
+  background: rgba(255, 235, 59, 0.35);
+  padding: 0 0.15em;
+  border-radius: 0.15em;
+}
+
+/* --------------------------------------------------------------------------
+   2. 标题层级：靠间距和左侧色条建立视觉锚点
+   -------------------------------------------------------------------------- */
+.md-typeset h1 {
+  font-weight: 700;
+  margin-bottom: 1.2em;
+  padding-bottom: 0.4em;
+  border-bottom: 2px solid var(--md-primary-fg-color);
+}
+
+.md-typeset h2 {
+  font-weight: 700;
+  /* 大间距把章节切开，这是「白屏黑字」最主要的解药 */
+  margin-top: 2.6em;
+  margin-bottom: 0.9em;
+  padding: 0.35em 0 0.35em 0.7em;
+  border-left: 4px solid var(--md-primary-fg-color);
+  border-bottom: none;
+  background-image: linear-gradient(
+    to right,
+    var(--note-accent-weak),
+    rgba(0, 0, 0, 0) 70%
+  );
+  border-radius: 0 0.2rem 0.2rem 0;
+}
+
+.md-typeset h3 {
+  font-weight: 700;
+  margin-top: 1.9em;
+  margin-bottom: 0.7em;
+  color: var(--md-primary-fg-color);
+}
+
+.md-typeset h4 {
+  font-weight: 700;
+  margin-top: 1.4em;
+}
+
+.md-typeset .headerlink {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.md-typeset h2:hover .headerlink,
+.md-typeset h3:hover .headerlink {
+  opacity: 0.4;
+}
+
+/* --------------------------------------------------------------------------
+   3. 表格：斑马纹 + 表头对比，长表格才好扫读
+   -------------------------------------------------------------------------- */
+.md-typeset table:not([class]) {
+  font-size: 0.78rem;
+  border-radius: 0.3rem;
+  overflow: hidden;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.15);
+  display: table;
+  width: 100%;
+}
+
+.md-typeset table:not([class]) th {
+  background: var(--note-accent-mid);
+  font-weight: 700;
+  padding: 0.6em 0.8em;
+  border-bottom: 1px solid var(--note-accent-line);
+}
+
+.md-typeset table:not([class]) td {
+  padding: 0.55em 0.8em;
+  vertical-align: top;
+}
+
+.md-typeset table:not([class]) tbody tr:nth-child(odd) {
+  background: var(--note-zebra);
+}
+
+.md-typeset table:not([class]) tbody tr:hover {
+  background: var(--note-accent-weak);
+}
+
+.md-typeset table:not([class]) code {
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   4. 代码块：边界清晰 + 折叠区提示
+   -------------------------------------------------------------------------- */
+.md-typeset pre > code {
+  font-size: 0.76rem;
+  line-height: 1.6;
+}
+
+.md-typeset .highlight {
+  border-radius: 0.3rem;
+}
+
+.md-typeset code {
+  padding: 0.15em 0.35em;
+  border-radius: 0.2rem;
+  font-size: 0.82em;
+}
+
+/* details 折叠块：给明显的边界和手柄，让人知道可以点开 */
+.md-typeset details {
+  border: 1px solid var(--note-hairline);
+  border-left: 3px solid var(--md-primary-fg-color);
+  border-radius: 0.3rem;
+  margin: 1.1em 0;
+  box-shadow: none;
+}
+
+.md-typeset details > summary {
+  font-weight: 700;
+  padding: 0.6em 0.9em;
+  background: var(--note-accent-weak);
+  cursor: pointer;
+}
+
+.md-typeset details > summary::before {
+  background-color: var(--md-primary-fg-color);
+}
+
+.md-typeset details[open] > summary {
+  border-bottom: 1px solid var(--note-hairline);
+}
+
+/* --------------------------------------------------------------------------
+   5. 引用块：文首「一句话总结 / 前置知识 / 学完能做到」靠它撑住
+   -------------------------------------------------------------------------- */
+.md-typeset blockquote {
+  border-left: 4px solid var(--note-accent-line);
+  background: var(--note-accent-weak);
+  padding: 0.7em 1em;
+  border-radius: 0 0.25rem 0.25rem 0;
+  color: var(--md-typeset-color);
+  margin: 1.2em 0;
+}
+
+.md-typeset blockquote > p:first-child {
+  margin-top: 0;
+}
+
+.md-typeset blockquote > p:last-child {
+  margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   6. 列表：中文长列表需要更大的条目间距
+   -------------------------------------------------------------------------- */
+.md-typeset ul,
+.md-typeset ol {
+  margin: 0.8em 0;
+}
+
+.md-typeset li {
+  margin: 0.35em 0;
+}
+
+.md-typeset li > ul,
+.md-typeset li > ol {
+  margin: 0.25em 0;
+}
+
+/* --------------------------------------------------------------------------
+   7. 分隔线：Markdown 的 --- 常用来切章节，让它更明显
+   -------------------------------------------------------------------------- */
+.md-typeset hr {
+  border-bottom: 1px dashed var(--note-hairline);
+  margin: 2.2em 0;
+}
+
+/* --------------------------------------------------------------------------
+   8. 公式：给块级公式留白，否则和正文挤在一起
+   -------------------------------------------------------------------------- */
+.md-typeset .arithmatex {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.md-typeset mjx-container[jax="CHTML"][display="true"],
+.md-typeset .arithmatex > div {
+  margin: 1.3em 0 !important;
+}
+
+/* --------------------------------------------------------------------------
+   9. 阅读区宽度：超宽屏上正文铺满屏也是「白屏黑字」的成因之一
+   -------------------------------------------------------------------------- */
+@media screen and (min-width: 76.25em) {
+  .md-grid {
+    max-width: 78rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   10. 打印：把折叠内容默认展开，方便导出 PDF 复习
+   -------------------------------------------------------------------------- */
+@media print {
+  .md-typeset details {
+    border: none;
+  }
+  .md-typeset details > summary {
+    background: none;
+    font-weight: 700;
+  }
+  .md-typeset details > *:not(summary) {
+    display: block !important;
+  }
+}

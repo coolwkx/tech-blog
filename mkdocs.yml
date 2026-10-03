@@ -10,41 +10,59 @@ theme:
   language: zh
   features:
     - navigation.instant
+    - navigation.instant.progress
     - navigation.tracking
     - navigation.top
     - navigation.sections
     - navigation.indexes
+    - navigation.path
+    - navigation.footer
+    - toc.follow
     - search.suggest
     - search.highlight
+    - search.share
     - content.code.copy
-    - toc.follow
+    - content.code.select
+    - content.tooltips
+    - content.tabs.link
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
       primary: indigo
+      accent: indigo
       toggle:
         icon: material/weather-night
         name: 切换到深色
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: indigo
+      accent: indigo
       toggle:
         icon: material/weather-sunny
         name: 切换到浅色
+  # 不配置 font：Material 默认走 Google Fonts，国内访问不稳定；
+  # 中文字体改由 stylesheets/extra.css 里的系统字体栈处理
   icon:
     repo: fontawesome/brands/github
+
+extra_css:
+  - stylesheets/extra.css
 
 markdown_extensions:
   - admonition
   - attr_list
+  - md_in_html
   - tables
   - footnotes
   - toc:
       permalink: true
+      toc_depth: 3
   - pymdownx.details
   - pymdownx.superfences
   - pymdownx.highlight:
       anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.tabbed:
       alternate_style: true
@@ -52,9 +70,11 @@ markdown_extensions:
       generic: true
 
 plugins:
-  - search
+  - search:
+      separator: '[\s\u200b\-、。，；：！？（）《》【】]'
 
 extra_javascript:
+  - javascripts/mathjax.js
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
 nav:
@@ -95,8 +115,6 @@ nav:
       - 预处理与文本表示: 05-nlp/01-预处理与表示/README.md
       - 序列建模与 Transformer: 05-nlp/02-序列建模与Transformer/README.md
       - 任务与信息抽取: 05-nlp/03-任务与信息抽取/README.md
-      - 生成与检索: 05-nlp/04-生成与检索/README.md
-      - 评估与面试: 05-nlp/05-评估与面试/README.md
       - 速查与面试: 05-nlp/90-cheatsheet/README.md
   - "🤖 大语言模型":
       - 领域目录: 06-llm/README.md
