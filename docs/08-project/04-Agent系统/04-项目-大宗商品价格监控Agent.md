@@ -32,12 +32,22 @@
 
 它具备 Agent 的最小闭环，虽然不含 LLM：
 
-```text
-感知（Perception） → 从 5+N 个数据源抓取当前报价
-决策（Reasoning） → 与买入/卖出阈值比较，判断状态（buy/sell/normal）
-记忆（Memory） → commodity_state.json 记上次价格与上次通知时间；commodity_history.json 记历史
-行动（Action） → 通过 Server酱推送微信
+```mermaid
+flowchart LR
+    P["感知 Perception<br/>从 5+N 个数据源抓取当前报价"] --> R["决策 Reasoning<br/>与买入 / 卖出阈值比较<br/>判断状态 buy / sell / normal"]
+    R --> M["记忆 Memory<br/>commodity_state.json 存上次价格与上次通知时间<br/>commodity_history.json 存历史"]
+    M --> A["行动 Action<br/>通过 Server酱推送微信"]
+    A -.->|下一轮继续感知| P
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| 四个环节首尾相接成闭环 | "感知-决策-记忆-行动"正是 Agent 的最小定义，和纯 CRUD 脚本的区别就在于这个环 |
+| 记忆是**跨轮**的，不只是当轮变量 | 状态落盘后进程重启仍语义连续，这也是"去重通知"能成立的前提 |
+| 行动只有一种：发消息 | 行动空间窄，所以规则引擎足够；要升级成 AI Agent，缺口在感知与决策 |
+| 环的驱动力是定时器而非用户输入 | 它是主动型 Agent，不需要外部触发 |
 
 把"Agent"理解成"感知-决策-记忆-行动"的循环，就能看清这类脚本和纯 CRUD 应用的区别，也更容易在面试里讲清楚它为什么值得写。
 
@@ -58,55 +68,44 @@
 
 ### 2.1 整体数据流
 
-```text
- ┌───────────────────────────────────────────┐
- │ main_monitor.py │
- │ │
- 定时循环 │ while True: │
- (check_interval) │ price = get_commodity_price ────────┐ │
- │ change = (price-last)/last*100 │ │
- │ 与 buy/sell 阈值比较 → status │ │
- │ ┌──────────────────────────────┐ │ │
- │ │ 状态变化? → 立即通知 │ │ │
- │ │ 状态未变但冷却期满? → 再通知 │ │ │
- │ │ 否则 → 跳过（不打扰用户） │ │ │
- │ └──────────────┬───────────────┘ │ │
- │ │ │ │
- │ save_state(commodity_state.json) │ │
- │ time.sleep(check_interval) │ │
- └───────────────────────────────────────┘ │
- │
- ┌───────────────────────────────────────────────────────┘
- │ get_commodity_price：三级数据源依次降级
- ▼
- ┌────────────────────────┐
- │ 一级：工银积存金 API×2 │ 106.54.190.155:886
- │ 新浪财经 AU9999/ │ hq.sinajs.cn
- │ AUTD/AU100G │
- ├────────────────────────┤ ← 任一成功即 return
- │ 二级：和讯/中金在线/ │ quote.hexun.com、data.cnfol.com
- │ 上金所/Wind/腾讯 │ sge.com.cn、qt.gtimg.cn
- ├────────────────────────┤
- │ 三级：新浪期货页/我的钢铁网/│ 页面正则抓取（最不稳定）
- │ 同花顺 │
- └───────────┬────────────┘
- │ 全部失败
- ▼
- return None → 本轮跳过，不写状态、不发通知
- │
- ┌──────┴──────────────────────────────┐
- ▼ ▼
- Server酱推送 commodity_history.json 追加
- sctapi.ftqq.com/<key>.send {time, price}，保留最近 N 条
- │ │
- ▼ ▼
- 微信消息 dashboard.py (Flask)
- 折线图 + 买入/卖出参考虚线
- meta refresh 120s 自动刷新
- │
- daily_report.py
- 取当日数据 → 日报 + 趋势分析 → 推微信
+这张图回答的是"一轮监控到底做了什么、失败时又怎么退"，也就是 `main_monitor.py` 的主循环：
+
+```mermaid
+flowchart TD
+    LOOP(["定时循环 while True<br/>每 check_interval 秒一轮"]) --> GET["get_commodity_price()<br/>三级数据源依次降级"]
+    GET --> L1["一级：工银积存金 API ×2、新浪财经 AU9999 / AUTD / AU100G"]
+    L1 -->|任一成功即 return| OK["拿到 price"]
+    L1 -->|失败| L2["二级：和讯、中金在线、上金所、Wind、腾讯"]
+    L2 -->|任一成功即 return| OK
+    L2 -->|失败| L3["三级：新浪期货页、我的钢铁网、同花顺<br/>页面正则抓取，最不稳定"]
+    L3 -->|成功| OK
+    L3 -->|全部失败| NONE["return None"]
+    NONE --> SKIP["本轮跳过：不写状态、不发通知"] --> SLEEP
+    OK --> CHG["change = (price - last_price) / last_price × 100<br/>与 buy / sell 阈值比较 → status"]
+    CHG --> DEC{"status 与 last_status 不同？"}
+    DEC -->|是：状态跃迁| NOTIFY["立即通知"]
+    DEC -->|否| COOL{"now - last_notify_time > notify_interval ?"}
+    COOL -->|是：冷却期满| NOTIFY
+    COOL -->|否| SILENT["跳过，不打扰用户"]
+    NOTIFY --> SAVE["save_state(commodity_state.json)<br/>每轮落盘，重启后语义连续"]
+    SILENT --> SAVE
+    SAVE --> SLEEP["time.sleep(check_interval)"]
+    SLEEP --> LOOP
+    NOTIFY --> PUSH["Server酱推送<br/>sctapi.ftqq.com 发送接口"] --> WX["微信消息"]
+    SAVE --> HIST["commodity_history.json 追加 {time, price}<br/>滚动保留最近 N 条"]
+    HIST --> DASH["dashboard.py（Flask）<br/>折线图 + 买入 / 卖出参考虚线<br/>meta refresh 120s 自动刷新"]
+    HIST --> REPORT["daily_report.py<br/>取当日数据 → 日报 + 趋势分析 → 推微信"]
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| 抓价的三级降级是一条独立的支线 | 抓价失败不会污染主循环：`return None` 后本轮直接跳过，既不写状态也不发通知 |
+| 判断节点是 `DEC` 和 `COOL` 两级串联 | 这就是"状态变化 + 冷却期"的双条件通知，缺任何一个都会变成漏报或刷屏 |
+| 落盘 `SAVE` 在通知之后，且两条分支都会走到 | 通知成功与否不影响状态更新；而 `last_notify_time` 只在发送成功后才写，保证失败可重试 |
+| `SLEEP` 回连到 `LOOP` | 这是常驻模式的形状；`main_monitor.py` 不带参数时只跑一次就退出，由 cron 之类的外部调度器驱动 |
+| 推送与留痕是两个并列出口 | "提醒"和"留痕"共用同一份判断结果，所以看板上的历史与用户收到的消息始终对得上 |
 
 ### 2.2 状态机
 

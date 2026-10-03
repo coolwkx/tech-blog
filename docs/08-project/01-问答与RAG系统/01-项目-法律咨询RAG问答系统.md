@@ -78,31 +78,51 @@ flowchart TD
 
 ### 离线索引管线
 
-```text
-data/{statute,judicial,cases,faq,procedure}_data/
- │ load_documents_from_directory 按扩展名选 Loader
- │ .txt→TextLoader .pdf/.docx/.ppt/.jpg→OCR 类 Loader
- │ 同时写入 metadata: source / file_path / timestamp
- ▼
- parent_splitter (chunk=1200) ──▶ 父块，metadata.parent_content = 父块全文
- ▼
- child_splitter (chunk=300, overlap=50) ──▶ 子块，继承 parent_id
- ▼
- BGE-M3 编码 → dense_vector(1024) + sparse_vector(词权重)
- ▼
- Milvus upsert，主键 = md5(子块文本) ← 幂等，重复灌库不会产生脏数据
+这张图回答的是"一份文档从磁盘到 Milvus，中途被加工成了什么"，它只在建库时跑一次：
+
+```mermaid
+flowchart TD
+    RAW["data/ 下的 statute、judicial、cases、faq、procedure 五个语料目录"] --> LOAD["load_documents_from_directory 按扩展名选 Loader<br/>.txt → TextLoader；.pdf / .docx / .ppt / .jpg → OCR 类 Loader<br/>同时写入 metadata：source / file_path / timestamp"]
+    LOAD --> PARENT["parent_splitter（chunk=1200）<br/>产出父块，metadata.parent_content = 父块全文"]
+    PARENT --> CHILD["child_splitter（chunk=300, overlap=50）<br/>产出子块，继承 parent_id"]
+    CHILD --> ENC["BGE-M3 编码<br/>dense_vector(1024) + sparse_vector(词权重)"]
+    ENC --> UPSERT["Milvus upsert，主键 = md5(子块文本)<br/>幂等：重复灌库不会产生脏数据"]
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| 切分被做了两次：先父后子 | 一次灌库同时产出"检索用的子块"和"生成用的父块"，这是分层切分的数据基础 |
+| 子块继承 `parent_id`，父块全文冗余进元数据 | 检索命中子块后**不必二次查库**就能拿到完整父块上下文 |
+| 主键取 `md5(子块文本)` | 内容相同即主键相同，`upsert` 天然幂等，调试期反复重灌不会产生脏数据 |
+| 一次编码同时给出 dense 与 sparse | BGE-M3 一次推理产出两种向量，省掉一整套独立的稀疏编码服务 |
 
 ### 检索时的"小块检索、大块喂给 LLM"
 
-```text
-query ──▶ BGE-M3 ──▶ dense AnnSearchRequest ─┐
- └▶ sparse AnnSearchRequest ─┴─▶ WeightedRanker(0.7, 1.0)
- ──▶ Top-K 子块（精准但缺上下文）
- ──▶ 按 parent_content 去重，回溯成父块（完整但略粗）
- ──▶ BGE-Reranker 对 (query, 父块) 逐对打分重排
- ──▶ 取 CANDIDATE_M=2 个父块进 Prompt
+这一节回答的是"一次查询从进来到变成 Prompt，中间要过几道手"：
+
+```mermaid
+flowchart TD
+    Q["query"] --> EMB["BGE-M3 编码"]
+    EMB --> DENSE["dense AnnSearchRequest"]
+    EMB --> SPARSE["sparse AnnSearchRequest"]
+    DENSE --> RANK["WeightedRanker(0.7, 1.0)<br/>稠密为主、稀疏补术语"]
+    SPARSE --> RANK
+    RANK --> TOPK["Top-K 子块<br/>精准但缺上下文"]
+    TOPK --> BACK["按 parent_content 去重，回溯成父块<br/>完整但略粗"]
+    BACK --> RERANK["BGE-Reranker 对 (query, 父块) 逐对打分重排"]
+    RERANK --> OUT["取 CANDIDATE_M=2 个父块进 Prompt"]
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| 一次查询走两条召回，再在 `RANK` 汇合 | 稠密管语义、稀疏管术语编号，任何一方单独用都会漏 |
+| 召回单位是子块，送进 Prompt 的是父块 | "小块保精度、大块保上下文"就体现在这一步的转换上 |
+| 去重发生在重排之前 | 精排成本 = 候选数 × 前向一次，先降候选再精排是通用的省钱原则 |
+| 最终只留 2 个父块 | 精排的收益集中在头部，再多取只是白烧 token |
 
 ## 3. 关键技术选型与理由
 

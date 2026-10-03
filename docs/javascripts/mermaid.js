@@ -1,9 +1,22 @@
-// Mermaid 初始化：把 ```mermaid 代码块渲染成图示
-// GitHub 原生支持 mermaid 代码块，这个脚本让站点上的渲染效果与 GitHub 保持一致。
+// Mermaid 初始化 + 多源回退加载
 //
-// 关于排序：本文件在 mermaid.min.js 之前被引入，所以不能在加载时直接调用
-// mermaid.initialize；这里用轮询等到 CDN 脚本就绪后再初始化。
+// 背景：mermaid 不是纯函数库，无法只靠一个 js 文件离线加载（它的解析器与渲染器
+// 分散在多个 chunk 里），所以这里走 CDN；但按顺序尝试多个源，避免单一 CDN 不可达
+// 导致图示全部退化为代码块。
+//
+// GitHub 原生支持 ```mermaid 代码块，即使站点脚本加载失败，在 GitHub 上依然能看图。
+
 (function () {
+  var SOURCES = [
+    "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js",
+    "https://unpkg.com/mermaid@11/dist/mermaid.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.1/mermaid.min.js",
+    "https://npm.elemecdn.com/mermaid@11/dist/mermaid.min.js"
+  ];
+
+  var idx = 0;
+  var libLoaded = false;
+
   function initMermaid() {
     if (!window.mermaid) return false;
     mermaid.initialize({
@@ -30,31 +43,39 @@
 
   function renderMermaid() {
     if (!window.mermaid) return;
+    // 已处理过的节点会被 mermaid 标记，避免重复渲染
     var blocks = document.querySelectorAll(".mermaid:not([data-processed])");
     if (blocks.length === 0) return;
     try {
       mermaid.run({ nodes: blocks });
     } catch (e) {
-      // 单个图语法错误不该影响整页
+      // 单个图语法错误不应该影响整页
       console.warn("[mermaid] 渲染失败：", e);
     }
   }
 
-  if (!initMermaid()) {
-    var tries = 0;
-    var timer = setInterval(function () {
-      tries += 1;
-      if (initMermaid()) {
-        clearInterval(timer);
-        renderMermaid();
-      } else if (tries > 50) {
-        clearInterval(timer); // 约 5 秒后放弃，不阻塞页面
-        console.warn("[mermaid] CDN 未加载，图示将保持为代码块");
-      }
-    }, 100);
-  } else {
-    renderMermaid();
+  function tryNext() {
+    if (libLoaded) return;
+    if (idx >= SOURCES.length) {
+      console.warn("[mermaid] 所有源均不可达，图示将保持为代码块（GitHub 上仍可正常查看）");
+      return;
+    }
+    var url = SOURCES[idx++];
+    var s = document.createElement("script");
+    s.src = url;
+    s.async = true;
+    s.onload = function () {
+      libLoaded = true;
+      if (initMermaid()) renderMermaid();
+    };
+    s.onerror = function () {
+      console.warn("[mermaid] 加载失败，尝试下一个源：" + url);
+      tryNext();
+    };
+    document.head.appendChild(s);
   }
+
+  tryNext();
 
   // Material 的 instant navigation 换页后需要重新渲染
   if (typeof document$ !== "undefined") {
