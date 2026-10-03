@@ -20,12 +20,12 @@ theme:
     #   navigation.sections 会「强制展开且不显示折叠箭头」
     # 两者都不要启用，才能得到「手风琴」行为：默认只展开当前所在分组，
     # 点开一个分组时其余分组自动收起。
+    #
+    # 也不要启用 navigation.tabs：顶栏标签会随正文一起滚走，
+    # 换领域必须先把页面滚回顶部；侧栏是独立滚动的，任何时候都能直接切换领域。
     - navigation.indexes
     - navigation.path
     - navigation.footer
-    # 顶栏分页：把 9 个领域提升为顶部横向标签，侧栏只显示当前领域的系列。
-    # 适合领域多、层级深的文档站，跨领域跳转不必再滚动侧栏。
-    - navigation.tabs
     - toc.follow
     - search.suggest
     - search.highlight
