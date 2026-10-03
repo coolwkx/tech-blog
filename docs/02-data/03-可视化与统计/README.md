@@ -6,7 +6,7 @@
 
 | # | 笔记 | 难度 | 预计用时 | 状态 |
 | --- | --- | --- | --- | --- |
-| 01 | [数据可视化- matplotlib与seaborn](08-数据可视化- matplotlib与seaborn.md) | ⭐⭐⭐ | 25min | ✅ 已完成 |
+| 01 | [数据可视化-matplotlib与seaborn](08-数据可视化-matplotlib与seaborn.md) | ⭐⭐⭐ | 25min | ✅ 已完成 |
 | 02 | [统计分析基础](09-统计分析基础.md) | ⭐⭐⭐ | 25min | ✅ 已完成 |
 
 ## 本章要回答的问题

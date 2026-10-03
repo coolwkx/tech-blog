@@ -1,4 +1,4 @@
-# 08 Attention 与 Transformer
+# Attention 与 Transformer
 
 > **一句话总结**：用「Query-Key 相似度加权 Value」替代 RNN 的逐步递归，让序列建模第一次可以大规模并行。
 > **前置知识**：第 07 篇 RNN / LSTM / seq2seq、PyTorch 的 `nn.Linear` 与张量 `view/transpose/matmul`、softmax 与交叉熵。

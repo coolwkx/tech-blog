@@ -6,9 +6,9 @@
 
 | # | 笔记 | 难度 | 预计用时 | 状态 |
 | --- | --- | --- | --- | --- |
-| 01 | [07 RNN 与 LSTM 文本建模](07-RNN与LSTM文本建模.md) | ⭐⭐⭐ | 25min | ✅ 已完成 |
-| 02 | [08 Attention 与 Transformer](08-Attention与Transformer.md) | ⭐⭐⭐ | 25min | ✅ 已完成 |
-| 03 | [09 BERT 与预训练模型](09-BERT与预训练模型.md) | ⭐⭐⭐ | 25min | ✅ 已完成 |
+| 01 | [RNN 与 LSTM 文本建模](07-RNN与LSTM文本建模.md) | ⭐⭐⭐ | 25min | ✅ 已完成 |
+| 02 | [Attention 与 Transformer](08-Attention与Transformer.md) | ⭐⭐⭐ | 25min | ✅ 已完成 |
+| 03 | [BERT 与预训练模型](09-BERT与预训练模型.md) | ⭐⭐⭐ | 25min | ✅ 已完成 |
 
 ## 本章要回答的问题
 

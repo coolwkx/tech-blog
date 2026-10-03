@@ -1,4 +1,4 @@
-# 12 Pandas 数据处理
+# Pandas 数据处理
 > **一句话总结**：`Series` 是"带索引的一维数组"，`DataFrame` 是"共享同一行索引的多个 Series"；Pandas 的全部操作都围绕**索引对齐**展开，而"选数据（loc/iloc/query）→ 洗数据（缺失值/类型）→ 拼数据（concat/merge）→ 分组统计（groupby/pivot_table）"就是数据分析的标准流水线。
 > **前置知识**：NumPy 的 ndarray、广播与 `axis` 语义（11 篇）、列表/字典（01 篇）、文件读写与编码（04 篇）。
 

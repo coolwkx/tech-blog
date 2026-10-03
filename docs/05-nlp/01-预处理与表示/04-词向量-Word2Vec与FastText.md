@@ -1,4 +1,4 @@
-# 04 词向量：Word2Vec 与 FastText
+# 词向量：Word2Vec 与 FastText
 
 > **一句话总结**：用「上下文相似的词，向量也该相似」这一条自监督信号，把稀疏的 one-hot 换成低维稠密、带语义距离的词向量。
 > **前置知识**：第 03 篇的 one-hot 与词袋、softmax 与交叉熵、PyTorch `nn.Embedding` 的基本用法。
