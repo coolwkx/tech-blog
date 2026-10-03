@@ -34,52 +34,47 @@
 
 ## 2. 技术架构
 
-```text
- ┌──────────────────────────────┐
- 用户 / WebUI ──────▶│ FastAPI (app.py) │
- │ POST /api/query (非流式) │
- │ WS /api/stream (流式) │
- └───────────────┬──────────────┘
- │
- ┌───────────▼────────────┐
- │ 日常问候正则短路 │
- │ GREETING_PATTERNS │
- └───────────┬────────────┘
- │
- ┌──────────────────▼───────────────────┐
- │ IntegratedQASystem.query │
- │ (生成器：yield (token, is_complete)) │
- └───────┬──────────────────────┬───────┘
- │ ①先走 FAQ │ ②兜底走 RAG
- ┌─────────▼─────────┐ ┌────────▼──────────────────┐
- │ Redis 答案缓存 │ │ QueryClassifier (BERT) │
- │ ↓ miss │ │ 通用知识 → 直接问 LLM │
- │ BM25Okapi + jieba │ │ 专业咨询 → 进入检索 │
- │ Softmax 归一化 │ └────────┬──────────────────┘
- │ 阈值 ≥ 0.85 ? │ │
- └─────────┬─────────┘ ┌────────▼──────────────────┐
- │ hit │ StrategySelector (LLM) │
- │ │ 直接/HyDE/子查询/回溯 │
- │ └────────┬──────────────────┘
- │ │
- │ ┌─────────────▼───────────────┐
- │ │ VectorStore │
- │ │ BGE-M3 → dense+sparse │
- │ │ Milvus hybrid_search │
- │ │ 子块命中→回溯父块→去重 │
- │ │ BGE-Reranker 精排 │
- │ └─────────────┬───────────────┘
- │ │ 父块上下文
- └──────────┬───────────┘
- ▼
- ┌────────────────────────┐
- │ rag_prompt 拼上下文 │
- │ Qwen2.5-7B / qwen-plus │
- │ 无答案→转人工兜底 │
- └────────────┬───────────┘
- ▼
- 答案回写 MySQL conversations 表（保留最近 5 轮）
+```mermaid
+flowchart TD
+    U["用户 / WebUI"] --> API["FastAPI (app.py)<br/>POST /api/query 非流式<br/>WS /api/stream 流式"]
+    API --> GREET{"日常问候？<br/>GREETING_PATTERNS 正则"}
+    GREET -->|是| SHORT["直接返回寒暄话术"]
+    GREET -->|否| QA["IntegratedQASystem.query<br/>生成器：yield (token, is_complete)"]
+
+    QA --> FAQ["① FAQ 通道<br/>Redis 答案缓存<br/>↓ miss"]
+    FAQ --> BM25["BM25Okapi + jieba<br/>Softmax 归一化"]
+    BM25 --> TH{"阈值 ≥ 0.85 ?"}
+    TH -->|hit| OUT
+    TH -->|miss| CLS
+
+    QA --> CLS["② 兜底走 RAG<br/>QueryClassifier (BERT)"]
+    CLS --> ROUTE{"问题类型"}
+    ROUTE -->|通用知识| LLM["直接问 LLM"]
+    ROUTE -->|专业咨询| SEL["StrategySelector (LLM)<br/>直接 / HyDE / 子查询 / 回溯"]
+
+    SEL --> VS["VectorStore<br/>BGE-M3 → dense + sparse<br/>Milvus hybrid_search<br/>子块命中 → 回溯父块 → 去重<br/>BGE-Reranker 精排"]
+    VS --> CTX["Top-2 父块上下文"]
+    LLM --> OUT
+    CTX --> OUT["rag_prompt 拼上下文<br/>Qwen2.5-7B / qwen-plus<br/>无答案 → 转人工兜底"]
+    OUT --> SAVE["答案回写 MySQL conversations 表<br/>保留最近 5 轮"]
+
+    SHORT --> SAVE
+
+    classDef chan fill:#e8eaf6,stroke:#5c6bc0,color:#1a1a1a
+    classDef store fill:#f3f4f6,stroke:#9e9e9e,color:#1a1a1a
+    class FAQ,CLS,VS chan
+    class SAVE store
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| `GREET` 在 `QA` 之前 | 寒暄走正则短路，不消耗任何模型调用 |
+| `TH` 阈值 0.85 的 `hit` 直接到输出 | FAQ 命中时**完全不进入 RAG 链路**，这是成本控制的关键 |
+| `ROUTE` 把问题分成两类 | 通用知识不检索（避免无谓的向量搜索），只有专业咨询才进 `SEL` |
+| `VS` 是唯一的重活 | 混合检索 + 父块回溯 + 重排都在这里，也是延迟主要来源 |
+| 两条链路都汇到 `OUT` | 输出与落库逻辑只有一份，避免两套代码路径不一致 |
 
 ### 离线索引管线
 
