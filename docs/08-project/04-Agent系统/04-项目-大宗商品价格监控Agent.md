@@ -109,18 +109,25 @@ flowchart TD
 
 ### 2.2 状态机
 
-```text
- price < buy_threshold
- ┌───────────────────────────────────────────┐
- │ ▼
- ┌─────────┐ buy_threshold ≤ price ≤ sell_threshold ┌────────┐
- │ buy │◀────────────────────────────────────────│ normal │
- └─────────┘ └────────┘
- ▲ ▲
- │ price > sell_threshold │
- └────────────────────────────────────────────────────┘
- （normal ↔ sell 同理）
+这张图回答的是"哪些价格变化会让状态发生跃迁"，把三种离散状态之间的转移画清楚：
+
+```mermaid
+stateDiagram-v2
+    [*] --> normal
+    normal --> buy: price < buy_threshold（800）
+    buy --> normal: buy_threshold ≤ price ≤ sell_threshold
+    normal --> sell: price > sell_threshold（900）
+    sell --> normal: buy_threshold ≤ price ≤ sell_threshold
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| 只有三个状态，没有"中间价"状态 | 判断依据是价格落在哪个区间，而不是价格本身，所以 799 → 801 会触发跃迁、799 → 750 不会 |
+| 只有 `normal` 是枢纽 | 从 `buy` 到 `sell` 不能一步直达，必须先回到 `normal`，价格不可能同时满足两个阈值 |
+| 每条边都由**阈值比较**触发 | 状态定义写死在代码里、阈值写在配置里，改参考价不需要动状态机 |
+| 状态跃迁只是"立即通知"的触发条件之一 | 状态长期不变时，冷却期满还会补发一次，两个条件合起来才是完整的通知规则 |
 
 通知规则（这是全项目最核心的一段业务逻辑）：
 
@@ -200,7 +207,7 @@ def get_commodity_price:
  continue
 
  response.encoding = "utf-8" # 中文站点必须显式指定编码
- text = response.text.strip
+ text = response.text.strip()
  if not text or text.endswith('=""'): # 新浪接口无数据时返回空串
  print("响应为空")
  continue

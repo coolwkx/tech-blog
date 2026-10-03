@@ -235,7 +235,7 @@ KEEP_WORDS = {"不", "没", "无", "但", "但是", "不过", "然而", "差", "
 
 def preprocess(text: str) -> str:
     words = [w for w in jieba.lcut(text)
-    if w.strip and (w in KEEP_WORDS or w not in STOPWORDS)]
+    if w.strip() and (w in KEEP_WORDS or w not in STOPWORDS)]
     return "".join(words)
 
 df["words"] = df["sentence"].apply(preprocess)
@@ -444,7 +444,7 @@ app = Flask(__name__)
 def preprocess(text: str) -> str:
  """必须与训练时完全一致：同一个分词器、同一份停用词表"""
  return "".join(w for w in jieba.lcut(text)
- if w.strip and (w in KEEP_WORDS or w not in STOPWORDS))
+ if w.strip() and (w in KEEP_WORDS or w not in STOPWORDS))
 
 @app.route("/v1/sentiment/", methods=["POST"])
 def sentiment:

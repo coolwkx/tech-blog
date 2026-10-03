@@ -51,79 +51,88 @@ dev.txt 590 条 ← 验证集
 
 ### 2.1 PET 数据流（硬模板）
 
-```text
-data/train.txt (63 条，格式：标签\t评论) 例：衣服\t衣服掉色掉的厉害，洗一次就花了
- │
-data/prompt.txt → "这是一条{MASK}评论：{textA}。"
-data/verbalizer.txt → "衣服\t衣服"、"水果\t苹果,香蕉,橘子" ...
- │
- │ HardTemplate.prompt_analysis：逐字符扫描 prompt，遇 { } 提取自定义字段
- ▼
-inputs_list = ['这','是','一','条','MASK','评','论','：','textA','。']
-custom_tokens = {'MASK', 'textA'}
- │
- │ HardTemplate.__call__
- │ ① 用真实文本填充 {textA} ② {MASK} 展开成 mask_length 个 "[MASK]"(=2)
- ▼
-str_formated = "这是一条[MASK][MASK]评论：衣服掉色掉的厉害，洗一次就花了。"
- │ tokenizer(truncation=True, max_length=256, padding='max_length')
- ▼
-input_ids [1, 47, 10, 7, 304, 3, 3, 47, 27, ... 2] 定长 256
-token_type_ids [0, 0, ..., 0]
-attention_mask [1, 1, ..., 1, 0, 0, ..., 0]
-mask_position [4, 5] ← np.where(input_ids == mask_token_id)
-mask_labels [2372, 3442] ← label → tokenizer(label)，截断/pad 到 2（"衣服"）
+这条链回答的是"一句人写的模板，怎么变成模型能吃进去的定长张量"：
+
+```mermaid
+flowchart TD
+    TRAIN["data/train.txt：63 条，格式『标签 + 制表符 + 评论』<br/>例：衣服 → 衣服掉色掉的厉害，洗一次就花了"]
+    PROMPT["data/prompt.txt<br/>『这是一条 MASK 评论：textA。』"]
+    VERB["data/verbalizer.txt<br/>『衣服→衣服』『水果→苹果,香蕉,橘子』…"]
+    PROMPT --> ANALYSIS["HardTemplate.prompt_analysis<br/>逐字符扫描 prompt，遇到花括号就提取自定义字段"]
+    ANALYSIS --> IL["inputs_list：这 / 是 / 一 / 条 / MASK / 评 / 论 / ： / textA / 。<br/>custom_tokens：MASK、textA"]
+    IL --> CALL["HardTemplate 调用<br/>① 用真实文本填充 textA<br/>② MASK 展开成 mask_length 个 [MASK]（=2）"]
+    TRAIN -->|取出评论正文| CALL
+    CALL --> STR["str_formated：这是一条[MASK][MASK]评论：衣服掉色掉的厉害，洗一次就花了。"]
+    STR --> TOK["tokenizer(truncation=True, max_length=256, padding='max_length')"]
+    TOK --> OUT["input_ids：定长 256<br/>token_type_ids：全 0<br/>attention_mask：前段为 1、pad 段为 0<br/>mask_position：[4, 5]，由 np.where(input_ids == mask_token_id) 反查<br/>mask_labels：[2372, 3442]，标签词 tokenize 后截断 / pad 到 2"]
+    VERB -.->|训练与评估时提供子标签| OUT
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| 模板是一个**独立文件**，先被解析成 `inputs_list` 再使用 | 模板与代码解耦，改模板不用改 Python，代价是多了"解析"这一步 |
+| `prompt_analysis` 遇花括号才切出自定义字段 | 自定义字段的个数、位置都由模板决定，所以不能写死"第 5 个字符是 MASK" |
+| `mask_position` 是从 `input_ids` **反查**出来的 | tokenizer 可能按字切、也可能合并英文数字，手算位置一定会偏移 |
+| 出口是一个五件套的定长张量 | 序列全部 pad 到 256，所以后续 batch 拼装不需要再考虑变长 |
+| `mask_labels` 在训练前还会被 Verbalizer 展开成子标签 | 这里只存了主标签的 token，真正的软目标在下一个流程里构造 |
 
 ### 2.2 PET 训练与评估流
 
-```text
-batch = {input_ids, token_type_ids, attention_mask, mask_positions, mask_labels}
- │
- ▼
-model(input_ids, token_type_ids, attention_mask).logits → (batch, 256, 21128)
- │
- ├─▶ 训练：mask_labels → Verbalizer.batch_find_sub_labels
- │ '水果' → ['苹果'(2tok), '香蕉'(2tok), '橘子'(2tok)] ← 变长！
- │ ▼
- │ mlm_loss(logits, mask_positions, sub_mask_labels, criterion, device)
- │ 取出 mask 位置 logits → (mask_label_num, vocab)
- │ repeat → (sub_label_num, mask_label_num, vocab)
- │ reshape → (sub_label_num*mask_label_num, vocab)
- │ 与每个子标签 token 求 CE，按 token 数归一化后平均
- │
- └─▶ 评估：convert_logits_to_ids(logits, mask_positions)
- reshape(batch*seq_len, vocab)[batch*seq_len+pos] → argmax
- → predictions (batch, label_num) 的 token id
- ▼
- Verbalizer.batch_find_main_label(predictions)
- ① 命中 label_dict 子标签 → 直接返回主标签
- ② 未命中 → hard_mapping：与所有子标签求最长公共子串，取总长最大者
- ▼
- ClassEvaluator 累计 → accuracy / precision / recall / f1 / 每类指标
+这一节回答的是"同一个 `logits`，训练时和评估时分别怎么用"：
+
+```mermaid
+flowchart TD
+    BATCH["一个 batch：input_ids、token_type_ids、attention_mask、mask_positions、mask_labels"] --> MODEL["model(input_ids, token_type_ids, attention_mask).logits<br/>形状 (batch, 256, 21128)"]
+    MODEL --> TR["训练分支"]
+    MODEL --> EV["评估分支"]
+    TR --> SUB["Verbalizer.batch_find_sub_labels<br/>『水果』→ 苹果 (2 token)、香蕉 (2 token)、橘子 (2 token)<br/>★ 子标签个数是变长的"]
+    SUB --> LOSS["mlm_loss(logits, mask_positions, sub_mask_labels, criterion, device)<br/>① 取出 mask 位置 logits → (mask_label_num, vocab)<br/>② repeat 成 (sub_label_num, mask_label_num, vocab)<br/>③ reshape 成 (sub_label_num × mask_label_num, vocab)<br/>④ 与每个子标签 token 求交叉熵，按 token 数归一化后平均"]
+    EV --> CONV["convert_logits_to_ids(logits, mask_positions)<br/>把二维坐标展平成 batch × seq_len + pos 后取 argmax<br/>→ predictions：(batch, label_num) 的 token id"]
+    CONV --> MAIN["Verbalizer.batch_find_main_label(predictions)<br/>① 命中 label_dict 中的子标签 → 直接返回主标签<br/>② 未命中 → hard_mapping：与所有子标签求最长公共子串，取总长最大者"]
+    MAIN --> METRIC["ClassEvaluator 累计<br/>→ accuracy / precision / recall / f1 / 每类指标"]
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| 训练与评估共用同一个 `logits`，在 `MODEL` 之后才分叉 | 前向只有一次，区别只在"怎么解释输出"——一个算 loss，一个取 argmax |
+| 训练走的是"子标签"，评估走的是"主标签" | 训练时只要命中任一子标签 loss 就低，评估时必须还原成人能看懂的类别名 |
+| 子标签个数是变长的，所以 `LOSS` 里要 repeat + reshape | 一个主标签对应几个子标签，logits 就复制几份，保证"任一合法答案都算对" |
+| `MAIN` 有一条模糊匹配兜底 | 模型有整个词表的自由度，输出表外词时靠最长公共子串兜住，保证永远有结果 |
+| 出口是完整指标而非单一 accuracy | 10 个类、63 条样本，平均准确率几乎说明不了问题，必须看每类指标 |
 
 ### 2.3 P-Tuning 数据流（软模板）
 
-```text
-convert_example(p_embedding_num=6, max_label_len=2, max_seq_len=512)
- ① tokenizer(content) → input_ids（含 [CLS]...[SEP]）
- ② 生成 2 个 [MASK]
- ③ 生成 6 个伪 token：["[unused1]".."[unused6]"] → ids
- ④ 裁剪正文：input_ids[: max_seq_len - len(mask_ids) - len(p_tokens_ids) - 1]
- ⑤ 在 [CLS] 之后（position=1）插入 [MASK][MASK]
- ⑥ 6 个伪 token 拼到最前面
- ▼
-位置: 0 1 2 3 4 5 6 7 8 9 ... 509 510 511
-内容: [u1] [u2] [u3] [u4] [u5] [u6][CLS][MASK][MASK] 正文... [SEP][PAD]
- └──── 伪 token（软模板）────┘ └─ 预测目标 ─┘
- │
- ⑦ mask_positions = [len(p_tokens)+1+i for i in range(2)] = [7, 8]
- ⑧ attention_mask = np.where(np.array(input_ids) > 0, 1, 0) ← ★ 必须重算
- ⑨ mask_labels = tokenizer(label)['input_ids'][1:-1]，截断/pad 到 2
- ▼
-{input_ids, attention_mask, mask_positions, mask_labels}
+软模板和硬模板的差别全在"序列是怎么拼出来的"这一步，这张图把它拆成九步：
+
+```mermaid
+flowchart TD
+    IN["convert_example(p_embedding_num=6, max_label_len=2, max_seq_len=512)"]
+    IN --> S1["① tokenizer(content) → input_ids（含 [CLS] … [SEP]）"]
+    S1 --> S2["② 生成 2 个 [MASK]"]
+    S2 --> S3["③ 生成 6 个伪 token：[unused1] … [unused6] 对应的 id"]
+    S3 --> S4["④ 裁剪正文：max_seq_len 减去 mask、伪 token 与 [SEP] 的位置"]
+    S4 --> S5["⑤ 在 [CLS] 之后（position=1）插入 [MASK][MASK]"]
+    S5 --> S6["⑥ 6 个伪 token 拼到最前面"]
+    S6 --> LAYOUT["最终序列布局（位置 0 → 511）<br/>[u1][u2][u3][u4][u5][u6] [CLS] [MASK][MASK] 正文 … [SEP][PAD]<br/>前 6 位是伪 token（软模板），第 7、8 位是预测目标"]
+    LAYOUT --> S7["⑦ mask_positions = [len(p_tokens) + 1 + i for i in range(2)] = [7, 8]"]
+    S7 --> S8["⑧ attention_mask 必须重算：np.where(input_ids > 0, 1, 0)"]
+    S8 --> S9["⑨ mask_labels = tokenizer(label)['input_ids'][1:-1]，截断 / pad 到 2"]
+    S9 --> OUT["输出：input_ids、attention_mask、mask_positions、mask_labels"]
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| 伪 token 拼在最前面，`[MASK]` 插在 `[CLS]` 之后 | 位置一旦被手工改动，所有依赖位置的量都要跟着重推 |
+| `④` 裁剪正文时就预留了伪 token 的位置 | 先算预算再插入，避免插完才发现超过 `max_seq_len` 把 `[SEP]` 挤掉 |
+| `⑦` 的位置是**手算**的（伪 token 个数 + 1） | 与 PET 的 `np.where` 反查相反，这是本流程最脆弱的一处：伪 token 数一变就必须同步改公式 |
+| `⑧` 必须重算 `attention_mask` | tokenizer 不知道自己前面被塞了 token，沿用旧 mask 会把伪 token 当 padding 忽略，软模板静默失效 |
+| 出口与 PET 略有不同 | PET 多传 `token_type_ids`，P-Tuning 只关心 `input_ids` 与 mask，其余交给模型默认值 |
 
 ### 2.4 一句话对比
 
@@ -221,7 +230,7 @@ def __call__(self, inputs_dict, tokenizer, mask_length, max_seq_len=512):
  # ③ 记录 [MASK] 位置——后续取 logits 的唯一依据
  mask_token_id = tokenizer.convert_tokens_to_ids(['[MASK]'])[0]
  outputs['mask_position'] = np.where(
- np.array(outputs['input_ids']) == mask_token_id)[0].tolist
+ np.array(outputs['input_ids']) == mask_token_id)[0].tolist()
  return outputs
 ```
 
@@ -237,7 +246,7 @@ class Verbalizer(object):
         """'水果\t苹果,香蕉,橘子' -> {'水果': ['苹果','香蕉','橘子'], ...}"""
         label_dict = {}
         with open(verbalizer_file, 'r', encoding='utf8') as f:
-            for line in f.readlines:
+            for line in f.readlines():
                 label, sub_labels = line.strip.split('\t')
                 label_dict[label] = list(set(sub_labels.split(',')))
                 return label_dict
@@ -272,7 +281,7 @@ def find_main_label(self, sub_label, hard_mapping=True):
             sub_label = ''.join(self.tokenizer.convert_ids_to_tokens(sub_label))
 
             main_label = '无'
-            for label, s_labels in self.label_dict.items:
+            for label, s_labels in self.label_dict.items():
                 if sub_label in s_labels: # ① 精确命中子标签
                     main_label = label
                     break
@@ -284,7 +293,7 @@ def find_main_label(self, sub_label, hard_mapping=True):
                 def hard_mapping(self, sub_label):
                     """DP 求最长公共子串长度，累加与全部子标签的重合度，取总分最大的主标签"""
                     label, max_overlap = '', 0
-                    for main_label, sub_labels in self.label_dict.items:
+                    for main_label, sub_labels in self.label_dict.items():
                         overlap = sum(self.get_common_sub_str(sub_label, s)[1] for s in sub_labels)
                         if overlap >= max_overlap:
                             max_overlap, label = overlap, main_label
@@ -348,7 +357,7 @@ def convert_logits_to_ids(logits, mask_positions):
 
     # 把二维坐标 (batch, pos) 展平成一维索引 batch * seq_len + pos
     mask_positions_after_reshaped = []
-    for batch, mask_pos in enumerate(mask_positions.detach.cpu.numpy.tolist):
+    for batch, mask_pos in enumerate(mask_positions.detach.cpu.numpy.tolist()):
         for pos in mask_pos:
             mask_positions_after_reshaped.append(batch * seq_len + pos)
 
@@ -360,7 +369,7 @@ def convert_logits_to_ids(logits, mask_positions):
 
 **为什么要手算 `batch * seq_len + pos`**：`logits[batch_idx, pos]` 这种高级索引对多维张量（尤其 pos 变长时）支持有限。展平成一维后用 Python 列表索引最稳妥、最不会出错。
 
-代价是经过 `.cpu.numpy.tolist`，意味着一次 GPU→CPU 同步拷贝。追求性能时应用 `torch.gather` 或 `logits.gather(1, mask_positions.unsqueeze(-1).expand(...))` 全程留在 GPU。对 63 条样本的项目，损耗可忽略。
+代价是经过 `.cpu.numpy.tolist()`，意味着一次 GPU→CPU 同步拷贝。追求性能时应用 `torch.gather` 或 `logits.gather(1, mask_positions.unsqueeze(-1).expand(...))` 全程留在 GPU。对 63 条样本的项目，损耗可忽略。
 
 ### 4.5 P-Tuning：把软模板插进输入序列
 
@@ -412,7 +421,7 @@ p_embedding_num=6, train_mode=True):
 
 ```python
 def get_attention_mask(alist):
- return np.where(np.array(alist) > 0, 1, 0).tolist
+ return np.where(np.array(alist) > 0, 1, 0).tolist()
 ```
 
 伪 token `[unused1]`~`[unused6]` 在中文 BERT 词表里是 id 1~99（`> 0`），它们是**真实存在、需要参与注意力**的位置；尾部补的 `[PAD]` 才是 id 0。而 `tokenizer` 返回的 `attention_mask` **不知道你手工往前面塞了 token**，直接用会把伪 token 当 padding 忽略掉，**软模板就完全失效了**。
@@ -469,12 +478,12 @@ def model2train:
  attention_mask=batch['attention_mask'].to(pc.device)).logits
 
  # ★ 训练目标是"子标签"（软目标），不是原始标签
- mask_labels = batch['mask_labels'].numpy.tolist
+ mask_labels = batch['mask_labels'].numpy.tolist()
  sub_labels = [e['token_ids'] for e in verbalizer.batch_find_sub_labels(mask_labels)]
 
  loss = mlm_loss(logits, batch['mask_positions'].to(pc.device),
  sub_labels, criterion, pc.device)
- optimizer.zero_grad; loss.backward; optimizer.step; lr_scheduler.step
+ optimizer.zero_grad(); loss.backward(); optimizer.step; lr_scheduler.step
 
  global_step += 1
  if global_step % pc.valid_steps == 0:
@@ -496,14 +505,14 @@ def evaluate_model(model, metric, data_loader, tokenizer, verbalizer):
             logits = model(input_ids=..., attention_mask=..., token_type_ids=...).logits
 
             # ① mask_labels 去掉 [PAD]、转回文字作为 gold
-            mask_labels = batch['mask_labels'].numpy.tolist
+            mask_labels = batch['mask_labels'].numpy.tolist()
             for i in range(len(mask_labels)):
                 while tokenizer.pad_token_id in mask_labels[i]:
                     mask_labels[i].remove(tokenizer.pad_token_id)
                     mask_labels = [''.join(tokenizer.convert_ids_to_tokens(t)) for t in mask_labels]
 
                     # ② 预测 token → 子标签 → 主标签
-                    predictions = convert_logits_to_ids(logits, batch['mask_positions']).cpu.numpy.tolist
+                    predictions = convert_logits_to_ids(logits, batch['mask_positions']).cpu.numpy.tolist()
                     predictions = [e['label'] for e in verbalizer.batch_find_main_label(predictions)]
 
                     metric.add_batch(pred_batch=predictions, gold_batch=mask_labels)
@@ -607,11 +616,22 @@ Evaluation precision: 0.78000, recall: 0.76000, F1: 0.75000
 
 **直接原因**：`tokenizer` 返回的 `attention_mask` 是它根据自己的逻辑生成的——**它不知道你后面手工往序列前面塞了几个 token**。当你在 `input_ids` 前面插入伪 token 后：
 
-```text
-tokenizer 给的 mask: [ ... ] ← 只覆盖它自己生成的 token
-实际 input_ids: [1,2,3,4,5,6, 101, 103, 103, ...正文..., 102, 0,0,0]
- └─ 伪token ─┘
+```mermaid
+flowchart TD
+    M1["tokenizer 给出的 attention_mask<br/>只覆盖它自己生成的那些 token"] --> CMP["两段序列对不上：<br/>实际 input_ids 前面多了 6 个伪 token"]
+    M2["实际 input_ids<br/>紧接着是 [CLS] [MASK] [MASK] 正文 … [SEP] [PAD] …"] --> CMP
+    CMP --> BAD["伪 token 所在位置被标成 0"]
+    BAD --> EFF["自注意力直接忽略它们<br/>软模板等于没插，且不报任何错"]
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| 冲突的根源是"手工改动"与"自动生成"两套逻辑并存 | tokenizer 的 mask 描述的是它自己产出的序列，你改了序列它并不知道 |
+| 出问题的是**位置**而不是数值 | 伪 token 有合法 id、能进词表，只是被 mask 标成了 padding |
+| 失效是静默的 | 不报错、只是掉点，所以这类 bug 最难查，只能靠"改了 input_ids 就重算 mask"的规则预防 |
+| 正确做法与错误做法只差一步 | 按序列长度或 `id > 0` 重新构造 mask，而不是沿用 tokenizer 的返回值 |
 
 如果直接沿用 tokenizer 的 mask，伪 token 位置会被标成 0，模型在自注意力里**直接忽略它们**——软模板等于没插，而且**不会报任何错**。
 
@@ -619,7 +639,7 @@ tokenizer 给的 mask: [ ... ] ← 只覆盖它自己生成的 token
 
 ```python
 def get_attention_mask(alist):
- return np.where(np.array(alist) > 0, 1, 0).tolist
+ return np.where(np.array(alist) > 0, 1, 0).tolist()
 ```
 
 **这里有个必须说清的细节**：中文 BERT 里 `[PAD]` 是 id 0，而 `[unused1]`~`[unused6]` 是 id 1~99，所以 `> 0` 能把伪 token 保留下来、只把真 padding 排除掉。**但这是依赖了"`[unused*]` 的 id 不为 0"这个隐式约定**——如果哪个模型的 `[unused*]` 恰好是 0，这套逻辑就会失效。更稳的写法是**显式基于序列长度构造 mask**：

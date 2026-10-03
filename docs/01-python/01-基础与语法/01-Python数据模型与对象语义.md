@@ -59,7 +59,7 @@ x = [1, 2] x ──► ┌──────────────────
 x += [3] x ──► 同一个 list 对象，id 不变，value=[1,2,3]（原地扩展）
 ```
 
-所以 Python 只有一种传参方式：**传对象引用（call by object reference / call by sharing）**。函数参数是绑到同一对象上的新名字——在函数内**原地修改**（`lst.append`）调用者看得见，**重新赋值**（`lst = [...]`）调用者看不见。
+所以 Python 只有一种传参方式：**传对象引用（call by object reference / call by sharing）**。函数参数是绑到同一对象上的新名字——在函数内**原地修改**（`lst.append()`）调用者看得见，**重新赋值**（`lst = [...]`）调用者看不见。
 
 ### 2.3 语法糖都是协议调用
 
@@ -325,8 +325,8 @@ except TypeError as exc: print(type(exc).__name__, exc) # unhashable type: 'list
 class CaseInsensitive: # 正确示范：__eq__ 与 __hash__ 一致
     def __init__(self, text): self.text = text
     def __eq__(self, other):
-        return isinstance(other, CaseInsensitive) and self.text.lower == other.text.lower
-    def __hash__(self): return hash(self.text.lower)
+        return isinstance(other, CaseInsensitive) and self.text.lower() == other.text.lower()
+    def __hash__(self): return hash(self.text.lower())
 
     print({CaseInsensitive("Key"): 1}[CaseInsensitive("kEy")]) # 1
 

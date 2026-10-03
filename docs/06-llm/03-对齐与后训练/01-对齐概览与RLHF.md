@@ -32,36 +32,28 @@ $$\max_{\theta}\ \mathbb{E}_{x \sim \mathcal{D}}\left[\sum_{t=1}^{|x|} \log \pi_
 
 ### 1.2 后训练三阶段全景
 
-```text
-                    ┌─────────────────────────────────────────────┐
-                    │  基座模型 Base Model（预训练产物）            │
-                    │  · 会续写，不一定会听话                       │
-                    └───────────────────┬─────────────────────────┘
-                                        │
-             阶段一：SFT（监督微调）     │  数据：人工写的高质量「指令 → 回答」对
-             Supervised Fine-Tuning     │  目标：交叉熵（只在 response 上算）
-                                        ▼
-                    ┌─────────────────────────────────────────────┐
-                    │  SFT 模型 π_SFT                              │
-                    │  · 会按指令作答，但只是「模仿」，没有偏好概念  │
-                    └───────────────────┬─────────────────────────┘
-                                        │
-             阶段二：奖励建模 RM         │  数据：同一个 prompt 的多个回答 + 人工排序
-             Reward Modeling            │  目标：Bradley-Terry 排序损失
-                                        ▼
-                    ┌─────────────────────────────────────────────┐
-                    │  奖励模型 r_φ(x, y) → 一个标量分数            │
-                    │  · 冻结使用；它是「人类偏好的廉价代理」        │
-                    └───────────────────┬─────────────────────────┘
-                                        │
-             阶段三：RL 微调             │  输入：prompt 集合（无需标注答案）
-             PPO / GRPO                 │  目标：最大化 r_φ 同时用 KL 约束贴着 π_SFT
-                                        ▼
-                    ┌─────────────────────────────────────────────┐
-                    │  对齐后的策略模型 π_θ                        │
-                    │  · 回答更符合偏好，且没有偏离 SFT 太远         │
-                    └─────────────────────────────────────────────┘
+这张图回答的是：从基座模型到一个对齐模型，三个阶段各自吃什么数据、优化什么目标、又产出什么。
+
+```mermaid
+flowchart TD
+    A["基座模型 Base Model（预训练产物）<br/>会续写，不一定会听话"]
+    A --> S1["阶段一：SFT（监督微调）<br/>数据：人工写的高质量「指令 → 回答」对<br/>目标：交叉熵，只在 response 上算"]
+    S1 --> B["SFT 模型 π_SFT<br/>会按指令作答，但只是模仿，没有偏好概念"]
+    B --> S2["阶段二：奖励建模 RM<br/>数据：同一 prompt 的多个回答 + 人工排序<br/>目标：Bradley-Terry 排序损失"]
+    S2 --> C["奖励模型 r_φ(x, y) → 一个标量分数<br/>冻结使用；它是人类偏好的廉价代理"]
+    C --> S3["阶段三：RL 微调（PPO / GRPO）<br/>输入：prompt 集合，无需标注答案<br/>目标：最大化 r_φ，同时用 KL 约束贴着 π_SFT"]
+    S3 --> D["对齐后的策略模型 π_θ<br/>回答更符合偏好，且没有偏离 SFT 太远"]
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| 三阶段是串行依赖，不是并列可选项 | RM 由 SFT 模型初始化才收敛快，RL 又必须有 RM 才能打分，少一环就断链 |
+| 监督信号一路在变「粗」 | SFT 是逐 token 交叉熵 → RM 是整条回答一个排序 → RL 是整条回答一个标量奖励，信息越来越稀疏 |
+| RM 在第三阶段是冻结的 | 它只是人类偏好的廉价代理，训练中不更新；这也意味着 RM 的偏差会原样传导给策略 |
+| KL 约束的对象是 π_SFT 而不是 Base | 贴着 SFT 走，是为了不把监督学习阶段已经学到的格式与语言能力丢掉 |
+| 产出是「对齐后的策略」而非「更聪明的模型」 | 这一阶段提升的是有帮助性、无害性与语气，知识上限仍由预训练决定 |
 
 三个阶段的分工可以用一句话记住：**SFT 教格式，RM 学偏好，RL 换目标函数**。
 
@@ -92,17 +84,29 @@ $$\max_{\theta}\ \mathbb{E}_{x \sim \mathcal{D}}\left[\sum_{t=1}^{|x|} \log \pi_
 
 ### 1.4 On-Policy 与 Off-Policy 两条路线
 
-```text
-RLHF 的两大路线
-├── On-Policy（训练过程中模型要自己做生成）
-│   ├── PPO：Actor + Critic + Reward + Reference（本文主题）
-│   ├── ReMax：丢掉 Critic，用 greedy 解码的得分当基线
-│   └── GRPO：丢掉 Critic，用同一 prompt 的一组采样得分的均值当基线（见第 04 篇）
-└── Off-Policy（训练过程中不做生成，直接学「好/坏」样本对）
-    ├── DPO：把 RL 目标解析解代入偏好似然，得到一个分类式损失（见第 03 篇）
-    ├── IPO / cDPO / KTO / ORPO / SimPO：各种修正与简化
-    └── 特点：训练像 SFT 一样快，但数据必须与当前策略的分布足够接近
+这张图回答的是：RLHF 的两条技术路线各自包含哪些方法，以及它们分别省掉了什么。
+
+```mermaid
+flowchart TD
+    R["RLHF 的两大路线"] --> ON["On-Policy<br/>训练过程中模型要自己做生成"]
+    R --> OFF["Off-Policy<br/>训练中不做生成，直接学「好 / 坏」样本对"]
+    ON --> PPO["PPO：Actor + Critic + Reward + Reference（本篇主题）"]
+    ON --> REMAX["ReMax：丢掉 Critic，用 greedy 解码的得分当基线"]
+    ON --> GRPO["GRPO：丢掉 Critic，用同一 prompt 一组采样得分的均值当基线（见第 04 篇）"]
+    OFF --> DPO["DPO：把 RL 目标的解析解代入偏好似然，得到分类式损失（见第 03 篇）"]
+    OFF --> OTH["IPO / cDPO / KTO / ORPO / SimPO：各种修正与简化"]
+    OFF --> FEAT["特点：训练像 SFT 一样快，但数据必须与当前策略的分布足够接近"]
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| 分界线是有没有 `model.generate()` | 有生成就是 On-Policy；逐 token 串行生成极慢，这正是 On-Policy 方法耗卡又耗时的主因 |
+| On-Policy 一侧的方法都在砍模型数量 | PPO 要四个模型，ReMax 砍掉 Critic，GRPO 再进一步用组内均值当基线 |
+| Off-Policy 把代价从算力转移到了数据 | 训练像 SFT 一样快，但要求数据分布与当前策略足够接近，否则目标函数的前提不成立 |
+| DPO 及其变体是一族修正而非单个算法 | IPO / cDPO / KTO / ORPO / SimPO 分别针对偏好强度、噪声标签、无配对数据等场景做简化 |
+| 两条路线的收益与风险是对称的 | On-Policy 数据完全匹配当前模型、上限更高但昂贵；Off-Policy 便宜但更容易被分布偏移反噬 |
 
 判定标准很简单：**训练循环里有没有 `model.generate()`，有就是 On-Policy**。生成是逐 token 串行进行的，非常慢，这正是 On-Policy 方法耗卡又耗时的主要原因；但代价换来的好处是训练数据「百分之百匹配当前模型自己」，理论上效果上限更高。
 
@@ -279,30 +283,28 @@ $$J(\theta)=\mathbb{E}\Big[r_\phi(x,y)-\beta_{KL}\log\frac{\pi_\theta(y\mid x)}{
 
 ### 2.9 训练流程图与每一步的输入输出
 
-```text
-for step in 1..N:
-  ┌─ 1. 采样 ────────────────────────────────────────────────────────┐
-  │  输入: 一个 batch 的 prompts x                                    │
-  │  动作: Actor(旧参数) 自回归生成 responses y                        │
-  │  输出: y, 以及 log π_θold(a_t|s_t)                                │
-  └──────────────────────────────────────────────────────────────────┘
-  ┌─ 2. 收集经验（四个模型各跑一遍）─────────────────────────────────┐
-  │  Reference: 输入 (x, y) → log π_ref(a_t|s_t)      [冻结, no_grad] │
-  │  Reward   : 输入 (x, y) → 标量 r_φ(x,y)           [冻结, no_grad] │
-  │  Critic   : 输入 (x, y) → 每 token 的 V_t         [冻结当前轮值]  │
-  │  计算: R_t = -β_KL(logπ_θold - logπ_ref) + [t==T]*clip(r_φ)       │
-  │        A_t, returns_t ← GAE(R_t, V_t)             [detach]        │
-  └──────────────────────────────────────────────────────────────────┘
-  ┌─ 3. 更新（同一批经验重复 ppo_epochs 次）─────────────────────────┐
-  │  for e in 1..ppo_epochs:                                          │
-  │     logπ_θ  ← Actor 重新前向 (x, y)                                │
-  │     w       = exp(logπ_θ - logπ_θold)                             │
-  │     L_actor = -mean(min(w*A, clip(w,1±ε)*A))                      │
-  │     L_critic= 0.5*mean(max((V-returns)², (clip(V)* -returns)²))   │
-  │     Actor.step(L_actor); Critic.step(L_critic)                    │
-  └──────────────────────────────────────────────────────────────────┘
-  注意: Reward / Reference 全程不更新; Actor 与 Critic 是唯二的学习者
+这张图回答的是：PPO 的每一次迭代内部到底发生了什么，四个模型分别在哪个环节被调用，以及同一步经验为什么会被重复使用。
+
+```mermaid
+flowchart TD
+    STEP(["进入第 step 步（step 从 1 到 N）"])
+    STEP --> S1["① 采样<br/>输入：一个 batch 的 prompts x<br/>动作：Actor（旧参数）自回归生成 responses y<br/>输出：y，以及每 token 的 log π_old"]
+    S1 --> S2["② 收集经验（四个模型各跑一遍）<br/>Reference 冻结 no_grad → log π_ref<br/>Reward 冻结 no_grad → 标量 r_φ<br/>Critic → 每 token 的 V_t<br/>R_t = -β_KL(log π_old - log π_ref) + 末位 r_φ<br/>A_t 与 returns 由 GAE 算出并 detach"]
+    S2 --> S3["③ 更新（同一批经验重复 ppo_epochs 次）<br/>重算 log π_θ，比值 w = exp(log π_θ - log π_old)<br/>L_actor = -mean(min(w·A, clip(w, 1±ε)·A))<br/>L_critic = 0.5·mean(max((V - returns)², (V_clip - returns)²))<br/>Actor.step(L_actor) 与 Critic.step(L_critic)"]
+    S3 --> Q{"step ＜ N ？"}
+    Q -->|是| S1
+    Q -->|否| DONE(["结束：Reward 与 Reference 全程不更新<br/>Actor 与 Critic 是唯二的学习者"])
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| 采样与更新之间夹着一次「冻结的前向」 | 旧策略生成的数据要先用其余三个模型打完分、算完优势，才能进入更新；clip 正是用来限制更新后的策略离旧策略有多远 |
+| 即时奖励只在最后一个 token 位置加 RM 分数 | 其余位置只有 KL 惩罚项，因为 RM 训练时就是拿整条回答的最后一个有效 token 表示整条回答的分数 |
+| 同一批经验会重复用 ppo_epochs 次 | 这是样本效率的来源，也是必须 clip 的原因：重复更新会让新策略越来越偏离旧策略 |
+| 优势与 returns 都要 detach | 它们是「目标」而不是被求导的路径，混进计算图会把梯度算错 |
+| Reward 与 Reference 全程不更新 | 显存里四份权重因此是硬开销，这正是后续方法想方设法减少模型数量的动机 |
 
 ### 2.10 显存账本（自己推导的估算）
 

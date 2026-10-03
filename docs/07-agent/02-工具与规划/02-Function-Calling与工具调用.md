@@ -96,18 +96,35 @@ Function Calling 的往返本质上是在维护一个 `messages` 列表，靠角
 
 时序：
 
-```text
-messages = [system, user]
- │
- ├─▶ 第 1 次 chat.completions.create(tools=..., tool_choice="auto")
- │ ← assistant(tool_calls=[{id, function:{name, arguments}}])
- │
- ├─ messages.append(assistant_message.model_dump())
- ├─ messages.append({role:"tool", tool_call_id:..., content:执行结果})
- │
- └─▶ 第 2 次 chat.completions.create(tools=..., tool_choice="auto")
- ← assistant(content="北京今天是晴天，最高气温33℃…", tool_calls=None)
+这段往返用时序图看得最清楚：谁在什么时候往 `messages` 里写了什么。
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant C as 调用方代码
+    participant M as messages 列表
+    participant API as chat.completions
+
+    C->>M: 写入 system + user 两条消息
+    C->>API: 第 1 次 create（tools, tool_choice=auto）
+    API-->>C: assistant：tool_calls = 函数名 + 参数
+    C->>M: 原样 append assistant 消息
+    Note over C,M: 这一步必须做，否则模型丢失「我调用过什么」
+    C->>C: 后端执行函数，得到结果
+    C->>M: append 一条 role=tool 的消息，带 tool_call_id
+    C->>API: 第 2 次 create（tools, tool_choice=auto）
+    API-->>C: assistant：最终自然语言回答，tool_calls 为 None
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| 两次 create 之间夹着两次 append | 无状态接口里「上下文」完全由调用方手工拼装，漏一次 append 模型就看不到中间状态 |
+| assistant 消息必须原样回灌 | 它带着 `tool_calls` 的 id，第二轮的 tool 消息靠这个 id 才能和调用对上号 |
+| role=tool 的消息只能由后端写 | 第 4 步的主语是后端系统而不是模型，这是最常见的面试考点 |
+| 自然语言回答出现在第二轮 | 模型不是「一次生成完」，而是「先要数据、拿到结果后再组织语言」 |
+| tool_calls 为 None 是终态标志 | 调用方靠这个字段判断该收尾还是该继续循环 |
 
 ### 2.2 tool schema 的字段含义
 
@@ -118,7 +135,7 @@ messages = [system, user]
 | `type` | 顶层 | 固定为 `function` | `"function"` |
 | `function.name` | 第二层 | 函数名，模型回传时的唯一标识 | `"get_current_weather"` |
 | `function.description` | 第二层 | **给模型看的自然语言说明**，决定何时选中该工具 | `"获取给定位置的当前天气"` |
-| `function.parameters` | 第二层 | JSON Schema，描述参数结构 | `{"type": "object", ...}` |
+| `function.parameters()` | 第二层 | JSON Schema，描述参数结构 | `{"type": "object", ...}` |
 | `parameters.type` | 第三层 | 参数整体类型 | `"object"` |
 | `parameters.properties` | 第三层 | 各参数的名称、类型与说明 | `{"location": {...}}` |
 | `parameters.required` | 第三层 | 必填参数列表 | `["location"]` |

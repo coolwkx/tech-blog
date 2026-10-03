@@ -203,7 +203,7 @@ from collections import Counter
 import numpy as np
 
 docs = ["猫 喜欢 鱼", "狗 喜欢 骨头", "猫 狗 喜欢 打架"]
-docs_tokens = [d.split for d in docs]
+docs_tokens = [d.split() for d in docs]
 
 # 1) 建立词表
 vocab = sorted({w for doc in docs_tokens for w in doc})
@@ -222,7 +222,7 @@ for doc in docs_tokens:
     matrix = np.zeros((N, V))
     for i, doc in enumerate(docs_tokens):
         tf = Counter(doc)
-        for w, f in tf.items:
+        for w, f in tf.items():
             matrix[i, word2id[w]] = (1 + math.log(f)) * idf[w]
             norm = np.linalg.norm(matrix[i])
             if norm > 0:
@@ -234,7 +234,7 @@ for doc in docs_tokens:
                     print("\nTF-IDF 矩阵:\n", np.round(matrix, 4))
 
                     # 5) 用余弦相似度做检索（归一化后点积即余弦）
-                    query = "猫 鱼".split
+                    query = "猫 鱼".split()
                     q = np.zeros(V)
                     for w in query:
                         if w in word2id:

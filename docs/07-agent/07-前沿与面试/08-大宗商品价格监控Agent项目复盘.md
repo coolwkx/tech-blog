@@ -314,24 +314,31 @@ create_daily_report():
 
 ### 2.8 数据流全景
 
-```text
- config.json（阈值/间隔/Key）
- │
- ▼
- [感知] 三级数据源 ──▶ get_commodity_price() ──▶ price
- │
- ▼
- [决策] 阈值 + 状态机 ──▶ status ∈ {normal, buy, sell} ──▶ 是否需要通知
- │ │
- ▼ ▼
- [记忆] commodity_state.json ◀── save_state() [行动] Server酱推送
- commodity_history.json ◀── 追加 + 截断
- │
- ┌────────────────────┼────────────────────┐
- ▼ ▼ ▼
- ai_analysis.py daily_report.py dashboard.py
- （趋势/风险/参考） （日报 + 推送） （Flask + Chart.js）
+这张图回答：一份配置进来之后，数据在「感知 → 决策 → 记忆 / 行动」四层之间怎么流动，最后被哪几个消费者读走。
+
+```mermaid
+flowchart TD
+    CFG["config.json：阈值 / 间隔 / Key"] --> SENSE["感知层<br/>三级数据源 → get_commodity_price()"]
+    SENSE --> PRICE["price 价格序列"]
+    PRICE --> DECIDE["决策层<br/>阈值 + 状态机"]
+    DECIDE --> STATUS["status：normal / buy / sell"]
+    STATUS --> NEED{"是否需要通知"}
+    NEED -->|"是"| ACT["行动层<br/>Server 酱推送"]
+    STATUS --> MEM["记忆层<br/>save_state() 写 commodity_state.json<br/>commodity_history.json 追加 + 截断"]
+    MEM --> C1["ai_analysis.py<br/>趋势 / 风险 / 操作参考"]
+    MEM --> C2["daily_report.py<br/>日报 + 推送"]
+    MEM --> C3["dashboard.py<br/>Flask + Chart.js"]
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| `config.json` 是四层唯一的共同输入 | 阈值、轮询间隔、推送 Key 集中在一处，所以实时提醒与日报不会给出冲突的结论 |
+| 状态机分出两条边 | 一条去「当下要不要推送」（行动），一条去「留下状态与历史」（记忆），两件事互不阻塞 |
+| 三个下游消费者都只读记忆层 | 日报、AI 分析、看板互不依赖，任意一个挂掉都不影响实时提醒 |
+| 记忆层是唯一的持久化落点 | 状态文件用于判断是否重复推送，历史文件用于趋势分析，两者职责不同 |
+| 通知判断被单独画成一个判定节点 | 状态机产出 `status` 与「要不要打扰用户」是两件事，后者还要看阈值与静默期 |
 
 ---
 

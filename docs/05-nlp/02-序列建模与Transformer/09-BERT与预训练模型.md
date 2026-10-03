@@ -223,7 +223,7 @@ print("attention_mask :", encoded["attention_mask"].shape)
 
 with torch.no_grad:
  logits = model(**encoded).logits
-print("logits:", logits.shape, "预测:", logits.argmax(-1).tolist)
+print("logits:", logits.shape, "预测:", logits.argmax(-1).tolist())
 ```
 
 对着打印出的形状理解三件输入：`input_ids` 是 token 的 ID，`token_type_ids`（也叫 segment ids）区分句子 A/B，`attention_mask` 标记哪些位置是真实 token（1）哪些是 PAD（0）。
@@ -280,12 +280,12 @@ class AiModel(nn.Module):
                 {"text": "隔音太差，体验不好", "label": 0}] * 8
 
                 model = AiModel.to(device)
-                for p in my_pre_model.parameters:
+                for p in my_pre_model.parameters():
                     p.requires_grad_(False) # 冻结
 
                     criterion = nn.CrossEntropyLoss(reduction="mean")
                     # 只优化自定义头，学习率可以比全量微调大
-                    optimizer = AdamW(model.parameters, lr=5e-4)
+                    optimizer = AdamW(model.parameters(), lr=5e-4)
 
                     model.train
                     for epoch in range(5):
@@ -299,14 +299,14 @@ class AiModel(nn.Module):
 
                             output = model(inputs_ids, token_type_ids, attention_mask)
                             loss = criterion(output, labels)
-                            optimizer.zero_grad
-                            loss.backward
+                            optimizer.zero_grad()
+                            loss.backward()
                             optimizer.step
                             total_loss += loss.item
                             print(f"epoch {epoch + 1} loss={total_loss:.4f}")
 ```
 
-**全部微调**只需三处改动：把 `with torch.no_grad` 去掉、`requires_grad_(True)`、学习率降到 2e-5~5e-5，并把 `my_pre_model.parameters` 一起加进优化器。
+**全部微调**只需三处改动：把 `with torch.no_grad` 去掉、`requires_grad_(True)`、学习率降到 2e-5~5e-5，并把 `my_pre_model.parameters()` 一起加进优化器。
 
 ### 3.3 训练配置与常用超参
 

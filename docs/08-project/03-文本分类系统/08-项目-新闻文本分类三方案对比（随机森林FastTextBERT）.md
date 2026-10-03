@@ -13,13 +13,22 @@
 
 新闻资讯平台每天要处理**数百万篇新闻**，分类是推荐系统的前置环节：
 
-```text
-用户行为：喜欢看体育新闻 → 系统记录：偏好 = sports
- ↓
-新文章发布："湖人队赢得总冠军" → 模型预测：sports（置信度 95%）
- ↓
-推送到该用户的推荐流 ✅
+```mermaid
+flowchart TD
+    A["用户行为：喜欢看体育新闻"] --> B["系统记录偏好：sports"]
+    B --> C["新文章发布：『湖人队赢得总冠军』"]
+    C --> D["模型预测：sports，置信度 95%"]
+    D --> E["推送到该用户的推荐流"]
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| 分类处在"新文章发布"与"推送到推荐流"之间 | 它是推荐链路的一环，因此延迟与吞吐和精度同等重要 |
+| 判定单位是**频道**而不是文章内容 | 类别封闭且固定 10 个，任务边界清晰，这是后面三方案可比的前提 |
+| 置信度 95% 是被消费的下游信号 | 低置信度样本可以路由给更重的模型或人工，这是分层推理的接口 |
+| 这条链路每天要跑百万次 | 单条推理的成本差异会被放大成"1.4 小时"和"50 小时"的差别 |
 
 这个场景的三个特点决定了后文所有选型取向：**量大**（每天百万级，必须算推理成本）、**要实时**（新文章发布后快速上线）、**类别封闭且平衡**（固定 10 个频道，每类 18000 条）。**精度重要，但吞吐和延迟同等重要。**
 
@@ -62,28 +71,35 @@ length_mean = 19.21 length_std = 3.86
 
 同一个 `train.txt`，三种模型需要的输入完全不同。这是本项目数据工程部分最值得学的点：
 
-```text
- train.txt (文本\t标签)
- │
- ┌─────────────────────┼─────────────────────┐
- 【线一】随机森林 【线二】FastText 【线三】BERT
- analysis.py preprocess.py utils.build_dataset
- ① 统计类别/长度 ① class.txt→id_to_label ① 逐行 split('\t')
- ② jieba.cut 分词 ② 标签→__label__xxx ② tokenizer.tokenize
- ③ ' '.join(words)[:30] ③ 文本→按字 ' '.join ③ [CLS] + tokens
- │ （preprocess1.py ④ convert_tokens_to_ids
- │ 用 jieba.lcut） ⑤ pad/truncate 到 32
- ▼ │ ⑥ 生成 attention mask
- train_new.csv ▼ │
- （sentence/label/ train_fast.txt ▼
- words 列） （FastText 专用格式） contents = [(token_ids,
- │ │ label, seq_len, mask)]
- ▼ ▼ │
- TfidfVectorizer + fasttext.train_supervised ▼
- RandomForest (+autotune) DatasetIterater
- ▼ ▼ ▼
- 预测类别 预测 __label__xxx BertModel + Linear(768,10)
+```mermaid
+flowchart TD
+    SRC["train.txt（文本 + 制表符 + 标签）"] --> L1["线一：随机森林"]
+    SRC --> L2["线二：FastText"]
+    SRC --> L3["线三：BERT"]
+    L1 --> A1["analysis.py<br/>① 统计类别与长度<br/>② jieba.cut 分词<br/>③ ' '.join(words)[:30]<br/>（preprocess1.py 用 jieba.lcut）"]
+    A1 --> A2["train_new.csv（sentence / label / words 三列）"]
+    A2 --> A3["TfidfVectorizer + RandomForest"]
+    A3 --> R1["预测类别"]
+    L2 --> B1["preprocess.py<br/>① class.txt → id_to_label<br/>② 标签改写成 __label__xxx<br/>③ 文本按字以空格分隔"]
+    B1 --> B2["train_fast.txt（FastText 专用格式）"]
+    B2 --> B3["fasttext.train_supervised（+ autotune）"]
+    B3 --> R2["预测 __label__xxx"]
+    L3 --> C1["utils.build_dataset<br/>① 逐行 split<br/>② tokenizer.tokenize<br/>③ [CLS] + tokens<br/>④ convert_tokens_to_ids<br/>⑤ pad / truncate 到 32<br/>⑥ 生成 attention mask"]
+    C1 --> C2["contents = [(token_ids, label, seq_len, mask)]"]
+    C2 --> C3["DatasetIterater"]
+    C3 --> C4["BertModel + Linear(768, 10)"]
+    C4 --> R3["预测类别"]
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| 同一个源文件分出三条支线 | 每个模型对"什么是 token"的定义不同，所以切分口径必须分开做 |
+| 线一先分词、线二按字、线三交给 WordPiece | TF-IDF 的词汇表是词；FastText 的子词机制本就为 OOV 设计；BERT 必须用它自己训好的切分器 |
+| 三条支线的产物中间格式都不一样 | 分别是 csv、`__label__` 文本、`(token_ids, label, seq_len, mask)` 元组，这是"模型输入格式由它的 tokenizer 定义"的具体体现 |
+| 三条支线在最后才汇到同一件事：预测类别 | 数据管线各不相同，但评价口径统一，三组准确率才可比 |
+| 线二的出口带着 `__label__` 前缀 | 这是 FastText 的格式要求，也提醒接口层要做一层转换再对外返回 |
 
 | | 随机森林 | FastText | BERT |
 | --- | --- | --- | --- |
@@ -96,26 +112,28 @@ length_mean = 19.21 length_std = 3.86
 
 ### 2.2 BERT 训练与部署链路
 
-```text
-bert_config.json + pytorch_model.bin + vocab.txt
- │ models/bert.py: Config / Model
- ▼
-Model = BertModel.from_pretrained(...) + nn.Linear(768, 10)
-forward(x): context=x[0]; mask=x[2]
- _, pooled = self.bert(context, attention_mask=mask, return_dict=False)
- return self.fc(pooled) # [batch, 10]
- ▼
-run.py：固定种子 → build_dataset → build_iterator×3
- train：AdamW（bias/LayerNorm 不衰减），每 100 batch 评估，dev_loss 更低则保存
- test ：acc / classification_report / confusion_matrix
- ▼
-saved_dic/bert.pt
- ├─▶ run1.py：quantize_dynamic(model, {nn.Linear}, qint8) → 91.92%，−256.6MB（CPU）
- └─▶ 知识蒸馏：BERT（教师）→ TextCNN（学生）
- loss = α·CE(student, y) + β·KL(softmax(s/T) ‖ softmax(t/T))
- ▼
-Flask /v1/main_server/ ← POST {uid, text} → inference → "education"
+这一节回答的是"一份预训练权重到最后对外提供服务，中间要过哪些环节"：
+
+```mermaid
+flowchart TD
+    CKPT["bert_config.json + pytorch_model.bin + vocab.txt"] --> DEF["models/bert.py：Config / Model<br/>Model = BertModel.from_pretrained(...) + nn.Linear(768, 10)<br/>forward(x)：context = x[0]，mask = x[2]<br/>取 pooled 后接 fc，输出形状 [batch, 10]"]
+    DEF --> RUN["run.py：固定种子 → build_dataset → build_iterator × 3<br/>train：AdamW（bias / LayerNorm 不衰减），每 100 batch 评估，dev_loss 更低则保存<br/>test：acc / classification_report / confusion_matrix"]
+    RUN --> SAVE["saved_dic/bert.pt"]
+    SAVE --> QUANT["run1.py：quantize_dynamic(model, nn.Linear, qint8)<br/>→ 91.92%，体积 −256.6MB（CPU）"]
+    SAVE --> DISTILL["知识蒸馏：BERT（教师）→ TextCNN（学生）<br/>loss = α·CE(student, y) + β·KL(softmax(s/T) ‖ softmax(t/T))"]
+    QUANT --> SRV["Flask /v1/main_server/<br/>POST uid + text → inference → 例如 education"]
+    DISTILL --> SRV
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| 模型定义只有两行有效代码：`from_pretrained` + 一个 `nn.Linear` | 预训练已经把表示学好了，微调阶段新增的参数极少，所以两轮就能收敛 |
+| `SAVE` 之后分成量化与蒸馏两条压缩路线 | 量化不改结构直接瘦身，蒸馏换更小的学生模型，两者可叠加 |
+| 两条压缩路线汇到同一个服务入口 | 服务接口与模型实现解耦，换后端不用改调用方 |
+| 训练环节特别标注了"固定种子" | 方案对比实验里，没有固定种子时"提升"可能只是随机波动 |
+| 出口返回的是 `education` 而不是 `__label__education` | 与 FastText 支线对比可见：模型输出的原始格式必须在接口层转换掉 |
 
 ## 3. 关键技术选型与理由
 
@@ -181,13 +199,13 @@ BERT : 1,000,000 × 182ms = 182,000 秒 ≈ 50 小时
 ```python
 # 线一：随机森林（analysis.py 精简）——统计 + jieba 分词 + 存 csv
 content = pd.read_csv('./data/data/train.txt', sep='\t')
-count = Counter(content.label.values)
+count = Counter(content.label.values())
 content['sentence_len'] = content['sentence'].apply(len)
 length_mean, length_std = np.mean(content['sentence_len']), np.std(content['sentence_len'])
 
 def cut_sentence(s): return list(jieba.cut(s))
 content['words'] = content['sentence'].apply(lambda s: ' '.join(cut_sentence(s)))
-content['words'] = content['words'].apply(lambda s: ' '.join(s.split)[:30])
+content['words'] = content['words'].apply(lambda s: ' '.join(s.split())[:30])
 content.to_csv('./data/data/train_new.csv')
 ```
 
@@ -195,12 +213,12 @@ content.to_csv('./data/data/train_new.csv')
 # 线二：FastText（preprocess.py 精简）——转成 __label__ 格式
 id_to_label = {}
 with open('class.txt', 'r', encoding='utf-8') as f1:
-    for idx, line in enumerate(f1.readlines):
-        id_to_label[idx] = line.strip
+    for idx, line in enumerate(f1.readlines()):
+        id_to_label[idx] = line.strip()
 
         train_data = []
         with open('train.txt', 'r', encoding='utf-8') as f2:
-            for line in f2.readlines:
+            for line in f2.readlines():
                 sentence, label = line.strip.split('\t')
                 new_label = '__label__' + id_to_label[int(label)]
                 sent_char = ' '.join(list(sentence)) # 按字（preprocess1.py 用 jieba.lcut 按词）
@@ -213,7 +231,7 @@ def load_dataset(path, pad_size=32):
     contents = []
     with open(path, "r", encoding="UTF-8") as f:
         for line in tqdm(f):
-            lin = line.strip
+            lin = line.strip()
             if not lin: continue
             content, label = lin.split("\t")
             token = config.tokenizer.tokenize(content) # ★ 用 BERT 自己的 tokenizer
@@ -233,7 +251,7 @@ def load_dataset(path, pad_size=32):
 
 **三处值得单独指出的细节**：
 
-1. **`' '.join(s.split)[:30]` 截的是字符不是词**。它先拼成字符串再 `[:30]`，实际约保留 10-15 个词。本项目平均 19 字、几乎不触发截断所以无害，但长文本场景下会截出半截词。**更明确的写法是 `words[:30]`。**
+1. **`' '.join(s.split())[:30]` 截的是字符不是词**。它先拼成字符串再 `[:30]`，实际约保留 10-15 个词。本项目平均 19 字、几乎不触发截断所以无害，但长文本场景下会截出半截词。**更明确的写法是 `words[:30]`。**
 2. **FastText 的格式是硬要求**：每行一个文档、类别以 `__label__` 前缀放在最前、多标签用多个前缀空格分隔。**标签放在中间或末尾都不兼容**——FastText 会把非 `__label__` 开头的词全当文本内容。
 3. **`mask` 和 `token_ids` 的长度各自计算，依赖"两者恰好人相等"的隐含假设**（`len(token_ids)` vs `len(token)`）。中文 BERT 是字级一对一映射所以没触发，但这是一个脆弱设计。**多个数组要 pad 到同一长度时，必须基于同一个长度变量推导**：
 
@@ -246,8 +264,8 @@ token_ids = token_ids[:pad_size] + [0] * max(0, pad_size - len(token_ids))
 ### 4.2 随机森林：最小的可用基线
 
 ```python
-tfidf = TfidfVectorizer(stop_words=open(STOP_WORDS).read.split)
-text_vectors = tfidf.fit_transform(content['words'].values)
+tfidf = TfidfVectorizer(stop_words=open(STOP_WORDS).read.split())
+text_vectors = tfidf.fit_transform(content['words'].values())
 x_train, x_test, y_train, y_test = train_test_split(
 text_vectors, content['label'], test_size=0.2, random_state=0)
 model = RandomForestClassifier # n_estimators=100, gini, 不限深
@@ -369,9 +387,9 @@ dev_best_loss = float("inf")
 for epoch in range(config.num_epochs):
     for i, (trains, labels) in enumerate(tqdm(train_iter)):
         outputs = model(trains)
-        model.zero_grad
+        model.zero_grad()
         loss = loss_fn(outputs, labels)
-        loss.backward
+        loss.backward()
         optimizer.step
 
         if total_batch % 100 == 0 and total_batch != 0:
@@ -391,25 +409,41 @@ for epoch in range(config.num_epochs):
 
 ### 4.7 测试结果该怎么读
 
-```text
-Test Acc: 93.64%
- precision recall f1-score
- home 0.8787 0.8980 0.8882 ← 最弱
- science 0.9236 0.8950 0.9091
- sports 0.9780 0.9780 0.9780 ← 最强
- education 0.9511 0.9730 0.9619
- accuracy 0.9364
- macro avg 0.9365 0.9364 0.9364
- weighted avg 0.9365 0.9364 0.9364
+测试集上 **Test Acc: 93.64%**，`macro avg` 与 `weighted avg` 都是 0.9364。各类指标：
 
-Confusion Matrix（节选）...
+| 类别 | precision | recall | f1-score | 备注 |
+| --- | --- | --- | --- | --- |
+| home | 0.8787 | 0.8980 | 0.8882 | 最弱 |
+| science | 0.9236 | 0.8950 | 0.9091 | 次弱 |
+| education | 0.9511 | 0.9730 | 0.9619 | |
+| sports | 0.9780 | 0.9780 | 0.9780 | 最强 |
+
+混淆矩阵原始输出（节选，行方向是真实标签、列方向是预测标签）：
+
+```text
  home 行 [ 49 12 898 1 19 1 15 0 2 3]
- ↑ ↑
- 49 条→finance 19 条→science
 science 行 [ 4 4 28 7 895 10 12 2 27 11]
- ↑ ↑
- 28 条→home 27 条→game
 ```
+
+矩阵里最值得看的不是对角线上有多少，而是错误"流向"了谁，所以把它画成图：
+
+```mermaid
+flowchart LR
+    H["home<br/>898 条判对<br/>F1 0.8882（最弱）"] -->|49 条误判| F["finance"]
+    H -->|19 条误判| S["science"]
+    SC["science<br/>895 条判对<br/>F1 0.9091"] -->|28 条误判| H
+    SC -->|27 条误判| G["game"]
+```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| 错误**全部**流向语义相邻的频道 | home ↔ finance ↔ science、science ↔ game 本就是模糊边界，"新款智能家居产品发布"算 `home` 还是 `science` 没有标准答案 |
+| 最弱类别既是错误的起点也是终点 | `home` 与 `science` 互相误判，说明不是某一类数据脏，而是两类的分界线本身不清 |
+| macro 与 weighted 几乎完全相同 | 类别严格均衡，模型没有偏向多数类，此时 accuracy 是可信指标 |
+| 错误集中而非分散 | 集中在少数几个相邻类别上，说明"再调参"收益有限，解法要么是合并语义重叠类别，要么是接受这个误差 |
+| 三个数字要连起来看：0.9364 的 accuracy、0.8882 的最弱 F1、邻近类别的混淆 | 只看 accuracy 会漏掉"哪一类在拖后腿"，只看最弱类会漏掉"这是任务边界问题而非模型问题" |
 
 **三步诊断法**：
 

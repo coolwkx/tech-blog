@@ -337,7 +337,7 @@ rfm_gb['m_label'] = pd.cut(rfm_gb['m'], bins=m_bins, labels=[1, 2, 3])
 因为 `groupby` 支持**多字段分组**，可以把"年份"作为一个分组维度一次性算完：
 
 ```python
-data_merge = pd.concat(list(sheet_datas.values)[0:-1]) # 合并 4 年数据（去掉会员等级表）
+data_merge = pd.concat(list(sheet_datas.values())[0:-1]) # 合并 4 年数据（去掉会员等级表）
 rfm_gb = data_merge.groupby(['year', '会员ID'], as_index=False).agg({
 'date_interval': 'min', '订单号': 'count', '订单金额': 'sum'})
 ```

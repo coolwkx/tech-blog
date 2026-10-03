@@ -67,31 +67,30 @@
 
 ### 1.5 完整数据流
 
-```text
- 原始数据 (jsonl: instruction/input/output 或 messages)
-        │
-        ▼
- [1] 数据清洗与去重 ──► 长度过滤、格式校验、按任务配比采样
-        │
-        ▼
- [2] 套 chat template ──► tokenizer.apply_chat_template(..., tokenize=False)
-        │                  （得到带特殊 token 的完整字符串）
-        ▼
- [3] tokenize ──► input_ids / attention_mask
-        │
-        ▼
- [4] label masking ──► labels = input_ids 的副本，
-        │              将 prompt（system+user+模板标记）位置置为 -100
-        ▼
- [5] collator ──► 动态 padding 到 batch 内最长（或 pad_to_multiple_of=8），
-        │          labels 的 pad 位也必须是 -100
-        ▼
- [6] 训练循环 ──► forward → CrossEntropyLoss(ignore_index=-100) → backward
-        │          → 梯度裁剪 → optimizer.step() → scheduler.step()
-        ▼
- [7] 验证 ──► 独立验证集 loss + 生成式任务指标 ──► [8] 保存 best checkpoint
-                    与 tokenizer、训练配置一并落盘
+这张图回答的是：一条原始样本要经过哪些步骤才变成模型真正用来算 loss 的张量，以及每一环最容易出错的地方在哪里。
+
+```mermaid
+flowchart TD
+    A["原始数据<br/>jsonl：instruction / input / output，或 messages"]
+    A --> S1["[1] 数据清洗与去重<br/>长度过滤、格式校验、按任务配比采样"]
+    S1 --> S2["[2] 套 chat template<br/>tokenizer.apply_chat_template(..., tokenize=False)<br/>得到带特殊 token 的完整字符串"]
+    S2 --> S3["[3] tokenize<br/>input_ids / attention_mask"]
+    S3 --> S4["[4] label masking<br/>labels 复制 input_ids，把 prompt（system + user + 模板标记）位置置为 -100"]
+    S4 --> S5["[5] collator<br/>动态 padding 到 batch 内最长（或 pad_to_multiple_of=8）<br/>labels 的 pad 位也必须是 -100"]
+    S5 --> S6["[6] 训练循环<br/>forward → CrossEntropyLoss(ignore_index=-100) → backward<br/>→ 梯度裁剪 → optimizer.step() → scheduler.step()"]
+    S6 --> S7["[7] 验证<br/>独立验证集 loss + 生成式任务指标"]
+    S7 --> S8["[8] 保存 best checkpoint<br/>与 tokenizer、训练配置一并落盘"]
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| chat template 必须在 tokenize 之前完成 | 模板里的特殊 token 是模型预训练时见过的格式，手工拼字符串少一个换行就可能让回答质量暴跌却不报错 |
+| label masking 把 prompt 位置置为 -100 | `CrossEntropyLoss` 的 `ignore_index=-100` 会跳过这些位置，于是模型只对回答部分负责 |
+| collator 的 padding 位也必须是 -100 | 否则模型会去学「填充符也算答案」，在长短混排的 batch 上尤其明显 |
+| 训练循环里没有任何特殊之处 | 最后一步就是普通的前向 + 交叉熵 + 反向 + 梯度裁剪 + 优化器与调度器步进，SFT 的特殊性全在数据侧 |
+| 保存要连同 tokenizer 与训练配置一起落盘 | 推理时模板或分词器与训练不一致，是「明明训练好了但效果不对」最常见的原因 |
 
 ## 2. 关键机制
 

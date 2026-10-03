@@ -104,19 +104,26 @@ LangChain 由 Harrison Chase 创建于 2022 年 10 月，是围绕 LLM 建立的
 
 AgentExecutor 把「思考 → 选工具 → 执行 → 观察」做成一个受控循环：
 
-```text
-user input
- │
- ▼
-┌─────────────────────────────────────────────┐
-│ Agent（LLM + prompt + tool descriptions） │
-│ 输出：AgentAction(tool=..., tool_input=...)│
-│ 或 AgentFinish(return_values=...) │
-└─────────────────────────────────────────────┘
- │ AgentAction │ AgentFinish
- ▼ ▼
-执行工具 → 得到 Observation ──▶ 回到 Agent 结束，返回结果
+这张图回答：一次「让模型自己决定调哪个工具」的过程，出口有几个、回到起点的边有几条。
+
+```mermaid
+flowchart TD
+    IN["user input"] --> AG["Agent<br/>LLM + prompt + tool descriptions"]
+    AG --> DEC{"输出类型"}
+    DEC -->|"AgentAction<br/>tool = ...，tool_input = ..."| TOOL["执行工具"]
+    TOOL --> OBS["得到 Observation"]
+    OBS --> AG
+    DEC -->|"AgentFinish<br/>return_values = ..."| DONE["结束，返回结果"]
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| 回到 Agent 的只有 AgentAction 一条路 | 工具执行完必须重新进模型，模型才有机会判断「信息够了没有」 |
+| AgentFinish 直接出循环 | 终止由模型自己宣布，所以「循环必须有停止标准」说的就是这条边 |
+| 工具描述写在 Agent 节点内部 | 它不是独立组件而是 prompt 的一部分，描述含糊会直接改变分叉结果 |
+| 图里只有两个出口 | 运行时还有第三个出口（迭代上限）没画出来，但工程上必须补，否则死循环 |
 
 两个关键约束：
 
@@ -159,14 +166,24 @@ user input
 
 项目流水线：
 
-```text
-用户输入「帮我写一份情书」
- │
- ├─ 作家 Agent（role=作家，goal=创作情感丰富的文章，最长 300 词）──▶ 写情书 Task
- ├─ 内容编辑 Agent（tools=[store_poesy_to_txt]）──────────────▶ 编辑书信 Task（保存到磁盘）
- └─ 寄信人 Agent（tools=[send_message]）─────────────────────▶ 寄信 Task（发送邮件）
- process = Process.sequential
+这张图回答：三个 Agent 之间到底靠什么串起来，以及 `Process.sequential` 把它们排成了什么形状。
+
+```mermaid
+flowchart LR
+    IN["用户输入：帮我写一份情书"] --> T1["写情书 Task<br/>作家 Agent<br/>role = 作家，goal = 创作情感丰富的文章（最长 300 词）"]
+    T1 --> T2["编辑书信 Task<br/>内容编辑 Agent<br/>tools = store_poesy_to_txt<br/>产出保存到磁盘"]
+    T2 --> T3["寄信 Task<br/>寄信人 Agent<br/>tools = send_message<br/>产出以邮件发送"]
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| 任务是一条链，不是并行分支 | `Process.sequential` 决定按 tasks 列表顺序执行，上一个任务的输出会作为附加内容传给下一个 |
+| 每个 Task 绑定一个 Agent 和一个工具 | 工具挂在 Agent 上而不是 Task 上，所以同一个 Agent 在不同任务里能用的工具是一样的 |
+| 中间那个 Task 有落盘副作用 | `store_poesy_to_txt` 把编辑结果写到磁盘，后面的寄信任务读的正是这份产物 |
+| 只有最后一个 Agent 允许委派 | `allow_delegation` 为 True 的是寄信人，前两个 Agent 不能把子任务甩给别人 |
+| 用户输入只进第一个任务 | 后续任务靠上下文传递而不是重新解析原始请求，所以中间任何一步失真都会往后传 |
 
 三个 Agent 的关键参数对比：
 

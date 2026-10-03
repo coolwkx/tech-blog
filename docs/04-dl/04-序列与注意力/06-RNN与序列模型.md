@@ -48,6 +48,31 @@ $$h_3=f\Big(W\,f\big(W\,f(Ux_1+b)+Ux_2+b\big)+Ux_3+b\Big)$$
 
 这是一个深度为 3 的前馈网络，每层输入都是 $[h_{t-1};x_t]$，且**每一层用的是同一个 $W$ 和同一个 $U$**。因此反向传播时，$\partial\mathcal{L}/\partial W$ 必须把每个时刻的贡献全部累加——这正是 BPTT 与普通 BP 的唯一区别。
 
+这张图回答的是：一个循环网络「按时间展开」之后长什么样，同一组参数在每个时间步是怎么被复用的。
+
+```mermaid
+flowchart LR
+    H0["h₀ = 0（初始隐状态）"] --> H1["h₁ = f(W h₀ + U x₁ + b)"]
+    X1["x₁"] --> H1
+    H1 --> Y1["y₁ = V h₁"]
+    H1 --> H2["h₂ = f(W h₁ + U x₂ + b)"]
+    X2["x₂"] --> H2
+    H2 --> Y2["y₂ = V h₂"]
+    H2 --> H3["h₃ = f(W h₂ + U x₃ + b)"]
+    X3["x₃"] --> H3
+    H3 --> Y3["y₃ = V h₃"]
+```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| 三个时间步用的是同一组 W、U、V | 参数共享让序列长度不改变参数量，这也是同一个模型能处理任意长度输入的原因 |
+| 展开后就是一个深度为 T 的前馈网络 | 每层的输入都是 [h_(t−1); x_t]，于是梯度消失与爆炸的问题原样继承自深网络 |
+| h_t 是唯一的记忆通道 | 历史信息全靠这一个定长向量向后传，长序列里早期信息会被反复覆盖，这正是长程依赖问题的根源 |
+| BPTT 与普通 BP 的唯一区别是「对 t 求和」 | ∂L/∂W 必须把每个时刻的贡献全部累加，因为 W 在每一个时刻都参与了计算 |
+| h₀ 取零向量是约定而不是必须 | 它决定了第一条输出里「历史」部分的先验，实践中也常用可学习的初值 |
+
 ### 2.2 BPTT：随时间反向传播
 
 设每个时刻都有监督信号，损失为 $\mathcal{L}=\sum_{t=1}^{T}\mathcal{L}_t$，$\mathcal{L}_t=\mathcal{L}\big(y_t,g(h_t)\big)$。由于 $W$ 出现在每一个时刻的 $z_t$ 中，链式法则要求对所有时刻求和：
@@ -78,7 +103,7 @@ $$\frac{\partial \mathcal{L}}{\partial W}=\sum_{t=1}^{T}\sum_{k=1}^{t}\delta_{t,
 | 时间复杂度 | 与序列长度 $T$ 线性 | 与序列长度 $T$ 线性，但每步需维护 $O(D^2M)$ 个偏导 |
 | 空间复杂度 | 需保存所有时刻中间梯度，$O(T)$ 较高 | 只需保存当前时刻的偏导矩阵，无需存储历史 |
 | 适用场景 | 离线整句训练（NLP 主流） | **在线学习**、**无限序列**流式任务 |
-| 实践地位 | 主流，PyTorch 中即 `loss.backward` + 梯度累加 | 很少直接用，思想见于在线学习/递推最小二乘 |
+| 实践地位 | 主流，PyTorch 中即 `loss.backward()` + 梯度累加 | 很少直接用，思想见于在线学习/递推最小二乘 |
 
 ### 2.3 长程依赖问题（Long-Term Dependencies）
 
@@ -252,11 +277,11 @@ assert torch.allclose(last_real, packed_hn[0], atol=1e-6)
 # 也可用 torch.nn.utils.rnn.unpad_sequence(unpacked, lengths, batch_first=True) 直接拿掉填充。
 
 # ---------- 4) 训练循环中的梯度截断（防梯度爆炸） ----------
-opt = torch.optim.Adam(bidi.parameters, lr=1e-3)
+opt = torch.optim.Adam(bidi.parameters(), lr=1e-3)
 loss = bidi_out.pow(2).mean
-opt.zero_grad
-loss.backward
-total_norm = nn.utils.clip_grad_norm_(bidi.parameters, max_norm=5.0)
+opt.zero_grad()
+loss.backward()
+total_norm = nn.utils.clip_grad_norm_(bidi.parameters(), max_norm=5.0)
 print(f"grad norm before clip = {total_norm:.4f}")
 opt.step
 print("all checks passed")
@@ -272,13 +297,13 @@ print("all checks passed")
 | --- | --- | --- | --- |
 | 混淆 `batch_first` 默认值 | 训练不报错但完全不收敛，或 `h_n` 形状对不上 | `nn.RNN/nn.LSTM/nn.GRU` 默认 `batch_first=False`，输入应为 `(seq_len, batch, input_size)`；而 `DataLoader` 给出的是 `(batch, seq_len, feat)` | 显式写 `batch_first=True`，或对输入做 `permute(1, 0, 2)`；用 `assert x.shape == (...)` 提前暴露 |
 | 把 `h_n` 当作 `(batch, hidden)` | 索引/拼接时维度错误 | `h_n` 首维是 `num_layers * num_directions` | 单层单向取 `h_n[-1]`；双向需 `h_n.view(num_layers, 2, batch, hidden)` 后再处理 |
-| 忘记 detach 隐状态 | 训练越久越慢，显存持续增长 | 跨 batch 手动传递 `h_n` 时保留了整条计算图，反向传播会沿历史一直展开 | 传 `h_n.detach`（标准做法是每个 batch 用零初始化 h0） |
+| 忘记 detach 隐状态 | 训练越久越慢，显存持续增长 | 跨 batch 手动传递 `h_n` 时保留了整条计算图，反向传播会沿历史一直展开 | 传 `h_n.detach()`（标准做法是每个 batch 用零初始化 h0） |
 | 未处理变长序列的填充位 | 分类结果被 padding 污染，`h_T` 取到的是零填充后的状态 | 直接取 `output[:, -1]`，而短句末位是 padding | `pack_padded_sequence` + `pad_packed_sequence`，按 `lengths-1` gather 真实末位；或对损失设 `ignore_index` |
 | 梯度爆炸 | loss 突然变成 `nan`，参数溢出 | $\gamma>1$ 时误差项随间隔指数增长（教材 6.5 节） | `clip_grad_norm_(params, max_norm=5)`；配合权重衰减 |
 | 误以为"梯度消失 = 参数梯度为 0" | 加大学习率试图解决长程依赖，结果更不稳 | 消失的是 $\partial\mathcal{L}/\partial h_t$ 而非 $\partial\mathcal{L}/\partial W$ | 从模型入手（LSTM/GRU/残差式更新），而不是调学习率 |
 | 遗忘门初始化为 0 | 长序列任务效果显著变差，梯度早期就衰减 | $f_t=\sigma(b_f)$ 偏小，历史信息被大量丢弃 | 把 $b_f$ 初始化为 1~2（教材 6.6.1 节），PyTorch 中手工填入 `bias_ih`/`bias_hh` 的 $f$ 段 |
 | 在需要生成的任务上用双向 RNN | 训练正常但推理无法进行 | Bi-RNN 需要整句未来信息，解码时未来 token 尚不存在 | 编码器可用双向，**解码器必须单向** |
-| 忘记 `optimizer.zero_grad` | 梯度跨 batch 累加，等效学习率失控 | PyTorch 默认累加梯度 | 每次 `backward` 前 `zero_grad`（梯度累积技巧除外） |
+| 忘记 `optimizer.zero_grad()` | 梯度跨 batch 累加，等效学习率失控 | PyTorch 默认累加梯度 | 每次 `backward` 前 `zero_grad`（梯度累积技巧除外） |
 
 ## 5. 面试问答
 
@@ -370,7 +395,7 @@ $z_t=0$ 时 $h_t=(1-z_t)\odot\tilde h_t=\tilde h_t$，输出完全由候选状�
 
 最可能是**梯度爆炸**（$\gamma>1$，误差项随间隔指数放大），也可能是学习率过大或序列中出现极端长句。
 
-处置顺序：(1) 加 `nn.utils.clip_grad_norm_(model.parameters, max_norm=5)`（按模截断，教材 7.2.4.4 节指出它对阈值不敏感、是 RNN 的有效手段）；(2) 打印 `total_norm` 监控梯度模，确认是否真的爆掉；(3) 降低学习率或加入 warmup；(4) 加权重衰减/`dropout`；(5) 若同时存在长程依赖，考虑把 SRN 换成 LSTM/GRU 并检查遗忘门偏置初始化。
+处置顺序：(1) 加 `nn.utils.clip_grad_norm_(model.parameters(), max_norm=5)`（按模截断，教材 7.2.4.4 节指出它对阈值不敏感、是 RNN 的有效手段）；(2) 打印 `total_norm` 监控梯度模，确认是否真的爆掉；(3) 降低学习率或加入 warmup；(4) 加权重衰减/`dropout`；(5) 若同时存在长程依赖，考虑把 SRN 换成 LSTM/GRU 并检查遗忘门偏置初始化。
 </details>
 
 ## 7. 延伸阅读
@@ -385,7 +410,7 @@ $z_t=0$ 时 $h_t=(1-z_t)\odot\tilde h_t=\tilde h_t$，输出完全由候选状�
 - Bengio, Simard & Frasconi, *Learning Long-Term Dependencies with Gradient Descent is Difficult*（长程依赖问题的经典分析）：<https://ieeexplore.ieee.org/document/279181>
 - Greff et al., *LSTM: A Search Space Odyssey*（LSTM 各变体的系统对比，含遗忘门偏置初始化的实验依据）：<https://arxiv.org/abs/1503.04069>
 
-**覆盖说明**：本文的模型公式、BPTT 推导、$\gamma$ 判据、LSTM/GRU 门控与变体、堆叠与双向循环网络，均来自本机《神经网络与深度学习》第 6 章（PDF 第 129–150 页，即 `nn_book.txt` 中"第6章循环神经网络"至"6.9总结和深入阅读"各段）以及第 7.2.4.4 节"梯度截断"（PDF 第 166 页）；PyTorch 形状约定与课堂代码风格参考了本机 `3.RNN及其变体.md`。**超出本机范围**、依据公开教材与官方文档补充的内容包括：`pack_padded_sequence` / `pad_packed_sequence` 的用法细节与 `lengths` 降序要求、`h_n.detach` 的截断计算图实践、Adam 优化器与 RNN 训练循环的工程写法（来自 PyTorch 官方文档）；mean/max 池化与注意力读出对序列到类别任务的影响、LSTM 与 GRU 的选型经验（参考《动手学深度学习》与 Greff et al. 2015）；截断式 BPTT（truncated BPTT）的工程含义（教材 6.9 节仅提及名称，细节来自公开教材与《深度学习》花书第 10 章）。课堂"拼接式"代码（如 `rnn_output[0][-1]` 这类只适配单样本 batch 的写法）未照搬，本文示例统一按 `(batch, seq_len, hidden)` 处理并加了形状断言。
+**覆盖说明**：本文的模型公式、BPTT 推导、$\gamma$ 判据、LSTM/GRU 门控与变体、堆叠与双向循环网络，均来自本机《神经网络与深度学习》第 6 章（PDF 第 129–150 页，即 `nn_book.txt` 中"第6章循环神经网络"至"6.9总结和深入阅读"各段）以及第 7.2.4.4 节"梯度截断"（PDF 第 166 页）；PyTorch 形状约定与课堂代码风格参考了本机 `3.RNN及其变体.md`。**超出本机范围**、依据公开教材与官方文档补充的内容包括：`pack_padded_sequence` / `pad_packed_sequence` 的用法细节与 `lengths` 降序要求、`h_n.detach()` 的截断计算图实践、Adam 优化器与 RNN 训练循环的工程写法（来自 PyTorch 官方文档）；mean/max 池化与注意力读出对序列到类别任务的影响、LSTM 与 GRU 的选型经验（参考《动手学深度学习》与 Greff et al. 2015）；截断式 BPTT（truncated BPTT）的工程含义（教材 6.9 节仅提及名称，细节来自公开教材与《深度学习》花书第 10 章）。课堂"拼接式"代码（如 `rnn_output[0][-1]` 这类只适配单样本 batch 的写法）未照搬，本文示例统一按 `(batch, seq_len, hidden)` 处理并加了形状断言。
 
 ---
 

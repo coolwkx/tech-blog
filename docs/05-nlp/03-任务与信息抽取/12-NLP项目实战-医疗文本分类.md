@@ -95,7 +95,7 @@ def clean_text(self, text):
     if not isinstance(text, str):
         return ""
     text = re.sub(r'[^\u4e00-\u9fa5]', ' ', text) # 非中文 -> 空格
-    return re.sub(r'\s+', ' ', text).strip # 合并多余空格
+    return re.sub(r'\s+', ' ', text).strip() # 合并多余空格
 ```
 
 清洗效果：
@@ -147,7 +147,7 @@ jieba.load_userdict('medical_dict.txt')
 
 ```python
 def remove_stopwords(self, words):
- return [w for w in words if w.strip and w not in self.stopwords]
+ return [w for w in words if w.strip() and w not in self.stopwords]
 ```
 
 停用词表前 20 个示例：的、了、在、是、我、有、和、就、不、人、都、一、一个、上、也、很、到、说、要、去。
@@ -440,7 +440,7 @@ for term in ["肾结石", "输尿管", "心肌梗死", "出血性脑梗死", "�
     jieba.add_word(term)
 
     # 通用停用词表
-    STOPWORDS = set("的 了 在 是 我 有 和 就 都 也 很 只 要 一个 上 到 说".split)
+    STOPWORDS = set("的 了 在 是 我 有 和 就 都 也 很 只 要 一个 上 到 说".split())
     # 关键修正：疑问词必须保留！它们是判断意图的核心信号
     QUESTION_WORDS = {"什么", "怎么", "如何", "为啥", "咋", "为什么", "哪", "多久", "多少"}
 
@@ -457,11 +457,11 @@ for term in ["肾结石", "输尿管", "心肌梗死", "出血性脑梗死", "�
                     text = re.sub(r'[^\u4e00-\u9fa5A-Za-z0-9]', ' ', text)
                 else:
                     text = re.sub(r'[^\u4e00-\u9fa5]', ' ', text)
-                    return re.sub(r'\s+', ' ', text).strip
+                    return re.sub(r'\s+', ' ', text).strip()
 
                 def remove_stopwords(self, words):
                     return [w for w in words
-                if w.strip and (w in QUESTION_WORDS or w not in self.stopwords)]
+                if w.strip() and (w in QUESTION_WORDS or w not in self.stopwords)]
 
                 def preprocess(self, text):
                     cleaned = self.clean_text(text)
@@ -472,7 +472,7 @@ for term in ["肾结石", "输尿管", "心肌梗死", "出血性脑梗死", "�
                 def preprocess_dataframe(self, df, text_column='text'):
                     df = df.copy
                     df['cleaned_text'] = [self.preprocess(t) for t in df[text_column]]
-                    lengths = [len(t.split) for t in df['cleaned_text'] if t]
+                    lengths = [len(t.split()) for t in df['cleaned_text'] if t]
                     if lengths:
                         print("预处理完成，平均长度 {:.1f} 个词，最长 {}，最短 {}".format(
                         float(np.mean(lengths)), max(lengths), min(lengths)))
@@ -531,14 +531,14 @@ DATA = [
  ("婴儿会有痔疮吗", 12), ("小孩打呼噜正常吗", 12),
 ] * 4 # 每条重复 4 次，共 128 条
 
-STOPWORDS = set("的 了 在 是 我 有 和 就 也 很 只 要 一个 上 到 说".split)
+STOPWORDS = set("的 了 在 是 我 有 和 就 也 很 只 要 一个 上 到 说".split())
 QUESTION_WORDS = {"什么", "怎么", "如何", "咋", "多久", "多少", "哪"}
 
 def preprocess(text):
  text = re.sub(r'[^\u4e00-\u9fa5A-Za-z0-9]', ' ', text)
  words = jieba.lcut(text)
  return ' '.join(w for w in words
- if w.strip and (w in QUESTION_WORDS or w not in STOPWORDS))
+ if w.strip() and (w in QUESTION_WORDS or w not in STOPWORDS))
 
 df = pd.DataFrame(DATA, columns=["text", "label"])
 df["words"] = df["text"].apply(preprocess)
@@ -628,7 +628,7 @@ class MedicalTextDataset(Dataset):
             MODEL_NAME, num_labels=NUM_LABELS).to(device)
             loader = DataLoader(MedicalTextDataset(texts, labels), batch_size=batch_size, shuffle=True)
 
-            optimizer = AdamW(model.parameters, lr=lr, weight_decay=0.01)
+            optimizer = AdamW(model.parameters(), lr=lr, weight_decay=0.01)
             total_steps = len(loader) * epochs
             scheduler = get_linear_schedule_with_warmup(
             optimizer, num_warmup_steps=int(0.1 * total_steps), num_training_steps=total_steps)
@@ -638,13 +638,13 @@ class MedicalTextDataset(Dataset):
                 model.train
                 total_loss = 0.0
                 for batch in loader:
-                    batch = {k: v.to(device) for k, v in batch.items}
+                    batch = {k: v.to(device) for k, v in batch.items()}
                     outputs = model(input_ids=batch["input_ids"],
                     attention_mask=batch["attention_mask"])
                     loss = criterion(outputs.logits, batch["labels"])
-                    optimizer.zero_grad
-                    loss.backward
-                    torch.nn.utils.clip_grad_norm_(model.parameters, 1.0) # 梯度裁剪
+                    optimizer.zero_grad()
+                    loss.backward()
+                    torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0) # 梯度裁剪
                     optimizer.step
                     scheduler.step
                     total_loss += loss.item
@@ -658,7 +658,7 @@ class MedicalTextDataset(Dataset):
                     model.eval
                     enc = tokenizer(text, add_special_tokens=True, max_length=MAX_LEN,
                     padding="max_length", truncation=True, return_tensors="pt")
-                    enc = {k: v.to(device) for k, v in enc.items}
+                    enc = {k: v.to(device) for k, v in enc.items()}
                     with torch.no_grad:
                         logits = model(**enc).logits
                         probs = torch.softmax(logits, dim=-1)[0]
@@ -706,7 +706,7 @@ app = Flask(__name__)
 def inference(text, pad_size=128):
  enc = tokenizer(text, add_special_tokens=True, max_length=pad_size,
  padding="max_length", truncation=True, return_tensors="pt")
- enc = {k: v.to(device) for k, v in enc.items}
+ enc = {k: v.to(device) for k, v in enc.items()}
  with torch.no_grad:
  logits = model(**enc).logits
  probs = torch.softmax(logits, dim=-1)[0]

@@ -139,16 +139,25 @@
 
 把五要素落成一个循环，就是 Agent 的运行骨架：
 
-```text
- ┌──────────────────────────────────────────┐
- │ │
-用户目标 ──> [Prompt] ──> [LLM 规划/推理] ──> [Action 工具调用]
- ↑ │
- │ ↓
- [Memory 上下文] <── [Observation 观察结果]
- ↑
- [外部知识库 / 环境状态]
+```mermaid
+flowchart LR
+    GOAL["用户目标"] --> PROMPT["Prompt"]
+    PROMPT --> LLM["LLM 规划 / 推理"]
+    LLM --> ACT["Action 工具调用"]
+    ACT --> OBS["Observation 观察结果"]
+    OBS --> MEM["Memory 上下文"]
+    MEM --> PROMPT
+    ENV["外部知识库 / 环境状态"] --> MEM
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| Memory 是唯一被两处写入的节点 | 它既接收 Observation（本轮动手的结果），也接收外部知识库 / 环境状态（本轮之外的事实） |
+| 闭环边是 Memory → Prompt | 上下文不是每轮重建的，而是累积起来后重新拼进 Prompt |
+| Action → Observation 是唯一对外的边 | 其余环节都发生在模型内部或代码内部，只有这条边会带回新信息 |
+| 退出条件不在这张图里 | 目标是否达成由 LLM 自己判断（另有步数、超时、人工介入兜底），所以它是一个「模型自评」的循环 |
 
 循环的退出条件是 **Agent 认为目标已达成**（或达到最大步数 / 超时 / 需要人类介入）。在 Function Call 章节讲同一件事时用的是「是否需要调用外部信息」的判定节点——判定为「否」则直接输出，判定为「是」则选择 API、执行、再回到模型。
 
@@ -196,7 +205,7 @@ function run(goal):
  return "达到最大步数仍未完成"
 ```
 
-这段伪代码里的每个符号都能对回：`llm(memory, tools=...)` 是 LLM + Prompt；`execute` 是 Action；`memory.append` 是 Memory；`for step in ...` 是 Planning 的展开形式。
+这段伪代码里的每个符号都能对回：`llm(memory, tools=...)` 是 LLM + Prompt；`execute` 是 Action；`memory.append()` 是 Memory；`for step in ...` 是 Planning 的展开形式。
 
 ### 2.4 从对话机器人到 Agent：医疗问诊机器人的位置
 

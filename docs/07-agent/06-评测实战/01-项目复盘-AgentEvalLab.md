@@ -68,46 +68,38 @@ open-source-research-agent   →  具体应用案例，产出真实业务轨迹
 
 ### 2.1 六段流水线
 
-```text
-ExperimentManifest + TaskSpec + JSON/JSONL（runs 或 results）
-                        │
-                        ▼
-        ┌───────────────────────────────────────────┐
-   ①    │ 输入识别与 Schema 校验                     │  schema.ts
-        │ JSON 整份 / JSONL 逐行；带 JSON 路径报错   │
-        └───────────────────────────────────────────┘
-                        │
-                        ▼
-        ┌───────────────────────────────────────────┐
-   ②    │ Manifest 一致性闸门                        │  pipeline.ts
-        │ 任务集完整 / 每条带 seed / repeatCount 相符 │
-        │ / 各任务 seed+repeat 调度完全一致          │
-        └───────────────────────────────────────────┘
-                        │
-        ┌───────────────┴───────────────┐
-        ▼                               ▼
-  轨迹输入 (trajectories-v1)      结果输入 (results-v1)
-        │                               │
-        ▼                               │
-   ③ 完整性门                          │  evaluator.ts
-   轨迹非空 / 有 tool_call / final 非空│
-        │                               │
-        ▼                               │
-   ④ 证据式目标判定                     │
-   证据必须来自成功 tool_result、       │
-   值/哈希一致、被 final 引用           │
-        │                               │
-        ▼                               │
-   ⑤ 多标签 violations + primaryFailure┘
-        │
-        ▼
-        ┌───────────────────────────────────────────┐
-   ⑥    │ 严格配对 → McNemar exact → 聚类 Bootstrap  │  statistics.ts
-        └───────────────────────────────────────────┘
-                        │
-                        ▼
-       EvaluationArtifact (agent-eval-lab-artifact-v1) → reports/*.json
+这张图回答一个问题：从一堆原始轨迹文件到一份可复核的报告，中间要依次通过哪几道关，每一关分别拒绝什么样的输入。
+
+```mermaid
+flowchart TD
+    IN["ExperimentManifest + TaskSpec<br/>+ JSON/JSONL（runs 或 results）"]
+    S1["① 输入识别与 Schema 校验<br/>schema.ts<br/>JSON 整份 / JSONL 逐行；错误带 JSON 路径"]
+    S2["② Manifest 一致性闸门<br/>pipeline.ts<br/>任务集完整 / 每条带 seed / repeatCount 相符<br/>各任务 seed+repeat 调度完全一致"]
+    TR["轨迹输入<br/>trajectories-v1"]
+    RS["结果输入<br/>results-v1"]
+    S3["③ 完整性门<br/>evaluator.ts<br/>轨迹非空 / 有 tool_call / final 非空"]
+    S4["④ 证据式目标判定<br/>证据来自成功 tool_result<br/>值、哈希一致且被 final 引用"]
+    S5["⑤ 多标签 violations + primaryFailure"]
+    S6["⑥ 严格配对 → McNemar exact → 聚类 Bootstrap<br/>statistics.ts"]
+    OUT["EvaluationArtifact<br/>agent-eval-lab-artifact-v1<br/>写入 reports/*.json"]
+
+    IN --> S1 --> S2
+    S2 --> TR
+    S2 --> RS
+    TR --> S3 --> S4 --> S5
+    RS --> S5
+    S5 --> S6 --> OUT
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| ①② 都在评测之前 | Schema 校验管「结构合法」，一致性闸门管「跨字段业务自洽」；两者都通过，一条轨迹才有资格被判定为失败 |
+| ② 之后分成两条输入路径 | 工具自己判定轨迹时走左边（③④⑤），只帮忙复算统计时走右边（直接到 ⑤） |
+| ③④ 只出现在轨迹输入一侧 | 只有拿到原始轨迹才能做完整性门与证据绑定；结果输入的 `passed` 是外部已经判好的 |
+| ⑤ 是两条路径的唯一汇合点 | 无论哪种输入，最终都归一成同一套 `violations` + `primaryFailure` 结构 |
+| ⑥ 只做统计、不做判定 | 配对、McNemar、Bootstrap 只消费 ⑤ 的结论，所以统计口径与判定口径永远一致 |
 
 注意 ①②的次序：**Schema 校验在一致性校验之前，一致性校验在评测之前。** 这个次序保证任何一条轨迹被判定为「失败」之前，它本身已经是结构合法的——否则你会把"数据脏"误算成"Agent 差"。
 
@@ -156,14 +148,26 @@ ExperimentManifest + TaskSpec + JSON/JSONL（runs 或 results）
 
 把上表压成一句话：**宁可报错，也不静默。** 这个项目里几乎每一处"不友好"的行为都是刻意的：
 
-```text
-重复配对主键        → 抛 Duplicate baseline pair key
-条件不齐            → 抛 Unpaired results: missing optimized [...]
-Manifest 少任务     → 抛"实际运行任务与 manifest.taskIds 不一致；缺少 [...]"
-seed 缺失           → 抛"运行 X 未声明 seed"
-pairKey 被改        → 抛"必须由 taskId + repeatId + seed 生成，期望 ..."
-passed 与 violations 冲突 → 抛"passed=true 时 primaryFailure 必须为 none"
+下面这张图把「坏输入」和「抛出的错误」一一对上：每一类本该被静默处理的情况，都被换成了一个能定位到具体记录的异常。
+
+```mermaid
+flowchart LR
+    B1["重复配对主键"] --> E1["Duplicate baseline pair key"]
+    B2["两侧配对条件不齐"] --> E2["Unpaired results: missing optimized ..."]
+    B3["Manifest 声明了但没跑的任务"] --> E3["实际运行任务与 manifest.taskIds 不一致；缺少 ..."]
+    B4["运行未声明 seed"] --> E4["运行 X 未声明 seed"]
+    B5["pairKey 被手改"] --> E5["必须由 taskId + repeatId + seed 生成，期望 ..."]
+    B6["passed 与 violations 互相矛盾"] --> E6["passed=true 时 primaryFailure 必须为 none"]
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| 左侧每类输入都对应右侧一条具体错误 | 拒绝不是笼统的「数据不合法」，而是能直接指到哪条记录、哪个字段 |
+| `pairKey` 与 `passed/violations` 属于自洽性检查 | 它们不依赖外部数据，只要求同一条记录内部不矛盾，所以能在导入阶段立刻揪出伪造 |
+| 所有错误都发生在评测之前 | 报告只会由通过了全部闸门的数据集产出，于是「能出报告」本身就等于「口径可信」 |
+| 代价是接入时会连续撞报错 | 这是刻意做的交换：评测工具唯一的产品就是可信度 |
 
 代价是接入时会连续撞报错，好处是**任何一个能跑出报告的数据集，其结论都是"口径可信"的**。对评测工具来说，这个交换非常划算——因为评测工具唯一的产品就是"可信度"。
 

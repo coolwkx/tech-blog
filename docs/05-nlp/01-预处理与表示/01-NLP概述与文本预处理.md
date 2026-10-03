@@ -229,10 +229,10 @@ STOPWORDS = {"的", "了", "在", "是", "我", "有", "和", "就", "不", "都
 def clean(text: str) -> str:
  """只保留中文，其余替换为空格（注意: 会丢掉 CT、MRI 这类英文缩写）"""
  text = re.sub(r"[^\u4e00-\u9fa5]", "", str(text))
- return re.sub(r"\s+", "", text).strip
+ return re.sub(r"\s+", "", text).strip()
 
 def preprocess(text: str, max_len: int = 30) -> str:
- words = [w for w in jieba.lcut(clean(text)) if w.strip and w not in STOPWORDS]
+ words = [w for w in jieba.lcut(clean(text)) if w.strip() and w not in STOPWORDS]
  return "".join(words[:max_len]) # 先按词截断，再交给向量化器
 
 # 用一份内联小样本代替外部数据文件，保证示例自包含
@@ -257,7 +257,7 @@ df["words"] = df["sentence"].apply(preprocess)
 print(df[["sentence", "words", "label"]].to_string(index=False))
 
 # --- 语料体检 3: 词频统计，看高频词里有没有脏数据 ---
-vocab = set(w for s in df["words"] for w in s.split)
+vocab = set(w for s in df["words"] for w in s.split())
 print("词表大小:", len(vocab))
 ```
 

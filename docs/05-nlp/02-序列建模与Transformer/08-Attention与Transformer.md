@@ -372,7 +372,7 @@ class EncoderLayer(nn.Module):
                                                             nn.Sequential(Embeddings(d_model, tgt_vocab), c(position)),
                                                             Generator(d_model, tgt_vocab),
                                                             )
-                                                            for p in model.parameters:
+                                                            for p in model.parameters():
                                                                 if p.dim > 1:
                                                                     nn.init.xavier_uniform_(p)
                                                                     return model

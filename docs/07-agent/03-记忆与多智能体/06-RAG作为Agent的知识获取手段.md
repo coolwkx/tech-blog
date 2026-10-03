@@ -34,25 +34,36 @@
 
  `rag_system.py` 的 `generate_answer` 串起了全部模块：
 
-```text
-用户查询
- │
- ├─▶ QueryClassifier.predict_category(query) # BERT 二分类：通用知识 / 专业咨询
- │ │
- │ ├── 通用知识 ──▶ 直接用 rag_prompt(context="") 调 LLM ──▶ 返回
- │ │
- │ └── 专业咨询 ──▶ StrategySelector.select_strategy(query)
- │ │
- │ ├── 直接检索 ────▶ hybrid_search_with_rerank(query)
- │ ├── 假设问题检索 ─▶ HyDE：生成假设答案 → 检索
- │ ├── 子查询检索 ──▶ 生成子查询 → 逐个检索 → 去重
- │ └── 回溯问题检索 ─▶ 简化问题 → 检索
- │ │
- │ ▼
- │ context_docs[:CANDIDATE_M]
- │ │
- └──────────────────────────────┴─▶ rag_prompt.format(context, question, phone) ──▶ LLM ──▶ 答案
+这张图回答：一次查询进来之后，会在哪几个分岔点上被决定走哪条路。
+
+```mermaid
+flowchart TD
+    Q["用户查询 query"] --> CLS["QueryClassifier.predict_category(query)<br/>BERT 二分类"]
+    CLS -->|"通用知识"| NORT["直接调 LLM<br/>rag_prompt 的 context 置空"]
+    CLS -->|"专业咨询"| SEL["StrategySelector.select_strategy(query)<br/>由 LLM 选择检索增强策略"]
+    NORT --> ANS["返回答案"]
+    SEL --> S1["直接检索<br/>hybrid_search_with_rerank(query)"]
+    SEL --> S2["假设问题检索<br/>HyDE：先生成假设答案再检索"]
+    SEL --> S3["子查询检索<br/>生成子查询，逐个检索再去重"]
+    SEL --> S4["回溯问题检索<br/>简化问题再检索"]
+    S1 --> CTX["取前 CANDIDATE_M 条 context_docs"]
+    S2 --> CTX
+    S3 --> CTX
+    S4 --> CTX
+    CTX --> PROMPT["rag_prompt.format(context, question, phone)"]
+    PROMPT --> LLM["LLM 生成"]
+    LLM --> ANS
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| 分类器排在检索之前 | 通用知识直接问模型，一次检索都不做——这是省成本、避噪声的第一道闸门 |
+| 四条策略边互斥 | StrategySelector 每次只选一条，所以同一次查询只有一条检索路径被激活 |
+| 四条路径汇到同一个 context 变量 | 策略差异被收敛成「一组上下文文档」，下游的 prompt 与生成逻辑完全复用 |
+| 通用知识分支绕过了策略选择与向量库 | 两个分支在同一个「返回答案」节点收口，调用方不需要区分自己走的是哪条 |
+| 两道前置判断位置不同 | 分类决定「要不要检索」，策略选择决定「怎么检索」，是成本与召回两个不同方向的优化 |
 
 | 模块 | 类 | 职责 |
 | --- | --- | --- |

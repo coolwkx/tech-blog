@@ -180,7 +180,7 @@ print(np.isnan(r), np.abs(np.array([-1, 2, -3]))) # 判 NaN / 绝对值
 
 s = np.array([1, 2, 34, 5])
 print(np.sort(s)); print(s) # 返回副本，s 不变
-s.sort; print(s) # 原地排序 -> [1 2 5 34]
+s.sort(); print(s) # 原地排序 -> [1 2 5 34]
 ```
 
 ## 3. 常见坑

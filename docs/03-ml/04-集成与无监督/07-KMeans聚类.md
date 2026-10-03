@@ -398,7 +398,7 @@ def main():
         colors = ["red", "blue", "green", "cyan", "magenta"]
         labels = ["Standard", "Traditional", "Normal", "Youth", "TA"]
         for c in range(5):
-            plt.scatter(X.values[y_kmeans == c, 0], X.values[y_kmeans == c, 1],
+            plt.scatter(X.values()[y_kmeans == c, 0], X.values()[y_kmeans == c, 1],
             s=100, c=colors[c], label=labels[c])
             plt.scatter(mykmeans.cluster_centers_[:, 0], mykmeans.cluster_centers_[:, 1],
             s=300, c="black", label="Centroids", marker="X")

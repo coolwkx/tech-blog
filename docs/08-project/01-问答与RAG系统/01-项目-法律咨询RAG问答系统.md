@@ -250,7 +250,7 @@ class QueryClassifier:
             return "通用知识" # 兜底：走便宜路径
         enc = self.tokenizer(query, truncation=True, padding=True,
         max_length=128, return_tensors="pt")
-        enc = {k: v.to(self.device) for k, v in enc.items}
+        enc = {k: v.to(self.device) for k, v in enc.items()}
         with torch.no_grad:
             logits = self.model(**enc).logits
             return "专业咨询" if torch.argmax(logits, 1).item == 1 else "通用知识"
@@ -306,7 +306,7 @@ def retrieve_and_merge(self, query, source_filter=None, strategy=None):
 子查询去重那一行曾被写错成基于对象地址去重，正确写法是基于内容：
 
 ```python
-unique_docs = list({doc.page_content: doc for doc in all_docs}.values)
+unique_docs = list({doc.page_content: doc for doc in all_docs}.values())
 ```
 
 ### 4.6 双通道融合 + 流式输出

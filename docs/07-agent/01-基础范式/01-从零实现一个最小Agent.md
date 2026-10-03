@@ -30,26 +30,33 @@
 
 Agent 的循环可以完整画成下面这张图。它只有四条边是「新东西」，其余都是普通工程：
 
-```text
- ┌───────────────────────────────────────────┐
- │ System Prompt │
- │ 角色 + 工具清单 + 输出格式 + 终止约定 │
- └───────────────────────────────────────────┘
- │
- question ──► build_prompt ──► LLM ──► 原始文本（thought + action）
- │
- 动作解析器（结构化输出）
- ┌───────┴────────┐
- final_answer action(name, args)
- │ │
- │ 工具执行器（沙箱/超时/重试）
- │ │
- │ observation（字符串）
- │ │
- └──► 追加进 scratchpad ◄┘
- │
- 未终止且未超步数 ──┘ 回到 build_prompt
+这张图回答的是：一次决策从「拿到问题」到「问出下一个问题」，中间被谁接了几手，哪一步才是真正的新东西。
+
+```mermaid
+flowchart TD
+    Q["用户问题 question"] --> BP["build_prompt<br/>System Prompt 模板（角色 + 工具清单<br/>+ 输出格式 + 终止约定）<br/>再拼接历史 scratchpad"]
+    BP --> LLM["LLM 一次调用"]
+    LLM --> RAW["原始文本（thought + action）"]
+    RAW --> PARSE["动作解析器<br/>把自由文本变成 (name, args)"]
+    PARSE --> DEC{"解析出什么？"}
+    DEC -->|"final_answer"| FIN["返回最终答案，循环结束"]
+    DEC -->|"action(name, args)"| EXEC["工具执行器<br/>沙箱 / 超时 / 重试"]
+    EXEC --> OBS["observation（字符串）"]
+    OBS --> SCRATCH["追加进 scratchpad<br/>Thought + Action + Observation"]
+    SCRATCH --> LIMIT{"已终止或达到步数上限？"}
+    LIMIT -->|"否"| BP
+    LIMIT -->|"是"| STOP["返回部分结果或超限提示"]
 ```
+
+**读图要点**：
+
+| 观察 | 含义 |
+| --- | --- |
+| scratchpad 是除用户问题之外唯一回到 LLM 的边 | 模型看到的全部历史都来自这串字符串；「Agent 有记忆」在最小实现里就是它 |
+| 动作解析器是唯一的决策分岔点 | `final_answer` 走终止、`action` 走执行，解析错了整轮循环的方向就错了 |
+| 工具执行器不直接产出答案 | 它只产出 observation 字符串，再由 scratchpad 回到下一轮，模型才真正「看到」结果 |
+| 循环没有天然终点 | 出口只有两条边：模型宣布 `final_answer`，或步数上限兜底；缺一个就会无限转 |
+| 四个组成部分恰好各占一段 | System Prompt 在 `build_prompt` 里，解析器、执行器、终止判定各占一条边，没有第五个隐藏角色 |
 
 循环里真正不可替代的东西只有一样：**scratchpad**。它是模型看到的全部记忆，是一段不断变长的纯文本。所谓「Agent 有记忆」，在最小实现里就是这串字符串。
 
@@ -149,8 +156,8 @@ class ToolRegistry:
  def describe(self) -> str:
  """渲染工具清单 —— 模型只有看到这段文本，才知道该选哪个工具。"""
  rows = []
- for t in self.tools.values:
- args = ", ".join(f"{k}: {v['type']}" for k, v in t.parameters["properties"].items)
+ for t in self.tools.values():
+ args = ", ".join(f"{k}: {v['type']}" for k, v in t.parameters()["properties"].items())
  rows.append(f"- {t.name}({args}): {t.description}")
  return "\n".join(rows)
 
@@ -217,8 +224,8 @@ def build_registry(workdir: str | Path = ".") -> ToolRegistry:
  return text if len(text) <= 8000 else text[:8000] + f"\n...[已截断，原文 {len(text)} 字符]"
 
  def search(query: str, top_k: int = 3) -> str:
- words = [w for w in re.split(r"[\s,，]+", query.lower) if w]
- hits = [(sum(w in k or w in t.lower for w in words), k, t) for k, t in index.items]
+ words = [w for w in re.split(r"[\s,，]+", query.lower()) if w]
+ hits = [(sum(w in k or w in t.lower() for w in words), k, t) for k, t in index.items()]
  hits = sorted((h for h in hits if h[0]), key=lambda h: -h[0])[:top_k]
  if not hits:
  return f"没有检索到与 {query!r} 相关的结果（本地索引只有：{list(index)}）"
@@ -250,14 +257,14 @@ _THOUGHT = re.compile(r"Thought\s*[:：]\s*(?P<thought>.+?)(?=\n\s*(?:Action|Fin
 
 def _thought_of(text: str) -> str:
  match = _THOUGHT.search(text)
- return match.group("thought").strip if match else ""
+ return match.group("thought").strip() if match else ""
 
 def parse_response(text: str) -> Dict[str, Any]:
  """把模型输出归一化成 {'type': 'final'|'action', ...}。
  先试 JSON（兼容 function calling 风格），失败再退回 ReAct 文本协议。
  """
- fenced = _FENCE.match(text.strip)
- candidate = fenced.group(1) if fenced else text.strip
+ fenced = _FENCE.match(text.strip())
+ candidate = fenced.group(1) if fenced else text.strip()
  if candidate.startswith("{"):
  try:
  obj = json.loads(candidate)
@@ -272,10 +279,10 @@ def parse_response(text: str) -> Dict[str, Any]:
  "name": str(name), "action_input": obj.get("action_input", {})}
  match = _FINAL.search(text)
  if match:
- return {"type": "final", "thought": _thought_of(text), "answer": match.group("answer").strip}
+ return {"type": "final", "thought": _thought_of(text), "answer": match.group("answer").strip()}
  match = _ACTION.search(text)
  if match:
- raw_input: Any = match.group("input").strip
+ raw_input: Any = match.group("input").strip()
  try: # 文本协议里的 Action Input 通常也是 JSON
  decoded = json.loads(raw_input)
  raw_input = decoded if isinstance(decoded, dict) else raw_input
@@ -332,7 +339,7 @@ class MiniAgent:
  tool = self.registry.tools.get(name)
  if tool is None:
  return {}, f"ERROR: 未知工具 {name!r}，可用工具：{list(self.registry.tools)}"
- text = str(raw).strip
+ text = str(raw).strip()
  try:
  parsed = json.loads(text)
  if isinstance(parsed, dict):
@@ -345,14 +352,14 @@ class MiniAgent:
  return {required[0]: raw}, ""
 
  def run(self, question: str) -> str:
- self.scratchpad.clear, self.trace.clear
+ self.scratchpad.clear(), self.trace.clear()
  seen: Dict[str, int] = {}
  for index in range(1, self.max_steps + 1):
  raw = self.llm(self.build_prompt(question))
  try:
  parsed = parse_response(raw)
  except ParseError as exc: # 格式错误也当成 observation 喂回去
- self._record(Step(index, raw.strip[:300], None, None,
+ self._record(Step(index, raw.strip()[:300], None, None,
  f"ERROR: 无法解析你的输出（{exc}）。请严格使用 ""Thought/Action/Action Input 或 Thought/Final Answer 格式。"))
  continue
  if parsed["type"] == "final":

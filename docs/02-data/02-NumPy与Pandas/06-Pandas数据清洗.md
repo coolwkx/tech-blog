@@ -114,7 +114,7 @@ s1 = pd.Series([1, 2, 3]) # 默认自增索引
 s2 = pd.Series([1, 2, 3], index=['A', 'B', 'C']) # 自定义索引
 s3 = pd.Series({'A': 1, 'B': 2, 'C': 3}) # 字典创建
 s4 = pd.Series(np.arange(6), index=list('ABCDEF'))
-print(s4.index, s4.values, s4['A'])
+print(s4.index, s4.values(), s4['A'])
 
 df1 = pd.DataFrame({'日期': ['2021-08-21', '2021-08-22', '2021-08-23'],
 '温度': [25, 26, 50], '湿度': [81, 50, 56]}) # 字典+列表
@@ -245,7 +245,7 @@ for m in ['average', 'min', 'max', 'dense']:
 | `drop`/`replace`/`fillna` 后原数据没变 | 打印原 df 还是老数据 | 这些方法**默认返回新对象** | 接收返回值 `df = df.drop(...)`，或显式 `inplace=True` |
 | `df.drop([...])` 想删列却删了行 | 报 `labels not found` 或结果不对 | `drop` 默认 `axis=0`（删行） | 删列传 `axis=1` |
 | `to_csv` 后读回来多一列 `Unnamed: 0` | 列数变多 | `to_csv` 默认 `index=True` | 写文件加 `index=False` |
-| 用 `df.append` | 报 `AttributeError` | `DataFrame.append` 已在 Pandas 2.0 移除 | 改用 `pd.concat([df1, df2], ignore_index=True)` |
+| 用 `df.append()` | 报 `AttributeError` | `DataFrame.append()` 已在 Pandas 2.0 移除 | 改用 `pd.concat([df1, df2], ignore_index=True)` |
 | `del df['列']` 后重复运行报错 | 第二次执行 `KeyError` | `del` 是**原地永久删除** | 需要可重复执行就用 `drop` 并接收返回值 |
 | `df['a']['b'] = 值` 报 `SettingWithCopyWarning` | 有时改了、有时没改 | 链式索引可能作用在**临时副本**上 | 用 `.loc` 一步到位：`df.loc['b', 'a'] = 值` |
 | 用 `==` 判断缺失值 | 筛选结果永远为空 | `np.nan != np.nan` 恒为真 | 用 `df.isnull` / `df.notnull` |

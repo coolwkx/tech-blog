@@ -121,7 +121,7 @@ print(base2) # [0 1 2 3 4 5 6 7 8 9] ← 原数组没变
 | 交换轴 | `a.swapaxes(0, 1)` | ❌ | ✅ 视图 |
 | 自动推断维度 | `a.reshape(-1)` / `a.reshape(2, -1)` | ❌ | ✅ 视图 |
 | 拼接 | `np.vstack` / `np.hstack` / `np.concatenate` | ❌ | ❌ 新数组 |
-| 切分 | `np.split` / `np.hsplit` / `np.vsplit` | ❌ | ✅ 视图 |
+| 切分 | `np.split()` / `np.hsplit` / `np.vsplit` | ❌ | ✅ 视图 |
 ```python
 x = np.arange(6)
 r = x.reshape(2, 3)
@@ -187,11 +187,11 @@ m.sum(axis=1) # shape (3,) → [6 22 38]，每行之和
 | 判空 | `isnan` `isinf` `isfinite` |
 | 逻辑 | `logical_and` `logical_or` `logical_not` `all` `any` |
 | 三元 | `np.where(cond, x, y)` |
-| 去重/排序 | `np.unique` `np.sort` `np.argsort` |
+| 去重/排序 | `np.unique` `np.sort()` `np.argsort` |
 ```python
 np.unique(np.array([[1, 2, 1], [2, 3, 4]])) # [1 2 3 4]，展平后去重，返回一维新数组
 np.sort(a) # 返回排序后的新数组，原数组不变
-a.sort # 原地排序，返回 None
+a.sort() # 原地排序，返回 None
 ```
 **`nan` 的三个反直觉行为**：
 
@@ -394,7 +394,7 @@ nan 4.0 2.0
 | `np.zeros(3, 4)` 报错 | `TypeError: 'int' object is not iterable` | 形状必须传**元组** | `np.zeros((3, 4))` |
 | `reshape` 元素数不匹配 | `ValueError: cannot reshape array of size 6 into shape (4,3)` | 新旧形状元素总数必须相同 | 用 `-1` 让 NumPy 推断：`a.reshape(2, -1)` |
 | `resize` 与 `reshape` 混用 | 原数组被改了 | `resize` 是原地操作 | 只读场景用 `reshape` |
-| `np.sort(a)` 后 `a` 没变却以为变了 | 以为排序失败 | `np.sort` 返回新数组 | 需要原地用 `a.sort`（注意它返回 `None`） |
+| `np.sort(a)` 后 `a` 没变却以为变了 | 以为排序失败 | `np.sort()` 返回新数组 | 需要原地用 `a.sort()`（注意它返回 `None`） |
 | 一维数组当列向量用 | 广播结果形状不对 | `(3,)` 与 `(3,1)` 语义不同 | 用 `a[:, None]` 或 `a.reshape(-1, 1)` 显式升维 |
 | 用 `np.random.seed` 却在别处随机 | 结果不可复现 | 全局随机状态被其他调用消耗 | 用 `rng = np.random.default_rng(42)` 独立生成器 |
 | NumPy 2.0 后旧别名报错 | `AttributeError: module 'numpy' has no attribute 'string_'` | `np.string_` / `np.unicode_` 已移除 | 改用 `np.bytes_` / `np.str_` |
@@ -440,7 +440,7 @@ nan 4.0 2.0
 | --- | --- |
 | 基础切片 `a[1:5]`、`a[:, 0]` | 花式索引 `a[[0, 2]]` |
 | `reshape` / `ravel` / `T` / `swapaxes` | 布尔索引 `a[a > 0]` |
-| `np.split` 系列 | `flatten` / `np.array(a)` / `a.copy` |
+| `np.split()` 系列 | `flatten` / `np.array(a)` / `a.copy` |
 | `a.view` | 算术运算结果 `a + 1`、`np.sort(a)` |
 
 验证工具是 `np.shares_memory(a, b)`。实践中要注意两点：① 切片赋值 `view[:] = -1` 会**原地**改数据，这是最常见的隐蔽 bug；② 视图持有对源数据的引用，一个大数组的切片视图会让整块内存无法释放（内存泄漏的常见原因），需要长期保留时用 `.copy`。

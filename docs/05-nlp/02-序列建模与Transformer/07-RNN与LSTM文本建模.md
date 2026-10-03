@@ -223,7 +223,7 @@ n_chars = len(char2id) + 1
 
 def name_to_tensor(name: str) -> torch.Tensor:
     """字符 -> id 序列，补齐或截断到 MAX_LEN"""
-    ids = [char2id.get(ch, 0) for ch in name.lower][:MAX_LEN]
+    ids = [char2id.get(ch, 0) for ch in name.lower()][:MAX_LEN]
     ids += [0] * (MAX_LEN - len(ids))
     return torch.tensor(ids, dtype=torch.long)
 
@@ -262,18 +262,18 @@ class NameDataset(Dataset):
                     loader = DataLoader(NameDataset(raw), batch_size=4, shuffle=True)
                     model = NameClassifier(rnn_type=rnn_type)
                     criterion = nn.NLLLoss # 与模型内 log_softmax 配对
-                    optimizer = optim.Adam(model.parameters, lr=0.01)
+                    optimizer = optim.Adam(model.parameters(), lr=0.01)
                     # RNN 训练标配：梯度裁剪，防止梯度爆炸
-                    torch.nn.utils.clip_grad_norm_(model.parameters, max_norm=5.0)
+                    torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=5.0)
 
                     for epoch in range(epochs):
                         total_loss = 0.0
                         for x, y in loader:
                             out = model(x)
                             loss = criterion(out, y)
-                            optimizer.zero_grad
-                            loss.backward
-                            torch.nn.utils.clip_grad_norm_(model.parameters, max_norm=5.0)
+                            optimizer.zero_grad()
+                            loss.backward()
+                            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=5.0)
                             optimizer.step
                             total_loss += loss.item
                             if (epoch + 1) % 20 == 0:
@@ -292,7 +292,7 @@ class NameDataset(Dataset):
                                     for rnn_type in ["rnn", "lstm", "gru"]:
                                         m = train_model(rnn_type)
                                         acc = sum(predict(m, n)[0] == c for n, c in raw) / len(raw)
-                                        print(f"{rnn_type.upper:4s} 训练集准确率: {acc:.3f} 预测('zhang')={predict(m, 'zhang')}")
+                                        print(f"{rnn_type.upper():4s} 训练集准确率: {acc:.3f} 预测('zhang')={predict(m, 'zhang')}")
 ```
 
 要点说明：
@@ -320,7 +320,7 @@ def run(rnn_type, seq_len=60, steps=300):
     rnn_cls = {"rnn": nn.RNN, "lstm": nn.LSTM, "gru": nn.GRU}[rnn_type]
     rnn = rnn_cls(16, 32, batch_first=True)
     fc = nn.Linear(32, 10)
-    params = list(embed.parameters) + list(rnn.parameters) + list(fc.parameters)
+    params = list(embed.parameters()) + list(rnn.parameters()) + list(fc.parameters())
     opt = torch.optim.Adam(params, lr=0.01)
     crit = nn.CrossEntropyLoss
 
@@ -329,8 +329,8 @@ def run(rnn_type, seq_len=60, steps=300):
         out, _ = rnn(embed(x))
         logits = fc(out[:, -1, :])
         loss = crit(logits, y)
-        opt.zero_grad
-        loss.backward
+        opt.zero_grad()
+        loss.backward()
         torch.nn.utils.clip_grad_norm_(params, 5.0)
         opt.step
 

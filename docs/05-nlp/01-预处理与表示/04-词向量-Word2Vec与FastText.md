@@ -164,12 +164,12 @@ from gensim.models import Word2Vec
 
 # 内联小语料（实际项目里换成分词后的大规模句子列表）
 sentences = [
- "我 喜欢 自然语言处理".split,
- "自然语言处理 是 人工智能 的 分支".split,
- "机器学习 和 深度学习 是 人工智能 的 技术".split,
- "深度学习 需要 大量 数据 和 算力".split,
- "词向量 是 自然语言处理 的 基础".split,
- "我喜欢 机器翻译 和 文本分类".split,
+ "我 喜欢 自然语言处理".split(),
+ "自然语言处理 是 人工智能 的 分支".split(),
+ "机器学习 和 深度学习 是 人工智能 的 技术".split(),
+ "深度学习 需要 大量 数据 和 算力".split(),
+ "词向量 是 自然语言处理 的 基础".split(),
+ "我喜欢 机器翻译 和 文本分类".split(),
 ] * 20 # 小语料重复几次，保证词频足够
 
 model = Word2Vec(
@@ -233,10 +233,10 @@ for n in negatives:
  step(n, 0) # k 个负样本
 
 # 汇总梯度并做一次梯度下降
-dv_c = sum(g[0] for g in grads.values)
+dv_c = sum(g[0] for g in grads.values())
 lr = 0.1
 W_in[center] -= lr * dv_c
-for target, (_, dwo) in grads.items:
+for target, (_, dwo) in grads.items():
  W_out[:, target] -= lr * dwo
 
 print(f"负采样总损失: {loss:.4f}")
@@ -328,7 +328,7 @@ print(embedding(ids).shape) # [2, 6]
 
 # 分层学习率：embedding 用 1e-5，分类头用 1e-3
 optimizer = torch.optim.Adam([
-{"params": embedding.parameters, "lr": 1e-5},
+{"params": embedding.parameters(), "lr": 1e-5},
 ], lr=1e-3)
 print("OK")
 ```

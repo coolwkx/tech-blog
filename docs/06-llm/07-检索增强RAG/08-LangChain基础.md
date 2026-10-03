@@ -133,7 +133,7 @@ print(overall.run("王")) # 只需传入第一个链的参数
 LCEL 等价写法：
 
 ```python
-chain = first_prompt | llm | (lambda name: {"child_name": name.strip}) | second_prompt | llm
+chain = first_prompt | llm | (lambda name: {"child_name": name.strip()}) | second_prompt | llm
 print(chain.invoke({"lastname": "王"}))
 ```
 
