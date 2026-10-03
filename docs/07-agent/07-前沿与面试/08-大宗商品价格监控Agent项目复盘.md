@@ -13,22 +13,22 @@
 
 | 项目 | 内容 |
 | --- | --- |
-| 名称 | 黄金智能监控系统 v1.0 |
-| 定位 | 定时抓取黄金价格 → 判断是否触发阈值 → 推送微信提醒 / 生成日报 / 提供走势图 |
+| 名称 | 大宗商品智能监控系统 v1.0 |
+| 定位 | 定时抓取黄商品价格格 → 判断是否触发阈值 → 推送微信提醒 / 生成日报 / 提供走势图 |
 | 运行方式 | `python main_monitor.py monitor`（常驻监控）、`python main_monitor.py`（单次查询）、`python dashboard.py`（Web 面板）、`python daily_report.py`（日报推送） |
 | 依赖 | `requirements.txt`：`requests`、`flask` |
-| 数据文件 | `config.json`（配置）、`gold_state.json`（状态）、`gold_history.json`（历史，运行后生成） |
+| 数据文件 | `config.json`（配置）、`commodity_state.json`（状态）、`commodity_history.json`（历史，运行后生成） |
 
 README 中列出的七项功能，与代码的对应关系：
 
 | 功能 | 实现位置 | 关键函数 |
 | --- | --- | --- |
-| 黄金价格自动监控 | `main_monitor.py` | `get_gold_price()`、`monitor_gold()` |
+| 黄商品价格格自动监控 | `main_monitor.py` | `get_commodity_price()`、`monitor_commodity()` |
 | Server酱微信提醒 | `main_monitor.py` / `daily_report.py` | `send_wechat_message()` / `send_wechat()` |
 | 防重复提醒状态保存 | `main_monitor.py` | `load_state()` / `save_state()` |
-| 历史价格记录 | `main_monitor.py` | `check_price_once()`、`save_gold_history()` |
-| 黄金 AI 趋势分析 | `ai_analysis.py` | `analyze_gold()` |
-| 每日微信黄金日报 | `daily_report.py` | `create_daily_report()` |
+| 历史价格记录 | `main_monitor.py` | `check_price_once()`、`save_commodity_history()` |
+| 大宗商品 AI 趋势分析 | `ai_analysis.py` | `analyze_gold()` |
+| 每日微信大宗商品日报 | `daily_report.py` | `create_daily_report()` |
 | Web 走势图面板 | `dashboard.py` | `index()` + `render_template_string` |
 
 ### 1.2 文件职责
@@ -40,8 +40,8 @@ README 中列出的七项功能，与代码的对应关系：
 | `daily_report.py` | 170 | 生成日报文本并推送 | `requests`、`json` |
 | `dashboard.py` | 178 | Flask + Chart.js 走势图面板 | `flask` |
 | `config.json` | 8 | 阈值、间隔、推送 Key | — |
-| `gold_state.json` | 5 | 上次价格、状态、提醒时间 | — |
-| `gold_history.json` | — | 时间序列 | — |
+| `commodity_state.json` | 5 | 上次价格、状态、提醒时间 | — |
+| `commodity_history.json` | — | 时间序列 | — |
 
 ### 1.3 它算不算 Agent？
 
@@ -51,7 +51,7 @@ README 中列出的七项功能，与代码的对应关系：
 | --- | --- | --- |
 | Prompt | 无（没有自然语言指令） | ❌ |
 | LLM | 无（`ai_analysis.py` 是纯规则计算，名字里的「AI」是营销用语） | ❌ |
-| Memory | `gold_state.json` + `gold_history.json` | ✅（外部状态/历史记忆） |
+| Memory | `commodity_state.json` + `commodity_history.json` | ✅（外部状态/历史记忆） |
 | Planning | 固定的阈值规则 `price < buy_threshold` / `price > sell_threshold` | ⚠️ 有决策，但规则由人写死 |
 | Action | `requests.post` 推送微信、写 JSON 文件 | ✅ |
 
@@ -62,8 +62,8 @@ README 中列出的七项功能，与代码的对应关系：
 | 状态 | 触发条件 | 通知标题 | 颜色隐喻 |
 | --- | --- | --- | --- |
 | `normal` | `buy_threshold <= price <= sell_threshold` | 无 | — |
-| `buy` | `price < buy_threshold`（默认 800） | 🟡 黄金买入提醒 | 黄色（机会） |
-| `sell` | `price > sell_threshold`（默认 900） | 🔴 黄金卖出提醒 | 红色（风险） |
+| `buy` | `price < buy_threshold`（默认 800） | 🟡 大宗商品买入提醒 | 黄色（机会） |
+| `sell` | `price > sell_threshold`（默认 900） | 🔴 大宗商品卖出提醒 | 红色（风险） |
 
 注意 `> sell` 与 `< buy` 都是**严格不等号**，等于阈值时归为 `normal`——这类边界值必须在文档里写清楚，否则「价格正好 800」时系统沉默会让人以为坏了。
 
@@ -71,13 +71,13 @@ README 中列出的七项功能，与代码的对应关系：
 
 ## 2. 关键机制
 
-### 2.1 主循环 `monitor_gold()`
+### 2.1 主循环 `monitor_commodity()`
 
 ```text
 读取 config → 取 buy/sell 阈值、check_interval、notify_interval
 读取 state → last_price / last_status / last_notify_time
 while True:
- price = get_gold_price() # 感知（多源降级）
+ price = get_commodity_price() # 感知（多源降级）
  if price is not None:
  change = (price - last_price) / last_price * 100
  status, title, content = 阈值判定(price)
@@ -95,26 +95,26 @@ while True:
 
 这个循环里有三个非常值得学习的工程细节：
 
-1. **`get_gold_price()` 返回 `None` 时不做任何状态修改**——异常情况不污染状态，下一轮重新尝试；
+1. **`get_commodity_price()` 返回 `None` 时不做任何状态修改**——异常情况不污染状态，下一轮重新尝试；
 2. **`last_notify_time` 只在推送成功后更新**（`if title and send_wechat_message(...)`）——失败会自动触发下一轮重试；
 3. **`save_state` 在每次循环结束时调用**，保证进程被 kill 时状态基本一致。
 
 ### 2.2 感知层：三级数据源降级
 
-`get_gold_price()` 的三级结构（详见 [07](../04-评估与工程化/07-Agent工程化与可靠性设计.md) 2.1）：
+`get_commodity_price()` 的三级结构（详见 [07](../04-评估与工程化/07-Agent工程化与可靠性设计.md) 2.1）：
 
 | 级别 | 变量 | 数据源与解析方式 |
 | --- | --- | --- |
 | 1 | `apis` | 工银积存金 `get_stats.php`（取 `current_price`）、`get_latest_price.php`（取 `price`）、新浪财经 `hq.sinajs.cn/list=AU9999 / AUTD / AU100G`（逗号切分取第 4 个字段） |
-| 2 | `alt_apis` | 和讯黄金（正则 `"price"`）、中金在线（`data.goldprice`）、上海黄金交易所（`AU9999` 后数字）、Wind 财经（`gold` 后数字）、腾讯财经 `qt.gtimg.cn/q=sh600547`（`~` 切分） |
-| 3 | `more_apis` | 新浪财经黄金页面、金融界、同花顺（均为正则匹配中文关键词附近的数字） |
+| 2 | `alt_apis` | 和讯大宗商品（正则 `"price"`）、中金在线（`data.goldprice`）、上海期货交易所（`AU9999` 后数字）、Wind 财经（`gold` 后数字）、腾讯财经 `qt.gtimg.cn/q=sh600019`（`~` 切分） |
+| 3 | `more_apis` | 新浪财经大宗商品页面、金融界、同花顺（均为正则匹配中文关键词附近的数字） |
 
 统一校验：`status_code == 200`、响应非空且不以 `=""` 结尾、解析结果为正数且 `>= 200`。任何一步不满足就换下一个源，异常被 `except` 捕获后 `continue`。
 
 ### 2.3 决策层：阈值 + 涨跌幅
 
 ```python
-"""黄金监控 Agent 的离线复刻：感知 → 决策 → 行动 → 记忆。
+"""大宗商品监控 Agent 的离线复刻：感知 → 决策 → 行动 → 记忆。
 
 依赖：仅标准库。
 """
@@ -124,8 +124,8 @@ import os
 import time
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATE_FILE = os.path.join(BASE_DIR, "gold_state.json")
-HISTORY_FILE = os.path.join(BASE_DIR, "gold_history.json")
+STATE_FILE = os.path.join(BASE_DIR, "commodity_state.json")
+HISTORY_FILE = os.path.join(BASE_DIR, "commodity_history.json")
 
 DEFAULT_CONFIG = {
 "buy_threshold": 800,
@@ -160,7 +160,7 @@ def _load_json(path, default):
                     return history
 
                 # ---------------- 感知层 ----------------
-                def get_gold_price(price_source):
+                def get_commodity_price(price_source):
                     """price_source 是一个可迭代的价格序列，模拟多源降级后的结果"""
                     for price in price_source:
                         if price is None or price <= 0:
@@ -178,10 +178,10 @@ def _load_json(path, default):
 
                 def decide(price, config):
                     if price < config["buy_threshold"]:
-                        return "buy", "🟡 黄金买入提醒", "当前黄金价格：%.2f 元/克\n价格低于买入参考价：%d 元/克" % (
+                        return "buy", "🟡 大宗商品买入提醒", "当前黄商品价格格：%.2f 元/吨\n价格低于买入参考价：%d 元/吨" % (
                     price, config["buy_threshold"])
                     if price > config["sell_threshold"]:
-                        return "sell", "🔴 黄金卖出提醒", "当前黄金价格：%.2f 元/克\n价格高于卖出参考价：%d 元/克" % (
+                        return "sell", "🔴 大宗商品卖出提醒", "当前黄商品价格格：%.2f 元/吨\n价格高于卖出参考价：%d 元/吨" % (
                     price, config["sell_threshold"])
                     return "normal", None, None
 
@@ -261,10 +261,10 @@ def _load_json(path, default):
 ### 2.5 记忆层：状态与历史分离
 
 ```json
-// gold_state.json —— 只关心最新值
+// commodity_state.json —— 只关心最新值
 {"last_price": 888.71, "last_status": "normal", "last_notify_time": 0}
 
-// gold_history.json —— 时间序列
+// commodity_history.json —— 时间序列
 [{"time": "2026-07-08 23:40:48", "price": 888.71},
  {"time": "2026-07-08 23:44:11", "price": 888.71}]
 ```
@@ -273,8 +273,8 @@ def _load_json(path, default):
 
 | 文件 | 读取者 | 读取方式 |
 | --- | --- | --- |
-| `gold_state.json` | `monitor_gold` | `state.get("last_price")` 等，单值查询 |
-| `gold_history.json` | `ai_analysis`、`daily_report`、`dashboard` | 全量载入后切片（`prices[-12:]`、`history[-50:]`、按日期前缀过滤） |
+| `commodity_state.json` | `monitor_commodity` | `state.get("last_price")` 等，单值查询 |
+| `commodity_history.json` | `ai_analysis`、`daily_report`、`dashboard` | 全量载入后切片（`prices[-12:]`、`history[-50:]`、按日期前缀过滤） |
 
 这种划分是通用的：**「决策所需的最新事实」与「分析所需的历史序列」应当分文件存放**，因为前者的读写频率高、体积恒定，后者体积持续增长且需要截断策略。
 
@@ -307,7 +307,7 @@ create_daily_report():
  report = 今日价格 + 最高 + 最低 + 涨跌
  report += analyze_gold(history) # 拼接趋势/风险/操作参考
  report += "⚠️ 以上内容仅为行情分析，不构成投资建议"
- send_wechat("📊 黄金智能日报", report)
+ send_wechat("📊 大宗商品智能日报", report)
 ```
 
 三个值得肯定的细节：**当天无数据时退回最近 20 条**（避免日报变空）、**固定追加免责声明**（金融场景的必要合规动作）、**日报与实时提醒共用同一套阈值语义**（用户不会看到冲突的结论）。
@@ -318,14 +318,14 @@ create_daily_report():
  config.json（阈值/间隔/Key）
  │
  ▼
- [感知] 三级数据源 ──▶ get_gold_price() ──▶ price
+ [感知] 三级数据源 ──▶ get_commodity_price() ──▶ price
  │
  ▼
  [决策] 阈值 + 状态机 ──▶ status ∈ {normal, buy, sell} ──▶ 是否需要通知
  │ │
  ▼ ▼
- [记忆] gold_state.json ◀── save_state() [行动] Server酱推送
- gold_history.json ◀── 追加 + 截断
+ [记忆] commodity_state.json ◀── save_state() [行动] Server酱推送
+ commodity_history.json ◀── 追加 + 截断
  │
  ┌────────────────────┼────────────────────┐
  ▼ ▼ ▼
@@ -342,7 +342,7 @@ create_daily_report():
 **依赖**：仅标准库（把网络抓取替换为可注入的价格序列，便于本地验证决策逻辑）。
 
 ```text
-"""把黄金监控的决策层升级为 LLM Agent（保留原有感知/记忆/行动）。
+"""把大宗商品监控的决策层升级为 LLM Agent（保留原有感知/记忆/行动）。
 
 依赖：pip install zhipuai python-dotenv
 环境变量：ZHIPU_API_KEY
@@ -354,7 +354,7 @@ from zhipuai import ZhipuAI
 
 # 复用 3.1 中的记忆层与行动层：load_state / save_state / append_history / send_wechat_message
 
-SYSTEM_PROMPT = """你是一名黄金行情监控助手。
+SYSTEM_PROMPT = """你是一名大宗商品行情监控助手。
 你会收到当前价格、近期价格序列、用户的买入/卖出参考阈值，以及上一轮的判断状态。
 请判断本轮应该处于哪种状态（normal / buy / sell），并给出不超过 80 字的分析。
 必须基于给定的数据，不得编造未提供的行情信息。
@@ -407,11 +407,11 @@ def rule_fallback(price, config):
 === 价格 880.00 ===
 状态未变化，无需重复提醒
 === 价格 795.00 ===
-[推送] 🟡 黄金买入提醒
+[推送] 🟡 大宗商品买入提醒
 === 价格 790.00 ===
 状态未变化，无需重复提醒 # 状态仍是 buy，未到 notify_interval，不重复推送
 === 价格 912.00 ===
-[推送] 🔴 黄金卖出提醒 # 状态变化，立即推送
+[推送] 🔴 大宗商品卖出提醒 # 状态变化，立即推送
 ```
 
 第三轮不推送正是「防重复提醒」生效的证据。
@@ -439,7 +439,7 @@ def rule_fallback(price, config):
 | 现象 | 原因 | 解决 |
 | --- | --- | --- |
 | 外部请求可能永久挂起 | `session.timeout = 15` 只是给 Session 对象加了一个**普通属性**，`requests` 并不会读取它 | 在每次请求上显式传参：`session.get(url, timeout=15)` |
-| 历史文件出现两份、数据对不上 | 同一份数据有两条写入路径：`check_price_once()` 用相对路径 `"gold_history.json"`，`save_gold_history()` 用绝对路径 `HISTORY_FILE` | 统一为单一常量（`os.path.join(os.path.dirname(__file__), "gold_history.json")`），所有写入走同一个函数 |
+| 历史文件出现两份、数据对不上 | 同一份数据有两条写入路径：`check_price_once()` 用相对路径 `"commodity_history.json"`，`save_commodity_history()` 用绝对路径 `HISTORY_FILE` | 统一为单一常量（`os.path.join(os.path.dirname(__file__), "commodity_history.json")`），所有写入走同一个函数 |
 | 历史长度在两个上限之间反复跳变 | 两处截断阈值不一致：`history[-500:]` 与 `history[-20000:]` | 抽成 `MAX_HISTORY` 常量，只保留一处截断逻辑 |
 | 同一段分析逻辑维护两份 | `ai_analysis.analyze_gold()` 与 `daily_report.analyze_gold()` 实现几乎相同（近 12 条、±1% 趋势、0.98/1.02 风险线、±2% 建议） | 抽成公共模块，两个入口都 import 它 |
 | 「相比上次变化」几乎没有意义 | `check_interval_seconds = 5`，涨跌幅基于上一轮 5 秒前的价格 | 引入基准价（昨日收盘 / 当日开盘 / 24 小时前），单独存储 `baseline_price` |
@@ -461,7 +461,7 @@ def rule_fallback(price, config):
 
 **Q1：这个项目算 AI Agent 吗？请给出判断依据。**
 
-按对 Agent 的定义（能够感知环境、进行决策和执行动作的智能实体）以及五要素（Prompt / LLM / Memory / Planning / Action）来看，它只具备三个半要素：Memory（`gold_state.json` 与 `gold_history.json` 提供状态与历史）、Action（推送微信、写文件）、以及由人写死的 Planning（阈值比较），缺少 Prompt 与 LLM。因此它是一个**规则驱动的反应型 Agent**（与温度调节器同类），`ai_analysis.py` 里的「AI」只是规则计算加文案，没有任何模型调用。不过它的价值在于骨架完整：感知—决策—行动—记忆四层清晰分离，只要把决策层从 `decide()` 换成一次 LLM 调用，就能平滑升级为真正的 LLM Agent，其余三层可以原样复用。
+按对 Agent 的定义（能够感知环境、进行决策和执行动作的智能实体）以及五要素（Prompt / LLM / Memory / Planning / Action）来看，它只具备三个半要素：Memory（`commodity_state.json` 与 `commodity_history.json` 提供状态与历史）、Action（推送微信、写文件）、以及由人写死的 Planning（阈值比较），缺少 Prompt 与 LLM。因此它是一个**规则驱动的反应型 Agent**（与温度调节器同类），`ai_analysis.py` 里的「AI」只是规则计算加文案，没有任何模型调用。不过它的价值在于骨架完整：感知—决策—行动—记忆四层清晰分离，只要把决策层从 `decide()` 换成一次 LLM 调用，就能平滑升级为真正的 LLM Agent，其余三层可以原样复用。
 
 </details>
 
@@ -489,7 +489,7 @@ def rule_fallback(price, config):
 
 **1. 项目用哪几个文件承载「记忆」？各自的读取者是谁？**
 
-`gold_state.json`（`last_price` / `last_status` / `last_notify_time`，由 `monitor_gold()` 通过 `load_state` / `save_state` 读写，决定是否提醒）与 `gold_history.json`（时间序列，由 `ai_analysis.analyze_gold`、`daily_report.create_daily_report`、`dashboard.index` 读取，用于趋势分析、日报和走势图）。前者的读写频率高、体积恒定；后者持续增长、需要截断。
+`commodity_state.json`（`last_price` / `last_status` / `last_notify_time`，由 `monitor_commodity()` 通过 `load_state` / `save_state` 读写，决定是否提醒）与 `commodity_history.json`（时间序列，由 `ai_analysis.analyze_gold`、`daily_report.create_daily_report`、`dashboard.index` 读取，用于趋势分析、日报和走势图）。前者的读写频率高、体积恒定；后者持续增长、需要截断。
 
 </details>
 

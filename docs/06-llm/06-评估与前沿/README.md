@@ -1,4 +1,4 @@
-# 06 · 06-评估与前沿
+# 06 · 评估与前沿
 
 > 本章共 2 篇笔记。
 
@@ -6,8 +6,8 @@
 
 | # | 笔记 | 难度 | 预计用时 | 状态 |
 | --- | --- | --- | --- | --- |
-| 01 | [依赖：pip install ragas datasets langchain-openai pandas](10-RAG评估与优化.md) | ⭐⭐⭐ | 25min | ✅ 已完成 |
-| 02 | [依赖：pip install openai langchain langchain-community crewai python-dotenv](11-AI-Agent开发.md) | ⭐⭐⭐ | 25min | ✅ 已完成 |
+| 01 | [RAG评估与优化](10-RAG评估与优化.md) | ⭐⭐⭐ | 25min | ✅ 已完成 |
+| 02 | [AI-Agent开发](11-AI-Agent开发.md) | ⭐⭐⭐ | 25min | ✅ 已完成 |
 
 ## 本章要回答的问题
 

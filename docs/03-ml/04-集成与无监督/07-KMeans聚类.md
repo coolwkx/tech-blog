@@ -351,7 +351,7 @@ print("最佳 K（CH 最大）:", ks[int(np.argmax(ch_list))])
 
 ```python
 # -*- coding: utf-8 -*-
-"""顾客数据聚类：找到"收入高 + 消费高"的黄金客户群"""
+"""顾客数据聚类：找到"收入高 + 消费高"的大宗商品客户群"""
 import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.cluster import KMeans
@@ -412,7 +412,7 @@ def main():
             result = X.copy()
             result["cluster"] = y_kmeans
             print(result.groupby("cluster").mean())
-            # 右上角那一簇 = 收入高 + 消费高 => 黄金客户群；左下角 = 低收入低消费
+            # 右上角那一簇 = 收入高 + 消费高 => 大宗商品客户群；左下角 = 低收入低消费
 
 
             if __name__ == "__main__":

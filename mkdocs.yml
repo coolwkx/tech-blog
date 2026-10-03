@@ -113,7 +113,9 @@ nav:
       - 工具调用与规划: 07-agent/02-工具与规划/README.md
       - 记忆与多智能体: 07-agent/03-记忆与多智能体/README.md
       - 评估与工程化: 07-agent/04-评估与工程化/README.md
-      - 前沿与面试: 07-agent/05-前沿与面试/README.md
+      - Agent 评测: 07-agent/05-评测/README.md
+      - 评测实战: 07-agent/06-评测实战/README.md
+      - 前沿与面试: 07-agent/07-前沿与面试/README.md
       - 速查与面试: 07-agent/90-cheatsheet/README.md
   - "🚀 项目实战":
       - 领域目录: 08-project/README.md
@@ -121,3 +123,8 @@ nav:
       - 对话与生成系统: 08-project/02-对话与生成系统/README.md
       - 文本分类系统: 08-project/03-文本分类系统/README.md
       - Agent 系统: 08-project/04-Agent系统/README.md
+  - "📡 前沿追踪":
+      - 领域目录: 10-radar/README.md
+      - 追踪方法: 10-radar/01-追踪方法/README.md
+      - 技术条目: 10-radar/02-条目/README.md
+      - 条目模板: 10-radar/99-模板/README.md

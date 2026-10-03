@@ -38,10 +38,10 @@
 | `ChatMessageHistory` | LangChain Memory 组件 | `HumanMessage` / `AIMessage` 对象列表 | `history.messages` | `add_user_message` / `add_ai_message` |
 | 消息字典 | `messages_to_dict` / `messages_from_dict` | 可 JSON 序列化的 dict 列表 | `messages_from_dict(dicts)` | `messages_to_dict(history.messages)` |
 | token id 历史 | GPT2 医疗问诊机器人 | 每轮 utterance 的 token id 列表 | 拼进 `input_ids` 送模型 | `history.append(text_ids)` |
-| JSON 状态 / 历史文件 | 黄金价格监控项目 | 上一次价格、状态、提醒时间；历史价格序列 | `load_state()` / `load_history()` | `save_state()` / `json.dump` |
+| JSON 状态 / 历史文件 | 大宗商品价格监控项目 | 上一次价格、状态、提醒时间；历史价格序列 | `load_state()` / `load_history()` | `save_state()` / `json.dump` |
 | 向量库（外部知识） | RAG 系统 | 文档块向量 + 父块内容 | 混合检索 + 重排 | `upsert` 写入 |
 
-注意第四行其实包含两类不同的东西：**状态**（key-value，只关心最新值）与**历史**（时间序列，关心趋势）——黄金项目把它们分成了 `gold_state.json` 与 `gold_history.json` 两个文件，这个划分值得学习。
+注意第四行其实包含两类不同的东西：**状态**（key-value，只关心最新值）与**历史**（时间序列，关心趋势）——大宗商品项目把它们分成了 `gold_state.json` 与 `gold_history.json` 两个文件，这个划分值得学习。
 
 ### 1.4 记忆的三个基本操作
 
@@ -234,9 +234,9 @@ def load_json(path, default):
                     change = get_price_change(price, state.get("last_price"))
 
                     if price < buy_threshold:
-                        status, title = "buy", "黄金买入提醒"
+                        status, title = "buy", "大宗商品买入提醒"
                     elif price > sell_threshold:
-                        status, title = "sell", "黄金卖出提醒"
+                        status, title = "sell", "大宗商品卖出提醒"
                     else:
                         status, title = "normal", None
 
@@ -285,7 +285,7 @@ def load_json(path, default):
 - **重复惩罚**：`for id in set(response): next_token_logits[id] /= repetition_penalty`——对已生成的 token 降权，避免复读；
 - **屏蔽 `[UNK]`**：`next_token_logits[unk_id] = -float('Inf')`，防止输出未知词，保证回复可读。
 
-### 2.5 状态记忆与历史记忆的分离（黄金价格监控项目）
+### 2.5 状态记忆与历史记忆的分离（大宗商品价格监控项目）
 
 这个项目把「记忆」落成了两个 JSON 文件，是工程上非常典型的划分：
 
@@ -334,7 +334,7 @@ else:
 | `check_price_once()` | `history = history[-500:]` | 只保留最近 500 条 |
 | `save_gold_history()` | `history = history[-20000:]` | 只保留最近 20000 条（注释说「只保存最近 90 天以内的数据量」） |
 
-**这是一个真实存在的坑**：同一份数据在两条代码路径上有两种截断阈值，且一条用相对路径 `"gold_history.json"`、另一条用绝对路径 `HISTORY_FILE = os.path.join(os.path.dirname(__file__), "gold_history.json")`——如果工作目录不同，会写出两个不同的文件。详见第 4 节与 [08-实战-黄金价格监控Agent项目复盘](../05-前沿与面试/08-实战-黄金价格监控Agent项目复盘.md)。
+**这是一个真实存在的坑**：同一份数据在两条代码路径上有两种截断阈值，且一条用相对路径 `"gold_history.json"`、另一条用绝对路径 `HISTORY_FILE = os.path.join(os.path.dirname(__file__), "gold_history.json")`——如果工作目录不同，会写出两个不同的文件。详见第 4 节与 [08-大宗商品价格监控Agent项目复盘](../07-前沿与面试/08-大宗商品价格监控Agent项目复盘.md)。
 
 ### 2.6 外部知识记忆：向量库 + 父块压缩
 
@@ -380,7 +380,7 @@ RAG 系统里的记忆属于「体量远超上下文窗口」的那一类，因�
 [human] 小刚有2只狗
 ```
 
-### 3.2 滑动窗口历史 + 状态文件（对应黄金监控项目的记忆设计）
+### 3.2 滑动窗口历史 + 状态文件（对应大宗商品监控项目的记忆设计）
 
 **依赖**：仅标准库。
 
@@ -396,7 +396,7 @@ RAG 系统里的记忆属于「体量远超上下文窗口」的那一类，因�
 | 会话历史存了却读不回来（变成纯文本） | 存的时候只存了 `content`，丢了消息 `type` | 用 `messages_to_dict` / `messages_from_dict`，保留 `type` + `data` 结构 |
 | 提示长度超限 / 成本失控 | 历史无限增长，没有遗忘机制 | 滑动窗口截断（`[-max_history_len:]`）、摘要压缩或向量召回 |
 | 重启程序后「重复提醒」轰炸 | 状态只存在内存变量里，重启即丢 | 把 `last_status` / `last_notify_time` 落盘（如 `gold_state.json`） |
-| 历史数据出现两份、趋势图混乱 | 同一份数据用不同路径与不同阈值写入（黄金项目即此情况：相对路径 `history_file` vs 绝对路径 `HISTORY_FILE`，`[-500:]` vs `[-20000:]`） | 统一为单一常量路径与单一截断阈值，所有写入走同一个函数 |
+| 历史数据出现两份、趋势图混乱 | 同一份数据用不同路径与不同阈值写入（大宗商品项目即此情况：相对路径 `history_file` vs 绝对路径 `HISTORY_FILE`，`[-500:]` vs `[-20000:]`） | 统一为单一常量路径与单一截断阈值，所有写入走同一个函数 |
 | 早期关键信息被窗口挤掉 | 滑动窗口只保留最近 N 轮 | 对窗口外的历史做摘要或存入向量库，按需召回 |
 | RAG 检索回来的上下文太碎、模型答不完整 | 只用了小子块，缺少完整语义 | 采用父子块结构，命中子块后用 `parent_content` 替换（见 [06](06-RAG作为Agent的知识获取手段.md)） |
 | 模型把 `[UNK]` 或重复词吐出来 | 生成阶段缺少约束 | 屏蔽 `[UNK]` 的 logits，对已生成 token 施加重复惩罚 |
@@ -418,7 +418,7 @@ RAG 系统里的记忆属于「体量远超上下文窗口」的那一类，因�
 
 **Q2：短期记忆和长期记忆在实现上有什么不同？各举一个的例子。**
 
-短期记忆指单一会话中传递的数据，实现上就是一份随请求回传的 `messages` 列表或 token id 列表，进程结束即丢失——GPT2 医疗问诊机器人用 `history` 列表保存每轮的 token id，并只取 `history[-max_history_len:]` 拼进输入，就是典型实现；LangChain 的 `ChatMessageHistory` 是同一思路的组件化封装。长期记忆指跨多个会话获取和更新的信息，必须落到进程之外，例如黄金监控项目的 `gold_state.json`（保存 `last_price` / `last_status` / `last_notify_time`，实现重启后仍能判断「是否需要提醒」）、`gold_history.json`（保存历史价格序列，用于趋势分析与日报），以及 RAG 系统的 Milvus 向量库（保存文档向量，供跨会话检索）。核心区别是：短期记忆是「回传」，长期记忆是「持久化 + 按需读取」。
+短期记忆指单一会话中传递的数据，实现上就是一份随请求回传的 `messages` 列表或 token id 列表，进程结束即丢失——GPT2 医疗问诊机器人用 `history` 列表保存每轮的 token id，并只取 `history[-max_history_len:]` 拼进输入，就是典型实现；LangChain 的 `ChatMessageHistory` 是同一思路的组件化封装。长期记忆指跨多个会话获取和更新的信息，必须落到进程之外，例如大宗商品监控项目的 `gold_state.json`（保存 `last_price` / `last_status` / `last_notify_time`，实现重启后仍能判断「是否需要提醒」）、`gold_history.json`（保存历史价格序列，用于趋势分析与日报），以及 RAG 系统的 Milvus 向量库（保存文档向量，供跨会话检索）。核心区别是：短期记忆是「回传」，长期记忆是「持久化 + 按需读取」。
 
 </details>
 
@@ -460,7 +460,7 @@ RAG 系统里的记忆属于「体量远超上下文窗口」的那一类，因�
 
 <details><summary>参考答案</summary>
 
-**4. 黄金监控项目里，历史截断出现了 `history[-500:]` 与 `history[-20000:]` 两种写法，这会带来什么问题？**
+**4. 大宗商品监控项目里，历史截断出现了 `history[-500:]` 与 `history[-20000:]` 两种写法，这会带来什么问题？**
 
 同一份历史数据存在两条写入路径，截断阈值不一致：一条最多保留 500 条，另一条最多保留 20000 条，取决于哪条路径最后写入，历史长度会在两个上限之间反复跳变。更严重的是两条路径使用了不同的文件路径（相对路径 `"gold_history.json"` 与基于 `__file__` 的绝对路径），如果运行工作目录不同，会写出两个不同的文件，导致日报/趋势图读到的数据与实际记录不一致。修法是统一路径常量与截断阈值，并把写入收敛到唯一函数。
 
@@ -470,7 +470,7 @@ RAG 系统里的记忆属于「体量远超上下文窗口」的那一类，因�
 
 **5. 除了滑动窗口，还有哪些控制记忆长度的方式？各自的代价是什么？**
 
-摘要压缩：用 LLM 把较早的对话压成摘要，保留长期信息且 token 可控，代价是摘要可能失真，并增加一次额外调用；向量召回：把历史存向量库按需检索相关片段，可扩展到极长历史，代价是依赖 embedding 与切分质量，可能召回不到关键信息；结构化状态：只保留决策必需的字段（如黄金项目的 `last_price` / `last_status`），token 最省，但只适用于能事先确定「需要记住什么」的场景。实践中常组合使用：最近几轮原文 + 更早历史的摘要 + 按需召回 + 硬性 token 上限。
+摘要压缩：用 LLM 把较早的对话压成摘要，保留长期信息且 token 可控，代价是摘要可能失真，并增加一次额外调用；向量召回：把历史存向量库按需检索相关片段，可扩展到极长历史，代价是依赖 embedding 与切分质量，可能召回不到关键信息；结构化状态：只保留决策必需的字段（如大宗商品项目的 `last_price` / `last_status`），token 最省，但只适用于能事先确定「需要记住什么」的场景。实践中常组合使用：最近几轮原文 + 更早历史的摘要 + 按需召回 + 硬性 token 上限。
 
 </details>
 
@@ -483,7 +483,7 @@ RAG 系统里的记忆属于「体量远超上下文窗口」的那一类，因�
 - MemGPT: Towards LLMs as Operating Systems（分层记忆管理） —— https://arxiv.org/abs/2310.08560
 - Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks —— https://arxiv.org/abs/2005.11401
 - ：《第五章：物流问答系统（RAG）_01-LangChain 基础知识入门》《第六章：基于 GPT2 搭建医疗问诊机器人》
-- 项目源码：黄金价格监控 Agent（`gold_state.json` / `gold_history.json` 的状态与历史分离设计）
+- 项目源码：大宗商品价格监控 Agent（`gold_state.json` / `gold_history.json` 的状态与历史分离设计）
 
 ---
 
