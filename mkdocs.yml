@@ -1,6 +1,8 @@
 site_name: 技术复习笔记
 site_description: Python / 数据处理 / 机器学习 / 深度学习 / NLP / 大模型 / Agent / 项目实战 复习笔记
 site_author: 王凯旋
+# site_url 影响搜索索引的绝对路径、sitemap 与分享链接的正确性，需与线上地址一致
+site_url: https://coolwkx.github.io/tech-blog/
 repo_url: https://github.com/coolwkx/tech-blog
 docs_dir: docs
 site_dir: site
@@ -13,10 +15,11 @@ theme:
     - navigation.instant.progress
     - navigation.tracking
     - navigation.top
-    # navigation.expand：每个分组带展开/收起箭头，可折叠
-    # 注意：它与 navigation.sections 互斥（后者会把所有分组强制展开且不显示箭头），
-    # 因此这里不要同时启用 navigation.sections
-    - navigation.expand
+    # 关于侧栏折叠：
+    #   navigation.expand   会「默认展开全部分组」，点一个模块时其它模块也全是开的
+    #   navigation.sections 会「强制展开且不显示折叠箭头」
+    # 两者都不要启用，才能得到「手风琴」行为：默认只展开当前所在分组，
+    # 点开一个分组时其余分组自动收起。
     - navigation.indexes
     - navigation.path
     - navigation.footer
