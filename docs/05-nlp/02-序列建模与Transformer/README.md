@@ -1,4 +1,4 @@
-# 02 · 序列建模与Transformer
+# 序列建模与 Transformer
 
 > 本章共 3 篇笔记。
 

@@ -127,7 +127,7 @@ nav:
           - "速查表 · Cheatsheet": 01-python/90-cheatsheet/cheatsheet.md
           - "术语表 · Glossary": 01-python/90-cheatsheet/glossary.md
           - "高频面试题库": 01-python/90-cheatsheet/interview.md
-          - "必读论文清单 · Python 学习笔记": 01-python/90-cheatsheet/papers.md
+          - "必读论文清单": 01-python/90-cheatsheet/papers.md
   - "📦 数据处理与统计":
       - 领域目录: 02-data/README.md
       - "Linux 与 SQL":
@@ -177,7 +177,7 @@ nav:
           - "速查表 · Cheatsheet": 03-ml/90-cheatsheet/cheatsheet.md
           - "术语表 · Glossary": 03-ml/90-cheatsheet/glossary.md
           - "高频面试题库": 03-ml/90-cheatsheet/interview.md
-          - "必读论文清单 · 机器学习笔记": 03-ml/90-cheatsheet/papers.md
+          - "必读论文清单": 03-ml/90-cheatsheet/papers.md
   - "🧠 深度学习":
       - 领域目录: 04-dl/README.md
       - "基础与反向传播":
@@ -201,7 +201,7 @@ nav:
           - "速查表 · Cheatsheet": 04-dl/90-cheatsheet/cheatsheet.md
           - "术语表 · Glossary": 04-dl/90-cheatsheet/glossary.md
           - "高频面试题库": 04-dl/90-cheatsheet/interview.md
-          - "必读论文清单 · 深度学习笔记": 04-dl/90-cheatsheet/papers.md
+          - "必读论文清单": 04-dl/90-cheatsheet/papers.md
   - "📝 自然语言处理":
       - 领域目录: 05-nlp/README.md
       - "预处理与文本表示":
@@ -228,7 +228,7 @@ nav:
           - "速查表 · Cheatsheet": 05-nlp/90-cheatsheet/cheatsheet.md
           - "术语表 · Glossary": 05-nlp/90-cheatsheet/glossary.md
           - "高频面试题库": 05-nlp/90-cheatsheet/interview.md
-          - "必读论文清单 · 自然语言处理笔记": 05-nlp/90-cheatsheet/papers.md
+          - "必读论文清单": 05-nlp/90-cheatsheet/papers.md
   - "🤖 大语言模型":
       - 领域目录: 06-llm/README.md
       - "架构与预训练":
@@ -274,7 +274,7 @@ nav:
           - "速查表 · Cheatsheet": 06-llm/90-cheatsheet/cheatsheet.md
           - "术语表 · Glossary": 06-llm/90-cheatsheet/glossary.md
           - "高频面试题库": 06-llm/90-cheatsheet/interview.md
-          - "必读论文清单 · 大语言模型笔记": 06-llm/90-cheatsheet/papers.md
+          - "必读论文清单": 06-llm/90-cheatsheet/papers.md
   - "🕹️ AI Agent":
       - 领域目录: 07-agent/README.md
       - "基础范式":
@@ -314,7 +314,7 @@ nav:
           - "速查表 · Cheatsheet": 07-agent/90-cheatsheet/cheatsheet.md
           - "术语表 · Glossary": 07-agent/90-cheatsheet/glossary.md
           - "高频面试题库": 07-agent/90-cheatsheet/interview.md
-          - "必读论文清单 · AI Agent 笔记": 07-agent/90-cheatsheet/papers.md
+          - "必读论文清单": 07-agent/90-cheatsheet/papers.md
   - "🚀 项目实战":
       - 领域目录: 08-project/README.md
       - "问答与 RAG 系统":
