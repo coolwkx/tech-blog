@@ -1,0 +1,16 @@
+[project]
+name = "tech-blog"
+version = "1.0.0"
+description = "技术复习笔记博客：Python / 数据处理 / 机器学习 / 深度学习 / NLP / 大模型 / Agent / 项目实战"
+requires-python = ">=3.10"
+dependencies = []
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.black]
+line-length = 100

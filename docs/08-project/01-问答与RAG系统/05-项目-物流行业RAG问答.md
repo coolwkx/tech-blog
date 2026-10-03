@@ -1,0 +1,471 @@
+# 项目实战笔记 05：物流信息 RAG 系统
+
+> **一句话总结**：用 LangChain + Ollama + FAISS 搭一条最小可用的本地知识库问答链路——20 行建库、30 行问答、50 行出界面，全程离线私有化，换一份 PDF 就换一个行业。
+> **前置知识**：Python 基础、向量检索的基本概念（Embedding / 相似度 / Top-K）、`pip` 环境管理、Streamlit 的最简用法。
+
+> 1. 用 LangChain 的 `Loader → Splitter → Embeddings → VectorStore → Retriever → Chain` 六件套在半小时内跑通一个 RAG Demo；
+> 2. 理解 `chunk_size` / `chunk_overlap` / `k` 三个参数对问答效果的实际影响，并能解释为什么；
+> 3. 用 `ConversationalRetrievalChain` + Streamlit 做出一个带多轮记忆的问答界面。
+
+## 1. 项目目标与业务背景
+
+### 1.1 背景
+
+和 RAG 一样，本项目要解决的还是 LLM 的两个先天缺陷：**知识过时**与**不懂私有知识**。区别在于场景和工程复杂度：
+
+| | 本项目（物流 RAG） | RAG 智慧问答 |
+| --- | --- | --- |
+| 目标 | 快速验证 RAG 在垂直行业的可行性 | 生产级教育答疑系统 |
+| 知识源 | 一份 `物流信息.pdf` | 多学科多格式文档（txt/pdf/docx/ppt/图片） |
+| 检索 | FAISS 单一稠密向量检索 | Milvus 稠密+稀疏混合检索 + BGE-Reranker 精排 |
+| 精确匹配 | 无 | MySQL FAQ + BM25 + Redis 缓存 |
+| 大模型 | 本地 Ollama `qwen2.5:7b` | 云端 DashScope `qwen-plus` |
+| 界面 | Streamlit（约 50 行） | FastAPI + WebSocket + 静态页 |
+| 定位 | 教学 demo / 可行性验证 | 生产系统 |
+
+**这个对比本身就很有价值**：它说明 RAG 不是只有一个形态。80% 的效果来自"分块合理 + 检索召回准 + Prompt 约束住不编造"这三件事，剩下 20% 才是混合检索、精排、缓存这些工程优化。先用最小链路跑通，再按需求加，是正确顺序。
+
+### 1.2 业务问题示例
+
+知识库内容（`物流信息.pdf`）：
+
+```text
+物流公司：速达物流公司 总部：北京市 业务范围：国际快递、仓储管理
+货物追踪：
+货物编号：
+发货日期：
+当前位置：上海分拨中心
+预计到达日期：
+运输方式：陆运
+运输公司：快运通
+出发地：广州
+目的地：重庆
+预计运输时间： 天
+仓储信息：
+仓库名称：东方仓储中心
+仓库位置：深圳市
+存储货物类型：电子产品
+存储条件：常温仓储
+当前库存量： 件
+```
+
+用户的自然语言问题：
+
+```text
+我的快递出发地是哪？预计几天的时间到达？
+```
+
+这个问题**跨越了两个语义段落**（"出发地：广州"在运输段，"预计运输时间"在紧邻行），是典型的"需要多块信息拼接"的查询。它恰好能暴露 RAG 的一个核心难点：**单块检索能否覆盖跨段的复合问题**。
+
+## 2. 技术架构
+
+### 2.1 离线建库
+
+```text
+物流信息.pdf
+ │ ① PyMuPDFLoader("物流信息.pdf").load
+ ▼
+[Document(page_content=..., metadata={source, page, ...}), ...] 按页/块切开的原始 Document
+ │ ② RecursiveCharacterTextSplitter(chunk_size=50, chunk_overlap=20)
+ │ 按 ["\n\n", "\n", "", ""] 递归尝试分隔符，尽量在语义边界断开
+ ▼
+split_docs: [Document, Document, ...] 每个 ≤50 字，相邻重叠 20 字
+ │ ③ OllamaEmbeddings(model="mxbai-embed-large")
+ │ 每个 Document → 1024 维浮点向量
+ ▼
+FAISS.from_documents(split_docs, embeddings)
+ │ ④ db.save_local("./faiss/wuliu")
+ ▼
+./faiss/wuliu/{index.faiss, index.pkl}
+```
+
+### 2.2 在线问答
+
+```text
+用户提问 "我的快递出发地是哪？预计几天的时间到达？"
+ │
+ ├─ db.similarity_search(question, k=2)
+ │ 查询向量与 FAISS 索引做相似度检索 → 最相似的 2 个 Document
+ ▼
+get_related_content(docs) → "\n".join(doc.page_content.replace("\n\n","\n"))
+ ▼
+PROMPT_TEMPLATE.format(context=..., question=...)
+ ▼
+Ollama(model="qwen2.5:7b").invoke(prompt)
+ ▼
+自然语言答案
+```
+
+### 2.3 Streamlit 多轮版本
+
+```text
+st.session_state.messages ← 界面展示用的消息列表（role/content）
+chat_history ← 传给 Chain 的 (question, answer) 元组列表
+ │
+st.chat_input("请输入你的问题:")
+ ▼
+ConversationalRetrievalChain.from_llm(llm=Ollama(qwen2.5:7b),
+ retriever=db.as_retriever)
+ │ 内部自动完成：① 用历史问题改写当前问题 → ② 检索 → ③ 拼上下文 → ④ 生成
+ ▼
+chain.invoke({"question": prompt, "chat_history": chat_history})
+ ▼
+result["answer"] → 渲染到聊天窗口 + 追加进 chat_history
+```
+
+**`ConversationalRetrievalChain` 为你做了什么**：多轮对话里用户会说"那它呢？""上面那个多少钱？"，这种问题直接拿去向量检索是检索不到东西的。该链会先调用一次 LLM 把"依赖历史的省略问题"改写成"自包含的独立问题"（这一步叫 **question condensation**），再去检索。这正是 RAG 里手写"Query 改写 / HyDE / 子查询"要解决的问题——LangChain 把它内置了。
+
+## 3. 关键技术选型与理由
+
+| 方案 | 优点 | 代价 | 本项目为何选它 |
+| --- | --- | --- | --- |
+| **LangChain** 统一编排 | Loader/Splitter/Embeddings/VectorStore/Chain 全部有统一接口，换组件只改一行 | 抽象层多，出错时堆栈深、难调试；版本间 API 频繁变动 | 教学项目要展示"标准 RAG 流水线"，LangChain 就是这套标准的事实定义者 |
+| **Ollama** 本地模型管理 | `ollama pull qwen2.5:7b` 一条命令，模型权重、量化、推理服务全托管 | 受本机显卡限制；7B 模型在 CPU 上很慢 | 离线私有化是物流/医疗这类企业的硬需求，数据不出内网 |
+| **qwen2.5:7b** | 中文能力强；7B 参数量在 16G 显存上可跑 | 生成质量弱于云端大模型 | 中文行业问答，Qwen 系列的中文表现优于同规模 LLaMA 系 |
+| **PyMuPDFLoader** | 速度快、对中文 PDF 的文本提取质量比 PyPDF2 好 | 需要装 `pymupdf`；扫描版 PDF 提不出文字（要 OCR） | 知识库主体是文字版 PDF 手册 |
+| **FAISS（CPU 版）** | 纯本地库，`pip install faiss-cpu` 即用，零运维；检索极快 | 只支持向量检索，无标量过滤、无分布式、无持久化服务 | 单文档、单机、离线，FAISS 是性价比最高的选择 |
+| **RecursiveCharacterTextSplitter** | 按 `\n\n → \n → 空格 → 字符` 递归尝试，尽量在语义边界断开 | 中文没有空格，50 字的块可能切断词 | 比 `CharacterTextSplitter` 更懂"什么位置适合断开" |
+| `chunk_size=50, chunk_overlap=20` | 与这份短字段式 PDF 的"一条信息一行"结构匹配 | 块很小，单块信息量低，需要更高的 k | 物流信息是"键值对"式短文本，块大了会把无关字段混进来 |
+| **Streamlit** | 零前端代码，`st.chat_input` + `st.chat_message` 直接出聊天界面 | 每次交互全脚本重跑；不适合复杂交互与生产部署 | 演示界面，50 行出成品，不值得上前后端分离 |
+| `ConversationalRetrievalChain` | 内置 question condensation，多轮对话开箱可用 | 每次提问会多一次 LLM 调用（改写），延迟翻倍 | 省掉手写 Query 改写的工程量，教学性价比极高 |
+| `allow_dangerous_deserialization=True` | 让 FAISS 本地索引能加载 | **反序列化不受信任的 pkl 可执行任意代码** | 索引是自己生成的所以接受；但必须知道这是个真实的安全开关 |
+
+> **关于那个 `allow_dangerous_deserialization` 参数**：很多直接复制这行却不解释。FAISS 的 `save_local` 用 pickle 保存 docstore，`load_local` 默认拒绝加载 pickle（因为 pickle 反序列化可以执行任意代码）。传 `True` 表示"我信任这个文件"。**如果索引文件是从外部获取的（比如用户上传、网盘下载），这个参数绝不该开。** 面试里被问到"你代码里有没有安全隐患"，这就是一个能答出彩的点。
+
+## 4. 核心实现
+
+### 4.1 建库：二十行走完四步
+
+```text
+# local_db.py
+from langchain_community.document_loaders import PyMuPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.embeddings import OllamaEmbeddings
+from langchain_community.vectorstores import FAISS
+
+def get_vector:
+ # 第一步：加载文档 → Document 对象列表
+ loader = PyMuPDFLoader("物流信息.pdf")
+ data = loader.load
+ print(f"len(data):{len(data)}")
+
+ # 第二步：切分文本
+ text_splitter = RecursiveCharacterTextSplitter(chunk_size=50, chunk_overlap=20)
+ split_docs = text_splitter.split_documents(data)
+ print("split_docs size:", len(split_docs))
+
+ # 第三步：初始化嵌入模型（把文字变成向量）
+ embeddings = OllamaEmbeddings(model="mxbai-embed-large")
+
+ # 第四步：向量化并持久化到 FAISS
+ db = FAISS.from_documents(split_docs, embeddings)
+ db.save_local("./faiss/wuliu")
+
+if __name__ == '__main__':
+ get_vector
+```
+
+**四个步骤各自在做什么、出错时表现如何**：
+
+| 步骤 | 出错时的典型症状 | 排查方向 |
+| --- | --- | --- |
+| `loader.load` | `len(data)` 是 1 或 0 | 扫描版 PDF 提不出文字，需要 OCR；检查文件路径 |
+| `split_documents` | 块数过多/过少 | 打印几个 `split_docs[i].page_content` 肉眼看切得合不合理 |
+| `OllamaEmbeddings` | 连接被拒 / 模型不存在 | `ollama serve` 是否在跑、`ollama list` 里有没有该模型 |
+| `FAISS.from_documents` | 维度不一致 | 建库和查询必须用**同一个** embedding 模型 |
+
+**为什么 `chunk_size=50` 这么小**：这是本项目的关键判断，不是笔误。看知识库的内容形态：
+
+```text
+出发地：广州
+目的地：重庆
+运输方式：陆运
+```
+
+这是**键值对式的短字段列表**，一行就是一条完整信息。用 500 字的块，会把"仓储信息"和"运输方式"混在同一个块里；检索时命中这个块，喂给 LLM 的上下文里就有一半是噪声。用 50 字，每个块基本就是 1-2 行，语义纯度最高。
+
+**代价是**：那个跨段问题（"出发地"+"预计运输时间"）需要 `k=2` 才能凑齐两段信息。这也解释了为什么第二段代码里 k 取 2 而不是 1。
+
+> **反过来说**：如果知识库是连续叙述型文本（教材、报告、合同），50 字就太小了——单块信息不完整，向量语义被稀释，反而检索不准。**chunk_size 必须跟着内容的"信息密度"走，没有通用最优值。**
+
+### 4.2 问答：最小 RAG 链路
+
+```text
+# local_qa.py
+import time
+from local_db import *
+from langchain import PromptTemplate
+from langchain_community.llms import Ollama
+
+# 加载 FAISS 向量库（注意：必须用建库时同一个 embedding 模型）
+embeddings = OllamaEmbeddings(model="mxbai-embed-large", temperature=0)
+db = FAISS.load_local("faiss/wuliu", embeddings, allow_dangerous_deserialization=True)
+
+start_time = time.time
+
+def get_related_content(related_docs):
+ """把检索到的多个 Document 拼成一段连续上下文"""
+ related_content = []
+ for doc in related_docs:
+ related_content.append(doc.page_content.replace("\n\n", "\n"))
+ return "\n".join(related_content)
+
+def define_prompt:
+ question = '我的快递出发地是哪？预计几天的时间到达？'
+
+ # ① 检索：取最相似的 2 个块
+ docs = db.similarity_search(question, k=2)
+ related_content = get_related_content(docs)
+
+ # ② 组装 Prompt
+ PROMPT_TEMPLATE = """
+ 基于以下已知信息，简洁和专业的来回答用户的问题。不允许在答案中添加编造成分。
+ 已知内容:
+ {context}
+ 问题:
+ {question}"""
+
+ prompt = PromptTemplate(input_variables=["context", "question"],
+ template=PROMPT_TEMPLATE)
+ my_pmt = prompt.format(context=related_content, question=question)
+ return my_pmt
+
+def qa:
+ model = Ollama(model="qwen2.5:7b")
+ my_pmt = define_prompt
+ result = model.invoke(my_pmt)
+ return result
+
+if __name__ == '__main__':
+ result = qa
+ print(result)
+ end_time = time.time
+ print(end_time - start_time)
+```
+
+**Prompt 里那句"不允许在答案中添加编造成分"是整个项目最重要的一行。** RAG 的全部价值建立在一个承诺上：**答案来自检索到的材料**。如果 Prompt 不显式约束，模型会热情地"补全"知识库里没有的信息（比如编出一个"预计 3 天到达"）。这句约束把模型的自由度从"自由作答"压到"仅根据材料作答"。
+
+对照 RAG 的 Prompt，可以看到同一个思路的两个成熟度：
+
+```text
+RAG: 如果无法回答，请回复："信息不足，无法回答，请联系人工客服，电话：{phone}。"
+本项目: 不允许在答案中添加编造成分。
+```
+
+RAG 更成熟，因为它规定了**兜底动作**（转人工），而不仅仅是禁止。禁止只会让模型沉默或含糊，给出明确的兜底话术才能形成闭环。**改进本项目的 Prompt 时，第一个该加的就是这个兜底分支。**
+
+### 4.3 Streamlit 界面：50 行做出多轮问答
+
+```text
+# web_qa.py
+from local_qa import *
+from langchain.chains import ConversationalRetrievalChain
+import streamlit as st
+
+st.set_page_config(page_title="物流信息系统", layout="wide")
+st.title("物流信息系统")
+
+chat_history = [] # 传给 Chain 的 (question, answer) 列表
+
+def new_retrival:
+ """创建带历史感知的问答链"""
+ chain = ConversationalRetrievalChain.from_llm(
+ llm=Ollama(model="qwen2.5:7b"),
+ retriever=db.as_retriever,
+ )
+ return chain
+
+def main:
+ # ① 会话状态保存聊天记录（用于界面展示）
+ if "messages" not in st.session_state:
+ st.session_state.messages = []
+
+ # ② 回放历史消息
+ for message in st.session_state.messages:
+ with st.chat_message(message["role"]):
+ st.markdown(message["content"])
+
+ # ③ 接收输入
+ if prompt := st.chat_input("请输入你的问题:"):
+ st.session_state.messages.append({"role": "user", "content": prompt})
+ with st.chat_message("user"):
+ st.markdown(prompt)
+
+ # ④ 生成回答
+ with st.chat_message("assistant"):
+ message_placeholder = st.empty
+ full_response = ""
+
+ chain = new_retrival
+ result = chain.invoke({"question": prompt, "chat_history": chat_history})
+ chat_history.append((prompt, result["answer"]))
+ assistant_response = result["answer"]
+
+ # ⑤ 模拟流式输出：逐词追加显示
+ for chunk in assistant_response.split:
+ full_response += chunk + ""
+ message_placeholder.markdown(full_response + "▌")
+ message_placeholder.markdown(full_response)
+
+ st.session_state.messages.append({"role": "assistant", "content": full_response})
+
+if __name__ == "__main__":
+ main
+```
+
+**两个 `history` 的区别，容易混**：
+
+| 变量 | 类型 | 用途 |
+| --- | --- | --- |
+| `st.session_state.messages` | `[{role, content}]` | 给**界面**回放聊天记录用 |
+| `chat_history` | `[(question, answer)]` | 给 **Chain** 做 question condensation 用 |
+
+它们内容重叠但格式不同，不能合并。而且 `chat_history` 是模块级变量，**在多用户场景下会串号**——Streamlit 每个会话有独立的脚本执行上下文，但模块级变量在多会话下未必隔离（取决于运行方式）。正确做法是把 `chat_history` 也放进 `st.session_state`。这是一个很典型的"demo 能跑，多人用就串"的坑。
+
+**关于"模拟流式"**：这段代码是先把完整答案拿到，再按空格切分逐词渲染，加一个 `▌` 光标制造打字机效果。**这不是真流式**——用户看到第一个字的延迟和看到最后一个字的延迟差不多（只是视觉上分散了）。真流式要用 `chain.stream` 或 `llm.stream`，配合 `st.write_stream`。这个区别在面试里常被追问"你的流式是真流式吗"，要能分清楚。
+
+## 5. 踩坑与解决
+
+| 现象 | 根因 | 解决 | 如何预防 |
+| --- | --- | --- | --- |
+| `FAISS.load_local` 报错，要求 `allow_dangerous_deserialization` | 新版 LangChain 默认拒绝加载 pickle | 传 `allow_dangerous_deserialization=True` | **只对自己生成的索引开这个开关**；外部来源的索引绝不能开，pickle 反序列化可执行任意代码 |
+| 建库和查询用的 embedding 模型不一致，检索结果乱 | 两次代码里模型名不同（或默认值变了） | 建库与查询严格使用同一个模型名与版本 | 把 embedding 模型名写进配置文件，而不是在两处硬编码 |
+| 问"出发地是哪"，答案说"未提及" | `k=1`，只召回了一个块，而答案在另一个块里 | 调大 `k`（本项目用 2）；或优化切分让相关信息落进同一块 | 调 RAG 效果时，**先打印检索到的 `docs` 内容再下结论**——很多"模型不行"其实是"检索没召回到" |
+| 检索到的块里混着无关字段 | `chunk_size` 太大，把"仓储信息"和"运输方式"混在一块 | 按内容形态调小 `chunk_size` | 定 chunk_size 前先肉眼看 10 条切分结果 |
+| 答案里出现了知识库没有的数字 | Prompt 没有约束"不得编造" | 模板里加"不允许在答案中添加编造成分" | RAG 的 Prompt 必须包含**反幻觉约束 + 无答案时的兜底话术**两项 |
+| 扫描版 PDF 建库后 `len(data)` 为 1、检索永远为空 | PyMuPDF 只能提取文字层，扫描件是图片 | 换成 OCR Loader（如 `OCRPDFLoader`，需 PaddleOCR） | 建库前先抽一页打印，确认拿到的是文字不是空字符串 |
+| 每次提问都重新执行整段脚本，界面闪一下 | Streamlit 的默认执行模型：任何交互都重跑整个脚本 | 用 `st.session_state` 保存状态；把重资源（模型、索引）用 `@st.cache_resource` 缓存 | 记住 Streamlit 是"重跑式"而非"事件式"，所有状态必须显式放 `session_state` |
+| 多用户同时访问，聊天记录互相串 | `chat_history` 是模块级全局变量 | 改放进 `st.session_state` | Streamlit 里任何"每会话独立"的状态都必须放 `session_state` |
+| 界面上的"流式"其实等很久才出字 | 先拿完整答案再逐词渲染，是假流式 | 用 `chain.stream` / `llm.stream` + `st.write_stream` | 区分"视觉流式"和"真流式"，后者才是降低首字延迟的手段 |
+| 首次提问特别慢（十几秒） | 模型冷启动 + 首次加载 FAISS 索引 + 首次 embedding | 服务启动时预热：跑一次空查询 | 任何"第一次特别慢"的服务都要做预热 |
+| `ConversationalRetrievalChain` 已弃用警告 | LangChain 新版改用 `create_history_aware_retriever` + `create_retrieval_chain` | 按官方迁移文档改写 | LangChain 是快速演进库，**锁定版本号**（`requirements.txt` 精确到 patch 版本）比追新更重要 |
+
+## 6. 可复用经验
+
+1. **RAG 的最小闭环只有六步：加载 → 切分 → 向量化 → 存储 → 检索 → 生成。** 任何复杂的 RAG 系统都是在这六步上做增强（更好的切分、混合检索、精排、Query 改写、多轮改写）。先跑通最小闭环，再逐项增强——不要一上来就上 Milvus + reranker + 混合检索，那样出了问题你分不清是哪一层的问题。
+2. **参数要跟着内容形态走，不要抄。** `chunk_size=50` 对这份键值对式 PDF 是合理的，对一篇 3000 字的行业报告就是灾难。判断标准是"一个块是否包含一个语义完整的信息单元"。
+3. **调 RAG 的顺序必须是"先看检索，再看生成"。** 打印 `similarity_search` 返回的 `docs`，人工判断召回的块里到底有没有答案。如果检索没召回，再怎么改 Prompt 都是徒劳。这一步能把一大半"模型不行"的误判纠正过来。
+4. **Prompt 里必须有两样东西：反幻觉约束 + 兜底话术。** 只说"不要编造"不够，还要告诉模型"不知道时该说什么"。否则它会在"不能说谎"和"必须回答"之间选择含糊其辞。
+5. **本地化部署是可选项，不是必选项。** Ollama 的价值在于数据不出内网、零 API 成本。但如果业务能接受调云端 API，云端大模型的效果和速度通常明显更好。**先问数据合规要求，再决定本地还是云端**——这是技术选型，不是技术偏好。
+6. **组件化的价值在"换一行就能换组件"。** 这套代码把 embeddings 从 `OllamaEmbeddings` 换成 `HuggingFaceEmbeddings`、把 FAISS 换成 Chroma，都只需要改一两行。这是 LangChain 抽象层最大的实际收益。
+7. **注意 demo 与生产的差距，并诚实说明。** 单模块全局变量、假流式、无鉴权、`allow_dangerous_deserialization=True`、无并发处理——这些都是 demo 可接受但生产不可接受的。能在面试里主动指出这些差异，比假装它是生产系统有说服力得多。
+
+## 7. 面试问答
+
+<details>
+<summary><b>Q1：`chunk_size` 你是怎么定的？设大设小分别有什么影响？</b></summary>
+
+**先说我这个项目的取值和理由。** 物流信息 PDF 是键值对式的短字段结构：
+
+```text
+出发地：广州
+目的地：重庆
+运输方式：陆运
+```
+
+一行就是一条完整信息。所以取 `chunk_size=50`，让每个块基本只装 1-2 行，语义纯度最高，检索命中后上下文里没有无关字段的噪声。`chunk_overlap=20` 保证跨行的信息（比如"预计运输时间"和它的值被切开了）还能有衔接余地。
+
+**一般性的权衡**：
+
+| | 块太小 | 块太大 |
+| --- | --- | --- |
+| 向量语义 | 集中、纯 | 被稀释、杂 |
+| 检索精度 | 高（匹配到的就是相关的那句） | 低（命中的块里可能只有一小部分相关） |
+| 上下文完整度 | 差（答案可能被切到相邻块） | 好 |
+| Token 成本 | 低 | 高（噪声一起进 Prompt） |
+| 需要更大的 k | 是 | 否 |
+
+**我的判断方法**：不看论文看数据。先按经验值（中文 300-500 字）设一个，然后：
+1. 打印 10 条切分结果，肉眼看有没有把一个完整语义单元切断；
+2. 构造 20 个"答案在文档哪一段"已知的测试问题，用 `k=1` 跑一遍，看命中率；
+3. 如果发现大量"答案在块 A、检索命中块 B（相邻）"，说明块太小或 overlap 不够；
+4. 如果发现命中率高但答案质量差（模型被噪声带偏），说明块太大。
+
+**还有比调数值更好的办法**：用**结构化切分**替代固定长度切分。比如本项目这种键值对文档，可以按字段解析成 `{字段: 值}` 的 JSON，每个字段独立成块甚至存成结构化的 metadata；Markdown 用 `MarkdownHeaderTextSplitter` 按标题层级切；代码用 `Language.PYTHON` 按函数切。**基于文档结构切分永远优于基于字符数切分**——这也是 RAG 里做"父块/子块分层切分"的同一个思路。
+
+</details>
+
+<details>
+<summary><b>Q2：`ConversationalRetrievalChain` 内部做了什么？为什么多轮对话直接检索会失效？</b></summary>
+
+**直接检索为什么失效**：向量检索需要查询本身是"语义自包含"的。多轮对话里用户会说：
+
+```text
+用户：速达物流的运输方式是什么？ → 检索"速达物流 运输方式" ✅ 能召回
+助手：是陆运。
+用户：那它到重庆要几天？ → 检索"那它到重庆要几天" ❌ "它"是什么？向量里没有信息
+```
+
+第二句的"它"指代的是前文实体，脱离上下文这句话的向量表示无法对齐任何文档块，检索结果基本是随机的。这不是模型能力问题，是**查询本身丢失了信息**。
+
+**`ConversationalRetrievalChain` 的解决方式**是加一步 **question condensation（问题凝练）**：
+
+```text
+输入：chat_history + 当前问题
+ ▼
+① 调一次 LLM，把问题改写成自包含形式
+ 提示词大意："给定以下对话历史和后续问题，将后续问题改写为一个独立的问题。"
+ 输出："速达物流到重庆预计运输时间是几天？"
+ ▼
+② 用改写后的问题去 retriever 检索
+ ▼
+③ 检索结果 + chat_history + 原问题 → 拼 Prompt
+ ▼
+④ 调 LLM 生成答案
+```
+
+**代价是每次提问多一次 LLM 调用**，延迟大概翻倍。所以它适合"对话轮次多、省略指代频繁"的场景；如果用户基本都是完整提问（如客服 FAQ），可以省掉这一步，直接用 `create_retrieval_chain`。
+
+**和 RAG 的对应关系**：RAG 里手写的 `_retrieve_with_hyde`（HyDE 生成假设答案再检索）、`_retrieve_with_subqueries`（拆解复杂查询）、`_retrieve_with_backtracking`（化简问题）都是同一类技术——**Query 改写（Query Rewriting）**。LangChain 内置的 condensation 是其中最基础的一种。理解了"改写是为了让查询自包含/更接近文档表达"，这些技术就都不难理解了。
+
+**更进一步的方案**：改写本身也可能引入错误（LLM 改写跑偏），所以更稳的做法是"改写后的问题 + 原问题"都去检索，然后结果融合去重。这是 Query 改写的一个常见加固手段。
+
+</details>
+
+<details>
+<summary><b>Q3：这个项目如果上生产，你会改哪些地方？</b></summary>
+
+我会从五个维度逐项列出差距，而不是笼统说"要优化"。
+
+**一、安全**
+- `allow_dangerous_deserialization=True` 必须去掉或严格限定为"只加载本地自产索引"。pickle 反序列化可以执行任意代码，这是真实的 RCE 风险，不是理论风险。
+- 无鉴权、无限流、无输入长度限制。要加 API Key / JWT 鉴权、按用户限流、Prompt 长度上限。
+- Prompt 注入：用户可以在问题里写"忽略以上指令"。要在 Prompt 里做防护（明确分隔用户输入与指令）、对输出做敏感词与格式校验。
+
+**二、正确性与可观测**
+- 目前没有任何日志、没有检索结果记录、没有"是否命中知识库"的判定。要记录：query、改写后的 query、召回的 doc id 与分数、最终答案、耗时、是否走了兜底。
+- Prompt 里要加**兜底话术**（"如果已知内容不足以回答，请回复：该问题请咨询客服"），现在的"不允许编造"是不够的。
+- 建立**固定评测集 + RAGAS 四指标**（faithfulness / answer_relevancy / context_relevancy / context_recall），任何改动都跑一遍对比。这是从"感觉还行"到"可量化迭代"的关键一步。
+
+**三、检索质量**
+- 换掉 FAISS 用 Milvus：需要**标量过滤**（按仓库、按客户、按时间范围过滤）和**混合检索**（稠密+稀疏，处理"速达物流"这种专有名词的精确匹配）。
+- 加 **Reranker**（BGE-Reranker）：先召回 20 个，精排到 3 个。本项目的跨段问题正是 reranker 收益最大的场景。
+- 优化切分：把键值对 PDF 解析成结构化字段，而不是按 50 字硬切。
+- 加 **Query 改写**（同义词扩展、错误纠正）以覆盖用户的多样化表达。
+
+**四、性能与并发**
+- 换掉 Streamlit：它是"每次交互重跑整脚本"的模型，不适合生产。改成 FastAPI + WebSocket（参考 RAG）。
+- 真流式输出（`stream` + `StreamingResponse`），而不是现在的"假流式"。
+- 加 **Redis 缓存**：高频问题直接返回缓存答案，省掉检索和生成。
+- embedding 与 LLM 分批/并发调用；embedding 可以做批处理（一次编码多个块）。
+
+**五、运维**
+- 建库流程自动化：文档上传 → 解析 → 切分 → 向量化 → 入库，做成 Pipeline，支持增量更新与删除（文档更新后旧向量必须能删掉，否则会有幽灵答案）。
+- 知识库版本管理：能回滚到某个历史版本。
+- 健康检查、监控告警、降级策略（LLM 不可用时返回检索原文）。
+
+**优先级**：如果只能改三件事，我会选 **(1) 去掉危险的 pickle 加载 + 加鉴权，(2) Prompt 加兜底 + 建评测集，(3) 加 Reranker**。第一件是安全底线，第二件让系统可迭代，第三件是效果提升最大的单点。
+
+</details>
+
+## 8. 延伸阅读
+
+- LangChain 官方文档：Document Loaders、Text Splitters、Vector Stores、Retrievers、`ConversationalRetrievalChain` 与 `create_history_aware_retriever`
+- Ollama 官方文档与模型库（`qwen2.5`、`mxbai-embed-large`）
+- FAISS 官方 Wiki：索引类型（Flat / IVF / HNSW）与选型
+- Streamlit 文档：`st.session_state`、`st.cache_resource`、`st.write_stream`
+- 本仓库同目录：[01-项目-RAG问答系统](01-项目-RAG问答系统.md)（同一思路的生产级版本：混合检索 + 精排 + FAQ 融合）
+- 配套代码：`Knowledge_QA/local_db.py`、`local_qa.py`、`web_qa.py`、`new_demo.py`
+
+---
+[⬅️ 返回本目录索引](README.md)

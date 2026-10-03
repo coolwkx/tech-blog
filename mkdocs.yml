@@ -1,0 +1,123 @@
+site_name: 技术复习笔记
+site_description: Python / 数据处理 / 机器学习 / 深度学习 / NLP / 大模型 / Agent / 项目实战 复习笔记
+site_author: 王凯旋
+repo_url: https://github.com/coolwkx/tech-blog
+docs_dir: docs
+site_dir: site
+
+theme:
+  name: material
+  language: zh
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.top
+    - navigation.sections
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - toc.follow
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      toggle:
+        icon: material/weather-night
+        name: 切换到深色
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: 切换到浅色
+  icon:
+    repo: fontawesome/brands/github
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - footnotes
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.arithmatex:
+      generic: true
+
+plugins:
+  - search
+
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+nav:
+  - 🏠 首页: README.md
+  - 🧭 学习路线: roadmap.md
+  - "🐍 Python":
+      - 领域目录: 01-python/README.md
+      - 基础与语法: 01-python/01-基础与语法/README.md
+      - 函数与装饰器: 01-python/02-函数与装饰器/README.md
+      - 面向对象与数据模型: 01-python/03-面向对象与数据模型/README.md
+      - 并发与网络: 01-python/04-并发与网络/README.md
+      - 工程化与实践: 01-python/05-工程化与实践/README.md
+      - CPython 内部机制与算法: 01-python/06-CPython与算法/README.md
+      - 速查与面试: 01-python/90-cheatsheet/README.md
+  - "📦 数据处理与统计":
+      - 领域目录: 02-data/README.md
+      - Linux 与 SQL: 02-data/01-Linux与SQL/README.md
+      - NumPy 与 Pandas: 02-data/02-NumPy与Pandas/README.md
+      - 可视化与统计: 02-data/03-可视化与统计/README.md
+      - 分析实战: 02-data/04-分析实战/README.md
+  - "📊 机器学习":
+      - 领域目录: 03-ml/README.md
+      - 基础与特征工程: 03-ml/01-基础与特征工程/README.md
+      - 经典算法: 03-ml/02-经典算法/README.md
+      - 评估与调优: 03-ml/03-评估与调优/README.md
+      - 集成学习与无监督: 03-ml/04-集成与无监督/README.md
+      - 案例与面试: 03-ml/06-案例与面试/README.md
+      - 速查与面试: 03-ml/90-cheatsheet/README.md
+  - "🧠 深度学习":
+      - 领域目录: 04-dl/README.md
+      - 基础与反向传播: 04-dl/01-基础与反向传播/README.md
+      - 优化与训练: 04-dl/02-优化与训练/README.md
+      - CNN 与视觉: 04-dl/03-CNN与视觉/README.md
+      - 序列与注意力: 04-dl/04-序列与注意力/README.md
+      - 速查与面试: 04-dl/90-cheatsheet/README.md
+  - "📝 自然语言处理":
+      - 领域目录: 05-nlp/README.md
+      - 预处理与文本表示: 05-nlp/01-预处理与表示/README.md
+      - 序列建模与 Transformer: 05-nlp/02-序列建模与Transformer/README.md
+      - 任务与信息抽取: 05-nlp/03-任务与信息抽取/README.md
+      - 生成与检索: 05-nlp/04-生成与检索/README.md
+      - 评估与面试: 05-nlp/05-评估与面试/README.md
+      - 速查与面试: 05-nlp/90-cheatsheet/README.md
+  - "🤖 大语言模型":
+      - 领域目录: 06-llm/README.md
+      - 架构与预训练: 06-llm/01-架构与预训练/README.md
+      - 推理与部署: 06-llm/03-推理与部署/README.md
+      - 提示工程: 06-llm/04-提示工程/README.md
+      - 检索增强 RAG: 06-llm/05-检索增强RAG/README.md
+      - 评估与前沿: 06-llm/06-评估与前沿/README.md
+      - 面试专题: 06-llm/07-面试专题/README.md
+      - 速查与面试: 06-llm/90-cheatsheet/README.md
+  - "🕹️ AI Agent":
+      - 领域目录: 07-agent/README.md
+      - 基础范式: 07-agent/01-基础范式/README.md
+      - 工具调用与规划: 07-agent/02-工具与规划/README.md
+      - 记忆与多智能体: 07-agent/03-记忆与多智能体/README.md
+      - 评估与工程化: 07-agent/04-评估与工程化/README.md
+      - 前沿与面试: 07-agent/05-前沿与面试/README.md
+      - 速查与面试: 07-agent/90-cheatsheet/README.md
+  - "🚀 项目实战":
+      - 领域目录: 08-project/README.md
+      - 问答与 RAG 系统: 08-project/01-问答与RAG系统/README.md
+      - 对话与生成系统: 08-project/02-对话与生成系统/README.md
+      - 文本分类系统: 08-project/03-文本分类系统/README.md
+      - Agent 系统: 08-project/04-Agent系统/README.md

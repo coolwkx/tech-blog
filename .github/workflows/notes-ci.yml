@@ -1,0 +1,73 @@
+name: Notes CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  # ---------- 内容质检：断链 / 代码块语法 / 文章结构 / mkdocs nav ----------
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: 内容质检
+        run: python tools/lint_notes.py
+
+  # ---------- 构建 MkDocs 站点 ----------
+  build:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: 安装 mkdocs
+        run: pip install mkdocs-material
+      - name: 构建站点
+        run: |
+          set -euo pipefail
+          mkdocs build
+          touch site/.nojekyll
+      - name: 上传站点产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: site
+
+  # ---------- 发布到 GitHub Pages ----------
+  deploy:
+    needs: [lint, build]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - name: 下载站点产物
+        uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: site
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4

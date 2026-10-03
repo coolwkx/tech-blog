@@ -1,0 +1,30 @@
+# MkDocs 构建产物
+site/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 大文件：模型权重、数据集、压缩包（笔记库不收录）
+*.bin
+*.pth
+*.ckpt
+*.safetensors
+*.parquet
+*.zip
+*.gz
+*.7z
+*.pptx
+*.xlsx
+*.pdf
+*.csv
