@@ -23,6 +23,9 @@ theme:
     - navigation.indexes
     - navigation.path
     - navigation.footer
+    # 顶栏分页：把 9 个领域提升为顶部横向标签，侧栏只显示当前领域的系列。
+    # 适合领域多、层级深的文档站，跨领域跳转不必再滚动侧栏。
+    - navigation.tabs
     - toc.follow
     - search.suggest
     - search.highlight
