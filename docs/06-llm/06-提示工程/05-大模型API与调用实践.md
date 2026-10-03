@@ -231,8 +231,8 @@ print("GPU 可用" if torch.cuda.is_available() else "使用 CPU（很慢，仅�
 
 **Q1：PET 的核心思想是什么？它相比「BERT + 新初始化 MLP」的优势在哪？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 PET（Pattern-Exploiting Training）的核心思想是**把下游分类任务改写成与预训练 MLM 一致的完形填空**：
 用人工先验知识设计含 `[MASK]` 的模板（Pattern），把原句拼进去，复用预训练好的 MLM head 得到 `[MASK]`
@@ -249,8 +249,8 @@ PET（Pattern-Exploiting Training）的核心思想是**把下游分类任务改
 
 **Q2：Prompt Tuning、P-Tuning v1、P-Tuning v2 有什么区别？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 | 维度 | Prompt Tuning | P-Tuning v1 | P-Tuning v2 |
 |---|---|---|---|
@@ -270,8 +270,8 @@ PET（Pattern-Exploiting Training）的核心思想是**把下游分类任务改
 
 **Q3：一个业务需求来了，你怎么判断该用 API 调用 + 提示工程，还是参数高效微调？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 先看四个问题：
 
@@ -292,8 +292,8 @@ PET（Pattern-Exploiting Training）的核心思想是**把下游分类任务改
 
 **1. 写出 NLP 四范式，并说明第四范式相比第三范式的核心优势。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 ① 传统机器学习（TF-IDF + 朴素贝叶斯等）；② 深度学习模型（word2vec + LSTM 等）；
 ③ 预训练模型 + Fine-Tuning（BERT + fine-tuning）；④ 预训练模型 + Prompt + 预测（BERT + Prompt）。
@@ -305,8 +305,8 @@ PET（Pattern-Exploiting Training）的核心思想是**把下游分类任务改
 
 **2. 什么是 Hard Prompt 与 Soft Prompt？各自的优缺点是什么？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 Hard Prompt（离散提示）：提示模板固定，由真实文本字符串构成。
 优点是不需要显式指定模板中各 token 的语义；缺点是依赖人工、改变 prompt 中单个单词就会带来巨大差异，
@@ -323,8 +323,8 @@ Soft Prompt（连续提示）：输入一个**可参数化**的提示模板，�
 
 **3. 为什么 LoRA 能大幅降低显存占用？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 因为 LoRA 假设「下游任务所需的权重更新量是低秩的」，对原始权重矩阵 $W\in\mathbb{R}^{d\times d}$
 不做全量更新，而是用 $W + BA$ 表示，其中 $B\in\mathbb{R}^{d\times r}$、$A\in\mathbb{R}^{r\times d}$、$r\ll d$，
@@ -339,8 +339,8 @@ Soft Prompt（连续提示）：输入一个**可参数化**的提示模板，�
 
 **4. Chat 接口里 `system` / `user` / `assistant` 三种角色分别适合放什么内容？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 - `system`：稳定的角色设定、任务说明、输出格式与边界约束（如「你是金融文本分类器，只输出类别名」）。
  放这里便于复用与缓存，也让指令与用户数据天然分隔。
@@ -354,8 +354,8 @@ Soft Prompt（连续提示）：输入一个**可参数化**的提示模板，�
 
 **5. 基于 GPT2 的医疗问诊机器人与 PET 文本分类在技术路线上有什么本质区别？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 本质上一个是**生成式（自回归）**、一个是**判别式（完形填空/分类）**。
 

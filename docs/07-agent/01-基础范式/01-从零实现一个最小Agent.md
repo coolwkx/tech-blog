@@ -521,8 +521,8 @@ step 3: （同一动作）-> [提前终止] 同一动作重复 3 次，判定为
 
 **Q1：Agent 和「LLM + 固定 RAG 流水线」的本质区别是什么？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 区别不在用了几个组件，而在**控制流的决策权在谁手里**。固定 RAG 的流程是代码写死的：检索、拼装、生成，步数和顺序都是编译期的常量，模型只负责最后一步的自然语言生成。Agent 把「下一步做什么」交给模型，代码只负责执行与约束：解析动作、调工具、把结果拼回去、判断该不该停。
 
@@ -532,8 +532,8 @@ step 3: （同一动作）-> [提前终止] 同一动作重复 3 次，判定为
 
 **Q2：ReAct、Plan-and-Execute、Reflexion 该怎么选？为什么生产环境常常混用？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 按「不确定性落在哪」来选。任务路径高度不确定、需要靠环境反馈逐步收敛，用 ReAct；步骤多但大体能预判、希望控制成本和并发，用 Plan-and-Execute；任务有明确成败判据且允许重试，用 Reflexion 修补。
 
@@ -543,8 +543,8 @@ step 3: （同一动作）-> [提前终止] 同一动作重复 3 次，判定为
 
 **Q3：Function calling 比 ReAct 文本协议可靠得多，那文本协议还有存在价值吗？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 有，但角色变了。function calling 的可靠性来自服务端的受约束解码，它保证的是**格式合法**，不保证语义正确：模型仍可能编造工具名、漏必填参数、把参数填成语义错误的值。解析层的工作量只是从「修文本」转移到了「校验 JSON Schema」。
 
@@ -554,8 +554,8 @@ step 3: （同一动作）-> [提前终止] 同一动作重复 3 次，判定为
 
 **Q4：线上 Agent 陷入死循环，你会按什么顺序排查和修复？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 先看 trace，确认是「同一个动作重复」还是「动作在变但目标没推进」。前者好治：比较动作名加参数序列化后的签名，第二次在 observation 里追加提示，第三次强制终止并返回部分结果。后者更难，通常是 observation 里没有模型需要的信息，或者工具描述让它误以为还要再试。
 
@@ -571,8 +571,8 @@ step 3: （同一动作）-> [提前终止] 同一动作重复 3 次，判定为
 4. 上下文无限增长有哪几种处理手段？各自的代价是什么？
 5. 步数上限设成 8 和设成 30，分别会引入什么问题？
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 1. System Prompt（角色与工具说明，缺了模型不知道有哪些工具）、动作解析器（结构化输出，缺了一个多余的反引号就会崩）、工具执行器（沙箱与超时，缺了一次网络抖动就终止任务）、终止判定（`final_answer` 加步数上限，缺了就是无限循环）。
 2. `eval` 执行的是任意 Python 表达式，而表达式本身就能触达整个对象模型：`.__class__.__base__.__subclasses__` 可以从空元组爬到所有已加载类，再找到 `os` 相关模块去执行命令。即使把 `__builtins__` 设为空字典也挡不住，因为这条路不需要 `import`。正确做法是 `ast.parse` 后按白名单递归求值，只放行数字常量和四则运算节点。

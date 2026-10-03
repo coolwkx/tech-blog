@@ -253,8 +253,8 @@ print(llm.invoke("你是谁"))
 
 **Q1：Ollama 相比直接用 transformers 加载模型，工程上解决了什么问题？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 主要解决四件事：
 
@@ -272,8 +272,8 @@ print(llm.invoke("你是谁"))
 
 **Q2：为什么要在安装后立刻配置 `OLLAMA_MODELS`？不配会怎样？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 Ollama 默认把模型存在用户目录下（Windows 为 `C:\Users\%username%\.ollama\models`，
 Linux/macOS 为 `~/.ollama/models`）。一个大模型动辄数 GB 到数十 GB，若不迁移：
@@ -288,8 +288,8 @@ Linux 下若用 systemd 管理服务，必须写进 service 的 `Environment=` �
 
 **Q3：Ollama 的 `/api/generate` 和 `/api/chat` 有什么区别？RAG 应用该用哪个？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 `/api/generate` 是**单轮文本补全**接口，入参是 `prompt` 字符串，适合「给一段文本让它续写/改写」；
 `/api/chat` 是**多轮对话**接口，入参是 `messages` 列表（含 `role`/`content`），
@@ -308,8 +308,8 @@ RAG 应用应优先用 `/api/chat`：① 检索到的上下文与用户问题需
 
 **1. Ollama 默认监听哪个端口？用 Python 远程调用另一台机器上的 Ollama，代码怎么写？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 默认端口 **11434**。远程调用：
 
@@ -327,8 +327,8 @@ print(resp["message"]["content"])
 
 **2. 运行 13B 模型大约需要多少显存？显存不足时按什么顺序降级？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 给出的经验值：**13B 至少需要 16GB 显存**（7B 至少 8GB）。若没有 GPU 会默认加载 CPU，
 可运行但速度很慢。
@@ -341,8 +341,8 @@ print(resp["message"]["content"])
 
 **3. 写一个 Modelfile，把 `qwen2:7b` 定制成「只依据原文作答、温度 0.2、上下文 8K」的金融助手。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 ```text
 FROM qwen2:7b
@@ -365,8 +365,8 @@ ollama run finance-qwen
 
 **4. 为什么 Ollama 能在没有 GPU 的机器上运行？代价是什么？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 因为 Ollama 底层使用 **llama.cpp**，它支持 CPU 后端（并支持 AVX/NEON 等指令集加速）与 CPU/GPU 混合推理，
 模型以 GGUF 量化格式存储，量化本身也大幅降低了计算与内存需求。
@@ -380,8 +380,8 @@ ollama run finance-qwen
 
 **5. 用 Ollama 搭一个最小 RAG 后端，需要用到哪些端点？各自负责什么？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 - `POST /api/embed`：把知识库切分后的文本块和用户问题编码为向量，用于建库与检索；
 - `POST /api/chat`：把检索到的 Top-K 文本块与用户问题按角色拼进 `messages`，生成最终回答；

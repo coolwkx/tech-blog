@@ -571,8 +571,8 @@ Evaluation precision: 0.78000, recall: 0.76000, F1: 0.75000
 
 ## 7. 面试问答
 
-<details>
-<summary><b>Q1：PET 和 P-Tuning 的区别是什么？为什么它们在少样本上比传统 Fine-tuning 好？</b></summary>
+<details markdown="1">
+<summary markdown="1"><b>Q1：PET 和 P-Tuning 的区别是什么？为什么它们在少样本上比传统 Fine-tuning 好？</b></summary>
 
 **共同点**：两者都把分类任务转成"预测 `[MASK]` 位置该填什么词"，用 `AutoModelForMaskedLM`，不引入随机初始化的分类头。区别只在模板：
 
@@ -591,8 +591,8 @@ Evaluation precision: 0.78000, recall: 0.76000, F1: 0.75000
 
 </details>
 
-<details>
-<summary><b>Q2：Verbalizer 是做什么的？为什么不能直接用类别名做标签？</b></summary>
+<details markdown="1">
+<summary markdown="1"><b>Q2：Verbalizer 是做什么的？为什么不能直接用类别名做标签？</b></summary>
 
 **Verbalizer 做的是"真实标签 → 标签预测词"的映射**，在训练和推理两端各用一次：
 
@@ -611,8 +611,8 @@ Evaluation precision: 0.78000, recall: 0.76000, F1: 0.75000
 
 </details>
 
-<details>
-<summary><b>Q3：P-Tuning 里为什么 attention_mask 要重新计算？手工插入伪 token 有什么风险？</b></summary>
+<details markdown="1">
+<summary markdown="1"><b>Q3：P-Tuning 里为什么 attention_mask 要重新计算？手工插入伪 token 有什么风险？</b></summary>
 
 **直接原因**：`tokenizer` 返回的 `attention_mask` 是它根据自己的逻辑生成的——**它不知道你后面手工往序列前面塞了几个 token**。当你在 `input_ids` 前面插入伪 token 后：
 

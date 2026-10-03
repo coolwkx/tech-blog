@@ -311,8 +311,8 @@ class SmallCNN(nn.Module):
 
 **Q1：卷积层相比全连接层，参数量为什么能大幅下降？"局部连接"和"权重共享"各自省掉了什么？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 全连接层中第 $l$ 层 $n_l$ 个神经元与第 $l-1$ 层 $n_{l-1}$ 个神经元全相连，参数（连接）数为 $n_l\times n_{l-1}$。卷积层做两次约束：
 
@@ -327,8 +327,8 @@ class SmallCNN(nn.Module):
 
 **Q2：卷积和互相关有什么区别？为什么深度学习框架实现的是互相关？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 两者只差卷积核是否翻转 180°（上下、左右同时颠倒）：真卷积 $y_{ij}=\sum_{u,v} w_{uv}x_{i-u+1,j-v+1}$，互相关 $y_{ij}=\sum_{u,v} w_{uv}x_{i+u-1,j+v-1}$，即 $\boldsymbol{Y}=\boldsymbol{W}\otimes\boldsymbol{X}=\mathrm{rot180}(\boldsymbol{W})*\boldsymbol{X}$。
 
@@ -340,8 +340,8 @@ class SmallCNN(nn.Module):
 
 **Q3：ResNet 的残差连接为什么能训练上千层网络？它解决了"退化"还是"梯度消失"？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 先区分两个问题。**梯度消失**：误差反传时每经过一层都要乘该层激活函数的导数，Sigmoid 型导数 $\le 0.25$，深了梯度指数衰减（第 4.6.2 节）。**退化（degradation）**：即使使用 ReLU + BN，56 层网络的训练误差也反而高于 20 层网络——这不是过拟合（测试误差同样更高），而是"更深的网络至少可以把新增层学成恒等映射来匹配浅层网络，却连这一点都做不到"，说明深层网络的优化本身困难。
 
@@ -359,8 +359,8 @@ ResNet 的做法是把期望函数 $h(x)$ 拆成恒等部分与残差部分 $h(x
 
 **题 1** 已知一维信号 $x=[1,3,5,7,9]$，用卷积核 $w=[1,-2,1]$ 做互相关（不翻转，从第 3 个位置开始输出）。求输出序列，并解释这个核在做什么。
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 互相关 $y_t = x_t - 2x_{t-1} + x_{t-2}$，$t=3,4,5$：$y_3 = 5 - 2\times3 + 1 = 0$；$y_4 = 7 - 2\times5 + 3 = 0$；$y_5 = 9 - 2\times7 + 5 = 0$。输出为 $[0,0,0]$。
 
@@ -370,8 +370,8 @@ ResNet 的做法是把期望函数 $h(x)$ 拆成恒等部分与残差部分 $h(x
 
 **题 2** 输入特征图 $28\times28\times3$，用 16 个 $5\times5$ 的卷积核，`stride=1, padding=2`。输出尺寸是多少？该层参数量是多少？如果改成 `stride=2`，输出尺寸又是多少？
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 输出尺寸公式 $o=\lfloor (i+2p-k)/s\rfloor+1$。
 
@@ -383,8 +383,8 @@ ResNet 的做法是把期望函数 $h(x)$ 拆成恒等部分与残差部分 $h(x
 
 **题 3** 为什么说"一个卷积核只捕捉一种局部特征"？如果只用一组卷积核但不在不同位置共享权重，会怎样？
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 权重共享意味着同一个卷积核在输出的所有空间位置上使用同一组权重，因此它要求"同类模式出现在任何位置都应被同样地响应"。一个核对应一个模板（如某个方向的边缘），所以一个核 = 一个特征检测器；要提取 $D'$ 种不同特征（不同方向边缘、不同纹理、颜色对比等），就需要 $D'$ 个不同的核，输出 $D'$ 个特征映射——这正是卷积层三维结构中深度维度的来源。
 
@@ -394,8 +394,8 @@ ResNet 的做法是把期望函数 $h(x)$ 拆成恒等部分与残差部分 $h(x
 
 **题 4** 空洞卷积的膨胀率 $r=2$、卷积核 $3\times3$，有效核大小是多少？参数量与普通 $3\times3$ 卷积相比如何变化？如果想让它成为等宽卷积，padding 应设多少？
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 有效核大小 $K' = K + (K-1)(r-1) = 3 + 2\times1 = 5$，感受野从 $3\times3$ 扩大到 $5\times5$。
 
@@ -407,8 +407,8 @@ ResNet 的做法是把期望函数 $h(x)$ 拆成恒等部分与残差部分 $h(x
 
 **题 5** `nn.ConvTranspose2d(16, 8, kernel_size=3, stride=2, padding=1)` 输入 $8\times8$，输出空间尺寸是多少？要得到 $16\times16$ 需要加什么参数？
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 转置卷积输出尺寸 $o = (i-1)\times s - 2p + k + \text{output\_padding}$。代入 $i=8,s=2,p=1,k=3,\text{output\_padding}=0$：$o = 7\times2 - 2 + 3 = 15$，得到 $15\times15$，而不是期望的 $16\times16$。需要加 `output_padding=1`，此时 $o=7\times2-2+3+1=16$。
 

@@ -276,7 +276,7 @@ explain select * from emp where dept_id = 2; -- 执行计划
 
 ### Q1：内连接、左外连接、右外连接的结果集有什么区别？为什么推荐用左外连接？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 以 `hero`（左）与 `kongfu`（右）通过 `hero.kongfu_id = kongfu.kid` 关联为例：
 
@@ -290,7 +290,7 @@ explain select * from emp where dept_id = 2; -- 执行计划
 
 ### Q2：`row_number`、`rank`、`dense_rank` 有什么区别？如何取分组 TopN？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 对数据 `100, 90, 90, 60`：
 
@@ -322,7 +322,7 @@ select * from t1 where rk <= 2;
 
 ### Q3：为什么 `where` 不能直接引用 `select` 中定义的列别名？怎么解决？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 因为 SQL 的**逻辑执行顺序**不是书写顺序：
 
@@ -342,7 +342,7 @@ from → where → group by → having → select → order by → limit
 
 ### 1. 写出"每个部门的名称、人数、平均工资"，要求**没有员工的部门也显示**。
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 ```sql
 select d.name as dept_name, count(e.id) as emp_cnt, round(avg(e.salary), 2) as avg_salary
@@ -356,7 +356,7 @@ group by d.name order by avg_salary desc;
 
 ### 2. 写出"每个部门工资最高的 2 名员工"。若希望名次连续不跳号，用哪个窗口函数？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 ```sql
 with t1 as (
@@ -371,7 +371,7 @@ select * from t1 where dr <= 2;
 
 ### 3. 为什么 `over(partition by deptid)` 与 `over(partition by deptid order by salary)` 的 `sum` 结果不同？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 - `over(partition by deptid)`：没有 `order by`，窗口范围是**整个分组**，结果是该部门工资总额，同部门每行相同；
 - `over(partition by deptid order by salary)`：有 `order by`，窗口范围默认是**组内第一行到当前行**，结果是按工资升序的累计和，同部门内逐行递增。

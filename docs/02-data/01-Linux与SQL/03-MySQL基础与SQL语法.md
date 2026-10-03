@@ -257,7 +257,7 @@ limit 0, 2;
 
 ### Q1：`delete from`、`truncate table`、`drop table` 有什么区别？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 | 维度 | `delete from` | `truncate table` | `drop table` |
 | --- | --- | --- | --- |
@@ -275,7 +275,7 @@ limit 0, 2;
 
 ### Q2：`where` 和 `having` 有什么区别？为什么 `where` 后面不能跟聚合函数？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 - **执行时机不同**：`where` 在 `group by` **之前**执行，作用对象是**行**；`having` 在 `group by` **之后**执行，作用对象是**分组**。
 - **能否用聚合函数**：`where` 不能（此时还没分组，`sum`、`count` 无从算起）；`having` 可以。
@@ -293,7 +293,7 @@ having cnt > 1; -- 组后筛选：再扔掉只有 1 件的分类
 
 ### Q3：`count(*)`、`count(1)`、`count(列)` 有什么区别？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 **区别一：是否统计 null。** `count(*)` 与 `count(1)` 统计结果集的**行数**（包含 null 行）；`count(列)` 只统计该列**非 null** 的值的个数。例如商品表 13 行、其中 2 行 `category_id` 为 null，则 `count(category_id)` 返回 11。
 
@@ -311,7 +311,7 @@ having cnt > 1; -- 组后筛选：再扔掉只有 1 件的分类
 
 ### 1. 写出创建"用户表 `users`"的语句：`id` 主键自增、`username` 非空且唯一、`age` 默认 18、`create_time` 为 datetime。
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 ```sql
 create table if not exists users(
@@ -329,7 +329,7 @@ desc users;
 
 ### 2. 商品表 `product` 共 13 行，其中 2 行 `category_id` 为 null。`count(*)`、`count(1)`、`count(category_id)` 的结果分别是多少？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 ```sql
 select count(*) from product; -- 13（所有行）
@@ -343,7 +343,7 @@ select count(category_id) from product; -- 11（跳过 2 个 null）
 
 ### 3. 查询"每个分类的商品数量，只显示数量大于 1 的分类，并按数量降序"。
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 ```sql
 select category_id, count(*) as total_cnt
@@ -359,7 +359,7 @@ order by total_cnt desc;
 
 ### 4. `product` 表 13 条数据、每页 5 条，写出第 3 页的查询语句并算出总页数。
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 ```sql
 -- 第 3 页：起始索引 = (3 - 1) * 5 = 10
@@ -370,7 +370,7 @@ select * from product limit 10, 5;
 
 ### 5. 为什么 `select * from product where category_id = null;` 查不出"没有分类的商品"？如何修正？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 因为 SQL 中的 `null` 表示**未知值**，不是"空字符串"也不是 0。任何与 null 的比较（`= null`、`!= null`、`> null`）结果都是 `unknown`，而 `where` 只保留结果为 `true` 的行，所以永远返回空结果集，且**不报错**——很容易被误认为"本来就没有这样的数据"。
 

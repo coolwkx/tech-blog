@@ -6,7 +6,7 @@
 
 **考察点**：
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 **30 秒版本**：
 

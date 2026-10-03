@@ -276,8 +276,8 @@ def get_history(session_id: str):
 
 **Q1：LangChain 的六大组件分别解决什么问题？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 | 组件 | 解决的问题 |
 |---|---|
@@ -294,8 +294,8 @@ def get_history(session_id: str):
 
 **Q2：为什么大模型「需要」Memory 组件？实现长对话有哪些工程手段？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 根因是**大模型无状态**：每次请求都是独立的，模型不保存上次交互内容。
 我们感知到的「ChatGPT 记得上文」，其实是应用层把历史消息重新拼进 prompt 再发给模型。
@@ -315,8 +315,8 @@ LangChain 中对应 `InMemoryChatMessageHistory`、`messages_to_dict/messages_fr
 
 **Q3：请描述一个完整 RAG 流程中 LangChain 各组件的分工。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 | 阶段 | 组件 | 说明 |
 |---|---|---|
@@ -339,8 +339,8 @@ LangChain 中对应 `InMemoryChatMessageHistory`、`messages_to_dict/messages_fr
 
 **1. 三类模型（LLMs / Chat Models / Embeddings）的输入输出分别是什么？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 | 模型类型 | 输入 | 输出 |
 |---|---|---|
@@ -355,8 +355,8 @@ Embeddings 是检索系统的地基：`embed_query` 处理查询、`embed_docume
 
 **2. 文本分割为什么不能简单按固定字符数切？两个关键参数是什么？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 因为硬切会**破坏语义单元**——一段代码或一个函数被割裂到两段就失去意义，
 检索到也无法提供有效信息。正确原则是**把语义相关的文本片段放在一起**，
@@ -369,8 +369,8 @@ Embeddings 是检索系统的地基：`embed_query` 处理查询、`embed_docume
 
 **3. Agent 的四个组成部分是什么？为什么需要 Agent？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 原因：大模型**不能回答实时信息、处理数学逻辑问题仍非常初级**，
 需要让它能访问搜索引擎、数据库、计算器等外部工具。
@@ -386,8 +386,8 @@ Embeddings 是检索系统的地基：`embed_query` 处理查询、`embed_docume
 
 **4. 语料里的 `LLMChain`、`ConversationChain` 在新版中对应什么？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 新版主推 **LCEL**，用管道符组合 `Runnable`：
 

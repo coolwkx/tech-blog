@@ -462,8 +462,8 @@ if __name__ == "__main__":
 
 **Q1：GRPO 相比 PPO 改了什么？为什么能省显存？代价是什么？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 改动有两处，其余全部保留。① **去掉了 Critic**：PPO 用 Critic 网络学出 $V(s_t)$ 作为基线，GRPO 改为对同一个 prompt 采样 $G$ 个回答、用组内奖励均值作为基线，并除以组内标准差做尺度归一化；② **优势粒度变化**：PPO 的优势是逐 token 由 GAE 递推的，GRPO 是整条回答一个常数并广播到所有 token（因为末端奖励 + $\gamma=1$）。重要性采样权重、clip 裁剪、KL 惩罚这三件 PPO 的「先进特性」都被完整保留。
 
@@ -475,8 +475,8 @@ if __name__ == "__main__":
 
 **Q2：请写出 GRPO 的优势估计公式，并说明「组内全对」时会发生什么、如何缓解。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 对 prompt $q$ 采样 $G$ 个回答，得分 $\{r_1,\dots,r_G\}$，则
 
@@ -494,8 +494,8 @@ $$A_i=\frac{r_i-\operatorname{mean}(\{r_j\})}{\operatorname{std}(\{r_j\})+\varep
 
 **Q3：为什么 DeepSeek-R1 类路线用规则奖励而不是神经奖励模型？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 因为在数学与代码任务上，正确性可以被外部程序验证：数学题按指定格式抽取答案后与标准答案比对，代码题用编译器与测试用例验证。这类奖励有三个性质：① 不存在代理误差，因此不会被 reward hacking（前提是判分器本身没有漏洞）；② 完全确定、可重复查询、零边际成本，正好匹配 GRPO 需要「对同 prompt 的 $G$ 个回答稳定打分」的要求；③ 天然产生有差异的组内奖励（同一题既可能做对也可能做错），保证梯度信号存在。
 
@@ -507,8 +507,8 @@ $$A_i=\frac{r_i-\operatorname{mean}(\{r_j\})}{\operatorname{std}(\{r_j\})+\varep
 
 **Q4：推理模型后训练的完整流水线是什么？冷启动为什么必要？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 以 DeepSeek-R1 类路线为例，五步。① **冷启动 SFT**：用少量（数千级）长 CoT 数据微调基座模型，让输出具备可读的推理格式与总结，作为 RL 的起点。② **推理导向 RL**：用 GRPO 加规则奖励（准确性 + 格式 + 语言一致性）做大规模 RL，模型在此过程中自发涌现更长的推理与自检行为。③ **拒绝采样 + 再 SFT**：从 RL 收敛后的检查点对同一 prompt 采多条，用规则或生成式奖励模型筛选出正确且可读的轨迹，与通用 SFT 数据（写作、事实问答）混合，约 800k 样本训练约两个 epoch。④ **全场景 RL**：再做一轮 RL，推理数据用规则奖励，通用数据用奖励模型捕捉有用性与无害性，兼顾推理能力与安全性。⑤ **蒸馏**：用最终模型生成约 800k 样本，直接 SFT 到 Qwen、Llama 等小模型上。
 
@@ -520,8 +520,8 @@ $$A_i=\frac{r_i-\operatorname{mean}(\{r_j\})}{\operatorname{std}(\{r_j\})+\varep
 
 **1. 对同一个 prompt 采样 4 条回答，奖励为 $[1,1,0,1]$。手算每条回答的优势（用总体标准差，忽略 $\varepsilon$）。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 组内均值 $\bar r=(1+1+0+1)/4=0.75$。
 
@@ -540,8 +540,8 @@ $$A_i=\frac{r_i-\operatorname{mean}(\{r_j\})}{\operatorname{std}(\{r_j\})+\varep
 
 **2. 如果奖励是 0/1 且 $G=8$，某道题的模型正确率是 0.9。这道题不产生梯度的概率是多少？这说明什么？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 死组概率 $=p^G+(1-p)^G=0.9^8+0.1^8\approx0.4305+0.0000\approx0.4305$，约 43%。
 
@@ -553,8 +553,8 @@ $$A_i=\frac{r_i-\operatorname{mean}(\{r_j\})}{\operatorname{std}(\{r_j\})+\varep
 
 **3. 某次 GRPO 训练中，平均回答长度从 500 涨到 4000 token，但任务准确率停滞。给出诊断思路与至少两种处理。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 诊断思路：① 看「长度—奖励」相关性——按长度分桶统计准确率，若长回答并没有更高准确率却获得正优势，说明长度本身被奖励（可能是格式奖励或 RM 的长度偏置）；② 抽样看长回答的内容，区分「有意义的推理」与「重复、自我怀疑、机械展开」；③ 看奖励的组内分布，确认是否存在「靠长度偶尔蒙对」的样本被持续强化；④ 检查是否存在答案抽取范围的漏洞（例如从整条输出里搜答案，导致长输出更容易命中）。
 
@@ -564,8 +564,8 @@ $$A_i=\frac{r_i-\operatorname{mean}(\{r_j\})}{\operatorname{std}(\{r_j\})+\varep
 
 **4. 为什么把对齐能力蒸馏给小模型通常比直接给小模型做 RL 更有效？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 核心在于**奖励稀疏性**。RL 需要模型自己采样出正确答案才能获得正优势；小模型的正确率 $p$ 很低时，组内几乎全是全错（死组概率 $(1-p)^G$ 接近 1），优势恒为 0，训练完全无法启动。这就是冷启动问题：RL 只能在「已经偶尔能做对」的基础上放大正确行为，无法从零创造能力。
 
@@ -577,8 +577,8 @@ $$A_i=\frac{r_i-\operatorname{mean}(\{r_j\})}{\operatorname{std}(\{r_j\})+\varep
 
 **5. 解释 k3 形式的 KL 估计 $\hat D_{KL}=w-1-\log w$ 为什么恒非负，并说明它在训练中的实际作用。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 由标准不等式 $\log w\le w-1$（对 $w>0$ 恒成立，等号仅当 $w=1$）立即得到
 

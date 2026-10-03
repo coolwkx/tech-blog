@@ -553,8 +553,8 @@ T → ∞ 均匀分布 → 没有信息
 
 ## 7. 面试问答
 
-<details>
-<summary><b>Q1：三个模型准确率分别是 81%、92%、94%，你能解释这三次变化的原因吗？</b></summary>
+<details markdown="1">
+<summary markdown="1"><b>Q1：三个模型准确率分别是 81%、92%、94%，你能解释这三次变化的原因吗？</b></summary>
 
 分三段讲，每段的"为什么"不同。
 
@@ -570,8 +570,8 @@ T → ∞ 均匀分布 → 没有信息
 
 </details>
 
-<details>
-<summary><b>Q2：模型量化怎么做？为什么 bias 和 LayerNorm 不加 weight decay？</b></summary>
+<details markdown="1">
+<summary markdown="1"><b>Q2：模型量化怎么做？为什么 bias 和 LayerNorm 不加 weight decay？</b></summary>
 
 **一、量化**
 
@@ -614,8 +614,8 @@ no_decay = ["bias", "LayerNorm.bias", "LayerNorm.weight"]
 
 </details>
 
-<details>
-<summary><b>Q3：如果让你上线这个新闻分类服务，你选哪个模型？怎么设计整个方案？</b></summary>
+<details markdown="1">
+<summary markdown="1"><b>Q3：如果让你上线这个新闻分类服务，你选哪个模型？怎么设计整个方案？</b></summary>
 
 先反问三个问题，因为答案取决于它们：**QPS 与延迟要求**（离线批处理还是实时）、**精度要求**（93% 和 91% 业务上有没有可感知差别）、**错误成本**（是"推荐流混进一条不相关新闻"还是"违规内容漏过审核"）。
 

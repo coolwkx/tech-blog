@@ -400,8 +400,8 @@ nan 4.0 2.0
 | NumPy 2.0 后旧别名报错 | `AttributeError: module 'numpy' has no attribute 'string_'` | `np.string_` / `np.unicode_` 已移除 | 改用 `np.bytes_` / `np.str_` |
 
 ## 4. 面试问答
-<details>
-<summary><strong>Q1：ndarray 为什么比 Python list 快？</strong></summary>
+<details markdown="1">
+<summary markdown="1"><strong>Q1：ndarray 为什么比 Python list 快？</strong></summary>
 
 三个层面：
 
@@ -413,8 +413,8 @@ nan 4.0 2.0
 
 </details>
 
-<details>
-<summary><strong>Q2：NumPy 的广播机制是什么？规则是什么？</strong></summary>
+<details markdown="1">
+<summary markdown="1"><strong>Q2：NumPy 的广播机制是什么？规则是什么？</strong></summary>
 
 广播是"**在不复制数据的前提下，把形状不同的数组虚拟扩展成相同形状再做逐元素运算**"的机制。三条规则：
 
@@ -428,8 +428,8 @@ nan 4.0 2.0
 
 </details>
 
-<details>
-<summary><strong>Q3：NumPy 里"视图"和"拷贝"有什么区别？哪些操作返回视图？</strong></summary>
+<details markdown="1">
+<summary markdown="1"><strong>Q3：NumPy 里"视图"和"拷贝"有什么区别？哪些操作返回视图？</strong></summary>
 
 **视图（view）** 是一个新的数组对象，但与源数组**共享底层数据缓冲区**，只保存自己的 `shape / strides / 起始偏移`。改视图会影响源数组，反之亦然。**拷贝（copy）** 会分配新内存并复制数据，两者完全独立。
 
@@ -445,8 +445,8 @@ nan 4.0 2.0
 </details>
 
 ## 5. 自测题
-<details>
-<summary>1. `np.arange(6).reshape(2,3)` 和 `np.arange(6).reshape(2,3).flatten`，哪个与原数组共享内存？</summary>
+<details markdown="1">
+<summary markdown="1">1. `np.arange(6).reshape(2,3)` 和 `np.arange(6).reshape(2,3).flatten`，哪个与原数组共享内存？</summary>
 
 `reshape` 的结果**共享内存**（是视图），`flatten` 的结果**不共享**（是拷贝）。而 `ravel` 与 `reshape` 一样尽量返回视图。
 ```python
@@ -460,8 +460,8 @@ print(np.shares_memory(x, r.ravel)) # True
 
 </details>
 
-<details>
-<summary>2. `a = np.arange(10)`；`b = a[2:5]`；`b[0] = 100`，此时 `a` 是什么？怎样避免？</summary>
+<details markdown="1">
+<summary markdown="1">2. `a = np.arange(10)`；`b = a[2:5]`；`b[0] = 100`，此时 `a` 是什么？怎样避免？</summary>
 
 `a` 变成 `[ 0 1 100 3 4 5 6 7 8 9]`。因为 `b = a[2:5]` 是**基础切片**，返回视图，`b[0]` 就是 `a[2]`，改它就是改原数组。
 
@@ -469,8 +469,8 @@ print(np.shares_memory(x, r.ravel)) # True
 
 </details>
 
-<details>
-<summary>3. `m = np.arange(24).reshape(2, 3, 4)`，`m.sum(axis=1)` 的形状是什么？</summary>
+<details markdown="1">
+<summary markdown="1">3. `m = np.arange(24).reshape(2, 3, 4)`，`m.sum(axis=1)` 的形状是什么？</summary>
 
 结果是 `(2, 4)`。`axis=1` 表示"把第 1 轴压掉"，原形状 `(2, 3, 4)` 去掉中间那一维，剩下 `(2, 4)`。含义是：对每个"层"的 3 行做列方向求和，得到 2 层 × 4 列。
 
@@ -484,8 +484,8 @@ print(m.sum(axis=2).shape) # (2, 3)
 
 </details>
 
-<details>
-<summary>4. 学生的成绩矩阵 `score` 形状为 `(10, 5)`（10 个学生 × 5 门课），如何用一行代码得到"每个学生成绩减去该生平均分"（中心化）？</summary>
+<details markdown="1">
+<summary markdown="1">4. 学生的成绩矩阵 `score` 形状为 `(10, 5)`（10 个学生 × 5 门课），如何用一行代码得到"每个学生成绩减去该生平均分"（中心化）？</summary>
 
 ```python
 centered = score - score.mean(axis=1, keepdims=True)
@@ -500,8 +500,8 @@ centered = score - score.mean(axis=1, keepdims=True)
 
 </details>
 
-<details>
-<summary>5. 为什么 `np.nan == np.nan` 是 `False`？含 NaN 的数组怎么正确统计？</summary>
+<details markdown="1">
+<summary markdown="1">5. 为什么 `np.nan == np.nan` 是 `False`？含 NaN 的数组怎么正确统计？</summary>
 
 因为 NumPy 遵循 IEEE 754 浮点标准：NaN（Not a Number）表示"未定义/缺失"的结果，任何与 NaN 的比较（包括与自身）都返回 `False`。这是标准要求，不是 NumPy 的 bug。
 

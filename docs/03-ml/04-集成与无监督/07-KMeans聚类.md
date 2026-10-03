@@ -469,7 +469,7 @@ plt.show()
 
 ## 5. 面试问答
 
-<details><summary>Q1：KMeans 的算法流程是什么？为什么它一定会收敛？收敛到的是全局最优吗？</summary>
+<details markdown="1"><summary markdown="1">Q1：KMeans 的算法流程是什么？为什么它一定会收敛？收敛到的是全局最优吗？</summary>
 
 **参考答案**
 
@@ -490,7 +490,7 @@ $J\ge0$ 有下界，且把 $n$ 个样本分到 $K$ 个簇的划分方案数是**
 2. `n_init=10`——用 10 组不同初始中心各跑一遍，取 SSE 最小的结果。
 </details>
 
-<details><summary>Q2：如何确定 KMeans 的 K 值？SSE、轮廓系数、CH 指数各有什么侧重？</summary>
+<details markdown="1"><summary markdown="1">Q2：如何确定 KMeans 的 K 值？SSE、轮廓系数、CH 指数各有什么侧重？</summary>
 
 **参考答案**
 
@@ -509,7 +509,7 @@ $J\ge0$ 有下界，且把 $n$ 个样本分到 $K$ 个簇的划分方案数是**
 4. 最后用**业务可解释性**定夺——簇必须有可命名的业务含义。
 </details>
 
-<details><summary>Q3：KMeans 有哪些局限？什么时候不该用它？</summary>
+<details markdown="1"><summary markdown="1">Q3：KMeans 有哪些局限？什么时候不该用它？</summary>
 
 **参考答案**
 
@@ -536,7 +536,7 @@ $J\ge0$ 有下界，且把 $n$ 个样本分到 $K$ 个簇的划分方案数是**
 
 ## 6. 自测题
 
-<details><summary>1. 请对 KMeans 的实现流程排序：(A) 归类到最近的中心；(B) 计算到 K 个中心的距离 D；(C) 重复直到新旧中心一致；(D) 随机初始化 K 个中心；(E) 计算各簇均值作为新中心。</summary>
+<details markdown="1"><summary markdown="1">1. 请对 KMeans 的实现流程排序：(A) 归类到最近的中心；(B) 计算到 K 个中心的距离 D；(C) 重复直到新旧中心一致；(D) 随机初始化 K 个中心；(E) 计算各簇均值作为新中心。</summary>
 
 **D → B → A → E → C**
 
@@ -547,7 +547,7 @@ $J\ge0$ 有下界，且把 $n$ 个样本分到 $K$ 个簇的划分方案数是**
 5. **C**：重复上述过程，直至新的中心点与旧的中心点一致，迭代停止。
 </details>
 
-<details><summary>2. 已知两个簇：$C_1=\{(1,1),(2,2)\}$，$C_2=\{(8,7),(9,8),(10,8)\}$，求各自的质心与 SSE。</summary>
+<details markdown="1"><summary markdown="1">2. 已知两个簇：$C_1=\{(1,1),(2,2)\}$，$C_2=\{(8,7),(9,8),(10,8)\}$，求各自的质心与 SSE。</summary>
 
 **质心**：
 
@@ -563,14 +563,14 @@ $$C_2:\ 1+0.444+0+0.111+1+0.111 = 2.667$$
 $$\text{SSE} = 1.0+2.667 = 3.667$$
 </details>
 
-<details><summary>3. 某样本到同簇其他样本的平均距离 $a=2$，到最近其他簇的平均距离 $b=6$，求它的轮廓系数，并判断聚类质量。</summary>
+<details markdown="1"><summary markdown="1">3. 某样本到同簇其他样本的平均距离 $a=2$，到最近其他簇的平均距离 $b=6$，求它的轮廓系数，并判断聚类质量。</summary>
 
 $$s = \frac{b-a}{\max(a,b)} = \frac{6-2}{6} \approx 0.667$$
 
 $s$ 接近 1，说明该样本**簇内很紧、离其他簇很远**，聚类归属很合理。若 $s$ 接近 0 说明在边界上，接近 $-1$ 则说明可能分错了簇。全体样本的 $s$ 取平均即为 SC。
 </details>
 
-<details><summary>4. 为什么 KMeans 之前必须做标准化？如果特征里有 ID 列会怎样？</summary>
+<details markdown="1"><summary markdown="1">4. 为什么 KMeans 之前必须做标准化？如果特征里有 ID 列会怎样？</summary>
 
 **必须标准化**：KMeans 用**欧氏距离**衡量相似性，距离对量纲高度敏感。若一个特征取值 0~1000、另一个只有 0~1，则
 
@@ -585,7 +585,7 @@ $$d^2 = (x_1-y_1)^2 + (x_2-y_2)^2$$
 所以聚类前应剔除 ID 列，只保留真正有业务含义的特征。
 </details>
 
-<details><summary>5. SSE 随 K 增大而减小，为什么不能直接用 SSE 最小来选择 K？</summary>
+<details markdown="1"><summary markdown="1">5. SSE 随 K 增大而减小，为什么不能直接用 SSE 最小来选择 K？</summary>
 
 因为 **SSE 有平凡的极小点**：当 $K = n$（每个样本自成一簇）时，每个点就是它所在簇的中心，距离为 0，**SSE = 0**。按"SSE 最小"选择就永远选最大的 $K$。
 

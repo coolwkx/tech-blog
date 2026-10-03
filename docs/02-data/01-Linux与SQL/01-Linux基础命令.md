@@ -175,7 +175,7 @@ exit # 退回原用户
 
 ### Q1：`rm -rf /*` 为什么被称为"坐牢命令"？生产环境如何避免误删？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 `rm` 是 remove，`-r` 递归删除目录及其内容，`-f` 强制删除不提示，`/*` 匹配根目录下所有文件。三者叠加等于"无提示递归删除系统全部文件"，执行后系统立即不可用，且 Linux 没有回收站，无法 undo，只能重装或从快照恢复。
 
@@ -191,7 +191,7 @@ exit # 退回原用户
 
 ### Q2：Linux 里为什么一定要区分绝对路径和相对路径？脚本里为什么推荐绝对路径？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 绝对路径以 `/` 开头，从根目录出发；相对路径从"当前工作目录"出发，依赖 `pwd` 的结果。
 
@@ -205,7 +205,7 @@ exit # 退回原用户
 
 ### Q3：`>` 和 `>>`、`cat` 和 `more`、`grep` 和 `find` 分别有什么区别？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 - `>` 覆盖写入，会先清空目标文件；`>>` 追加写入，保留原内容。误用 `>` 会丢数据。
 - `cat` 一次性把文件全部输出，适合小文件；`more`（或 `less`）分页显示，适合大文件，`b`/`d`/回车翻页、`q` 退出。
@@ -218,7 +218,7 @@ exit # 退回原用户
 
 ### 1. 当前在 `/root`，要在 `/root/aa/bb/cc` 一次创建好三级目录并进入，写出命令。
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 ```sh
 mkdir -p aa/bb/cc # -p 递归创建多级目录
@@ -232,7 +232,7 @@ cd aa/bb/cc
 
 ### 2. `ls -l` 中 `-l` 是什么单词的缩写？`ls -alh` 三个选项分别是什么含义？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 `-l` 是 **long**（长格式），不是 line。三个选项：
 
@@ -246,7 +246,7 @@ cd aa/bb/cc
 
 ### 3. 从 `1.txt` 中过滤出同时包含 python 和 pandas 的行并显示行号，写出命令。
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 ```sh
 cat 1.txt | grep -n python | grep pandas
@@ -263,7 +263,7 @@ grep -n python 1.txt | grep pandas
 
 ### 4. 想实时观察日志 `python.log` 的最新输出，应该用什么命令？怎么退出？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 ```sh
 tail -f python.log # 默认看最后 10 行并持续追踪
@@ -276,7 +276,7 @@ tail -20f python.log # 先显示最后 20 行再持续追踪
 
 ### 5. 说出 vi 打开文件后"输入文字"和"保存退出"的完整按键序列。
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 ```mermaid
 stateDiagram-v2

@@ -409,8 +409,8 @@ class EncoderLayer(nn.Module):
 
 **Q1. attention 为什么必须除以 $\sqrt{d_k}$？不除会怎样？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 softmax 的输出分布对输入数量级极其敏感：输入一大，它几乎把全部概率给最大值分量，输出退化成近似 one-hot，此时雅可比矩阵接近零矩阵，反向传播梯度消失，参数更新停滞。
 
@@ -426,8 +426,8 @@ $$\mathbb{E}[q\cdot k]=0,\quad \operatorname{Var}[q\cdot k]=d_k$$
 
 **Q2. Multi-Head Attention 相比单头注意力，本质收益是什么？头数越多越好吗？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 本质收益是**表示子空间的多样性**。单个 head 只有一种相似度度量，只能学到一种对齐模式；$h$ 个 head 把 $d_{model}$ 投影到 $h$ 个 $d_k$ 维子空间并行计算，让模型同时从多个角度观察序列。经验研究显示不同 head 确实会分工（关注相邻词、句法依赖、指代关系等），最后 concat 并过 $W^O$ 融合。
 
@@ -439,8 +439,8 @@ $$\mathbb{E}[q\cdot k]=0,\quad \operatorname{Var}[q\cdot k]=d_k$$
 
 **Q3. Decoder 在训练和预测阶段的输入有什么区别？为什么训练能并行而预测不能？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **训练阶段**把完整目标序列右移一位（teacher forcing）一次性送入最底层 Decoder Block。所谓「右移一位」是指每个 time step 的输入是「上一个 time step 的输入 + 真实标签序列向后移一位」，因此输入序列随 time step 越来越长。真实实现里不真的逐步拼接，而是**一次送入完整序列 + look-ahead mask 模拟「只能看到当前及之前位置」**，于是一次矩阵运算等价于所有 time step，实现并行。
 
@@ -454,8 +454,8 @@ $$\mathbb{E}[q\cdot k]=0,\quad \operatorname{Var}[q\cdot k]=d_k$$
 
 **1. 写出 Scaled Dot-Product Attention 公式；当 $Q,K,V$ 形状为 $[2,8,4,64]$ 时，输出与注意力权重各是什么形状？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 $$\text{Attention}(Q,K,V)=\text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V$$
 
@@ -472,8 +472,8 @@ $$\text{Attention}(Q,K,V)=\text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right
 
 **2. `subsequent_mask(4)` 输出什么矩阵？它和 padding mask 如何组合？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 ```
 [[1, 0, 0, 0],
@@ -496,8 +496,8 @@ tgt_mask = pad_mask & subsequent_mask(L) # 广播后 [B, L, L]
 
 **3. 位置编码为什么用 sin/cos，而不是直接用位置序号 0,1,2,...？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 直接用序号有三个问题：
 
@@ -511,8 +511,8 @@ tgt_mask = pad_mask & subsequent_mask(L) # 广播后 [B, L, L]
 
 **4. Transformer 相比 RNN 的两大优势是什么？为什么说 self-attention 层本身并非「完全并行」？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 两大优势：① **并行计算**——RNN 必须按时间步串行递归，Transformer 的 Encoder 端所有位置同时计算；② **特征提取能力强**——self-attention 中任意两位置之间路径长度为 $O(1)$，可直接建模长距离依赖，不像 RNN 需逐步传递而产生损耗。
 

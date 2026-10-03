@@ -292,8 +292,8 @@ softmax 输出会更「尖锐」甚至饱和——这就是缩放的作用。
 
 **Q1：请解释 self-attention 的计算过程，以及为什么需要 multi-head 和 $\sqrt{d_k}$ 缩放。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 计算过程：输入 $X\in\mathbb{R}^{n\times d_{model}}$ 经三个线性投影得到
 $Q=XW_Q,\ K=XW_K,\ V=XW_V$；用 $QK^{\top}$ 计算每个位置与其他所有位置的相似度，除以 $\sqrt{d_k}$，
@@ -309,8 +309,8 @@ multi-head 的作用：把表示空间切成 $h$ 个子空间并行做注意力�
 
 **Q2：GPT 与 BERT 的架构、训练目标、适用任务有什么不同？为什么现在的大模型几乎都是 decoder-only？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 | 维度 | GPT | BERT |
 |---|---|---|
@@ -328,8 +328,8 @@ multi-head 的作用：把表示空间切成 $h$ 个子空间并行做注意力�
 
 **Q3：什么是 KV Cache？它为什么能加速，又为什么催生了 MQA/GQA？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 KV Cache 缓存历史 token 在每层计算出的 key/value 张量。自回归生成第 $n+1$ 个 token 时，
 前 $n$ 个 token 的 K/V 与上一次完全相同，因此无需重算，只需计算新 token 的 Q 并与缓存的 K/V 做注意力。
@@ -345,8 +345,8 @@ MQA 让所有 query 共享一套 K/V，最省显存但效果略降；GQA 把 que
 
 **1. 原始 Transformer 的 Decoder Block 有哪三个子层？GPT 做了哪一处裁剪？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 三个子层：① Masked Multi-Head Self-Attention；② encoder-decoder cross-attention；③ Feed Forward。
 GPT 取消了第二个 cross-attention 子层，只保留 Masked Multi-Head Attention 与 Feed Forward，
@@ -356,8 +356,8 @@ GPT 取消了第二个 cross-attention 子层，只保留 Masked Multi-Head Atte
 
 **2. BERT 的 MLM 任务为什么要用 80%/10%/10% 的替换策略？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 若把 15% 被选中的 token 全部替换为 `[MASK]`，预训练输入会大量出现 `[MASK]`，
 而下游任务从未见过该符号，造成预训练与微调之间的**输入分布不一致（输入噪声）**。
@@ -368,8 +368,8 @@ GPT 取消了第二个 cross-attention 子层，只保留 Masked Multi-Head Atte
 
 **3. 给定 $n=5,\ d_{model}=64,\ h=8$，写出多头注意力中 $Q$、单个头的 $Q_i$、注意力分数矩阵的形状。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 $d_k = 64/8 = 8$。$Q$ 形状为 $(5, 64)$；切分并转置后单个头 $Q_i$ 为 $(5, 8)$；
 注意力分数 $Q_iK_i^{\top}/\sqrt{d_k}$ 形状为 $(5, 5)$，全部头堆叠后为 $(8, 5, 5)$。
@@ -378,8 +378,8 @@ $d_k = 64/8 = 8$。$Q$ 形状为 $(5, 64)$；切分并转置后单个头 $Q_i$ �
 
 **4. RoPE 相比可学习绝对位置编码的核心优势是什么？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 RoPE 通过把 Q/K 向量按两两一组做旋转，使两个位置向量的内积只依赖它们的**相对距离**，
 因此天然编码相对位置信息，并具有更好的**外推性**（训练时较短、推理时较长的场景更友好）。

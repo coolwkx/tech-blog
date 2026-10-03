@@ -552,22 +552,22 @@ def ask_database(query):
 
 ## 5. 面试问答
 
-<details>
-<summary><strong>Q1：Function Calling 中，LLM 是否会真正执行 function？</strong></summary>
+<details markdown="1">
+<summary markdown="1"><strong>Q1：Function Calling 中，LLM 是否会真正执行 function？</strong></summary>
 
 不会。模型只负责在需要外部信息时，输出一段结构化的 JSON，包含要调用的函数名与参数值；真正的执行由开发者的后端系统完成，执行结果再作为 `role: "tool"` 的消息回填给模型，模型据此生成最终文本。这样设计的原因有三：安全（模型不能任意触发副作用）、可控（函数执行前可以做参数校验与权限检查）、可扩展（同一份 schema 可以对接不同后端）。面试中如果答成「模型会调用函数」通常会被认为没有真正跑通链路。
 
 </details>
 
-<details>
-<summary><strong>Q2：请描述一次完整的 Function Calling 往返，并说明 messages 列表的变化。</strong></summary>
+<details markdown="1">
+<summary markdown="1"><strong>Q2：请描述一次完整的 Function Calling 往返，并说明 messages 列表的变化。</strong></summary>
 
 第一轮：messages = [system, user]，携带 `tools` 与 `tool_choice="auto"` 调用模型，模型返回 assistant 消息，其中 `tool_calls` 给出函数名与 JSON 格式 arguments，`content` 通常为空。接着把这条 assistant 消息整体（含 tool_calls）append 回 messages，再把每个工具的执行结果以 `{"role": "tool", "tool_call_id": ..., "content": ...}` 追加。第二轮：再次调用模型，此时模型看到完整证据链，输出自然语言答复且 `tool_calls` 为空。若一次任务需要串联多个工具（如先查航班号再查票价），就重复这个「assistant → tool → 再调用」的过程直到模型给出 Final Answer。
 
 </details>
 
-<details>
-<summary><strong>Q3：tool schema 里哪些字段最容易影响准确率？为什么？</strong></summary>
+<details markdown="1">
+<summary markdown="1"><strong>Q3：tool schema 里哪些字段最容易影响准确率？为什么？</strong></summary>
 
 最关键的是 `function.description`、`parameters.properties.<name>.description` 和 `required`。前两者是模型唯一可见的工具文档——工具选择依赖 description 的语义匹配，参数填值依赖属性描述；`required` 则决定模型判断「信息是否足够」，缺少 required 会让模型倾向于编造缺失参数而不是向用户追问。相比之下，函数名本身的字面语义权重较低。工程上常用的优化手段是：描述里写清适用条件与不适用条件、给出参数示例值（如「城市或区，例如北京、海淀」）、在 system prompt 里补充「不要猜测参数」的兜底规则。
 
@@ -577,8 +577,8 @@ def ask_database(query):
 
 ## 6. 自测题
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **1. Function Calling 解决了大模型哪三类问题？各对应什么能力缺失？**
 
@@ -586,8 +586,8 @@ def ask_database(query):
 
 </details>
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **2. 写出一份最小的函数定义，函数名为 `search_orders`，需要一个必填字符串参数 `order_id`。**
 
@@ -610,8 +610,8 @@ def ask_database(query):
 
 </details>
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **3. 为什么「第一次调用后要 append assistant_message.model_dump()」这一步不能省？**
 
@@ -619,8 +619,8 @@ def ask_database(query):
 
 </details>
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **4. 航班示例中，第二次调用 `get_ticket_price` 的参数 `number=1123` 是谁决定的？**
 
@@ -628,8 +628,8 @@ def ask_database(query):
 
 </details>
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **5. 示例里用 `eval(response.text)` 解析 HTTP 响应，风险是什么？**
 

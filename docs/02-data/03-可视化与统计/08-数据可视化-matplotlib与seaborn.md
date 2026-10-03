@@ -260,7 +260,7 @@ plt.show
 
 ### Q1：为什么 `plt.savefig` 必须写在 `plt.show` 前面？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 因为 `plt.show` 在渲染并展示图像后会**释放（销毁）Figure 对象占用的资源**，当前画布随之变空。若在 `show` 之后再 `savefig`，保存的就是这张已清空的画布，得到的是一张空白图片。
 
@@ -277,7 +277,7 @@ plt.show # 再显示
 
 ### Q2：柱状图和直方图有什么区别？分别用在什么场景？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 | 维度 | 柱状图 `plt.bar` | 直方图 `plt.hist` |
 | --- | --- | --- |
@@ -294,7 +294,7 @@ plt.show # 再显示
 
 ### Q3：`plt.subplots` 的面向对象写法和 `plt.xxx` 面向过程写法有什么区别？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 - **面向过程（`plt.xxx`）**：`matplotlib.pyplot` 维护"当前活动 Figure / Axes"的概念，`plt.plot`、`plt.title` 都作用在它上面，写法短，画单张图方便。
 - **面向对象（`fig, axes = plt.subplots(...)` + `axes[i].set_xxx`）**：显式拿到画布 `fig` 与坐标系数组 `axes`，每一步都明确指定作用对象。
@@ -314,7 +314,7 @@ plt.show # 再显示
 
 ### 1. 写出绘制折线图的完整骨架：尺寸 20×8、清晰度 100、中文正常、有轴标签与标题、有网格与图例，并保存为 `chart.png`。
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 ```python
 import matplotlib.pyplot as plt
@@ -340,7 +340,7 @@ plt.show # ⑤ 显示
 
 ### 2. 运行后中文标题显示成方框、负号也异常，原因是什么？给出修复代码。
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 **原因**：Matplotlib 默认字体（`DejaVu Sans`）**不包含中文字形**，中文被渲染成方框（"豆腐块"）；同时该字体的负号字形与 Matplotlib 期望的 Unicode 减号（U+2212）不一致，负号也显示为方框。
 
@@ -360,7 +360,7 @@ plt.show
 
 ### 3. 按分析目的选图形：① 一周日活变化；② 各城市销售额排名；③ 用户年龄分布；④ 广告投入与销量的关系；⑤ 各渠道收入占比。
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 | 目的 | 选择 | API | 理由 |
 | --- | --- | --- | --- |

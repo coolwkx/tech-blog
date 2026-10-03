@@ -301,8 +301,8 @@ print(vecs.shape) # torch.Size([3, 4]) —— 3 个词，每个 4 维
 
 **Q1. 中文分词为什么比英文分词难？jieba 的三种模式应该怎么选？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 英文有天然空格作为词边界，中文是连续的字序列，词的边界本身没有显式标记，因此分词本质是一个**歧义消解 + 未登录词识别**的问题。主要难点有三类：
 
@@ -322,8 +322,8 @@ jieba 三种模式的选择：
 
 **Q2. 为什么预处理阶段一定要先做文本数据分析？不做会怎样？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 文本数据分析的作用是「理解语料 + 发现问题 + 指导超参数」，对应三张图三个决策：
 
@@ -339,8 +339,8 @@ jieba 三种模式的选择：
 
 **Q3. one-hot 的两个致命缺点是什么？它们分别被什么方法解决？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 one-hot 的两个缺点是：
 
@@ -359,8 +359,8 @@ one-hot 的两个缺点是：
 
 **1. 判断并说明原因：中文分词属于「token 级分类任务」，命名实体识别属于「句子级分类任务」。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 前半句对，后半句不完整。
 
@@ -373,8 +373,8 @@ one-hot 的两个缺点是：
 
 **2. 语料共 10000 条，句长 mean = 25、std = 10。请给出一个合理的 `max_len`，并说明理由。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 取 `max_len = mean + 2*std = 45`（工程上常直接取 48 或 50 的对齐值），或直接看 95 分位数。
 
@@ -386,8 +386,8 @@ one-hot 的两个缺点是：
 
 **3. 「我 / 爱 / 」在 bi-gram 下会新增哪些特征？为什么词袋模型加了 n-gram 就变强了？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 新增 bi-gram 特征：「我爱」「爱」。tri-gram 下还会新增「我爱」。
 
@@ -399,8 +399,8 @@ one-hot 的两个缺点是：
 
 **4. 回译数据增强为什么能提升模型效果？使用时要注意什么？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 原理：让文本经过「中文 → 韩文 → 英文 → 中文」的往返翻译，中间语言的表达能力构成了一个「语义瓶颈」。原始表述中的具体措辞被剥掉，只有核心语义能穿过这个瓶颈，翻译回来就得到了**语义相同、表述不同**的新样本。这相当于给模型注入了「同义表达多样性」，缓解过拟合，提升泛化。
 
@@ -416,8 +416,8 @@ one-hot 的两个缺点是：
 
 **5. 为什么 `padding="pre"` 和 `padding="post"` 会对 RNN 的效果造成不同影响？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 因为 RNN 是**按时间步顺序递归**的，最后一个时间步的隐状态通常被当作整句表示送往分类层。
 

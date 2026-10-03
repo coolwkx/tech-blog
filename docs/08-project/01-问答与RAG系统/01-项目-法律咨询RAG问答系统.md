@@ -394,8 +394,8 @@ pd.DataFrame([result]).to_csv("ragas_evaluation_results.csv", index=False)
 
 ## 7. 面试问答
 
-<details>
-<summary><b>Q1：RAG 里为什么要做分层切分（父块/子块），直接固定 500 字切不行吗？</b></summary>
+<details markdown="1">
+<summary markdown="1"><b>Q1：RAG 里为什么要做分层切分（父块/子块），直接固定 500 字切不行吗？</b></summary>
 
 固定切分要在两个诉求之间做取舍：块小 → 向量语义集中、检索准，但丢上下文，LLM 容易断章取义；块大 → 上下文完整，但向量被稀释、检索不准，还挤占 token 预算。
 
@@ -405,8 +405,8 @@ pd.DataFrame([result]).to_csv("ragas_evaluation_results.csv", index=False)
 
 </details>
 
-<details>
-<summary><b>Q2：你的混合检索权重是怎么定的？WeightedRanker(0.7, 1.0) 有什么依据？</b></summary>
+<details markdown="1">
+<summary markdown="1"><b>Q2：你的混合检索权重是怎么定的？WeightedRanker(0.7, 1.0) 有什么依据？</b></summary>
 
 WeightedRanker 的参数是"先稀疏后稠密"的权重，这里表示稀疏 0.7、稠密 1.0——**稠密是主力，稀疏是补丁**。
 
@@ -418,8 +418,8 @@ WeightedRanker 的参数是"先稀疏后稠密"的权重，这里表示稀疏 0.
 
 </details>
 
-<details>
-<summary><b>Q3：如果检索到的上下文不足以回答问题，你的系统怎么处理？</b></summary>
+<details markdown="1">
+<summary markdown="1"><b>Q3：如果检索到的上下文不足以回答问题，你的系统怎么处理？</b></summary>
 
 三层兜底：
 

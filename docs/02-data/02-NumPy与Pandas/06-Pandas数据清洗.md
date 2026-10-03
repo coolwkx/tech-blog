@@ -258,7 +258,7 @@ for m in ['average', 'min', 'max', 'dense']:
 
 ### Q1：`loc` 和 `iloc` 有什么区别？为什么 `df['a']['b']` 会报警告？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 | 维度 | `df.loc` | `df.iloc` |
 | --- | --- | --- |
@@ -281,7 +281,7 @@ df.loc[df['a'] > 10, 'b'] = 1 # 条件赋值也用 loc
 
 ### Q2：处理缺失值有哪几种思路？遇到 `'?'` 或 `0` 这种"伪缺失"怎么办？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 **第一步永远是识别标记方式**：若以 `np.nan` 标记，可直接处理；若以 `'?'`、`'NULL'`、`-1`、`0` 等业务自定义标记出现，**必须先 `df.replace('?', np.nan)` 转成标准 NaN**，否则 `dropna` 和 `fillna` 都识别不到。
 
@@ -302,7 +302,7 @@ df.loc[df['a'] > 10, 'b'] = 1 # 条件赋值也用 loc
 
 ### Q3：`pd.concat` 和 `pd.merge` 有什么区别？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 - **`pd.concat` 是"拼接"（union）**：把多个结构相似的表沿某个轴接起来，**不需要关联键**。`axis=0`（默认）纵向堆叠，行数相加，列名取并集，缺失处填 NaN；`axis=1` 横向拼接，按索引对齐；`ignore_index=True` 丢弃原索引生成新的自增索引。
 - **`pd.merge` 是"关联"（join）**：按**共同的键**把两张表的列横向组合，本质是 SQL JOIN。`how` 决定结果集：`inner` 交集（默认）、`left` 左表全集、`right` 右表全集、`outer` 并集；`on` 指定关联键，两侧键名不同时用 `left_on`/`right_on`。
@@ -317,7 +317,7 @@ df.loc[df['a'] > 10, 'b'] = 1 # 条件赋值也用 loc
 
 ### 1. 创建行索引为 `A`~`D`、列为 `name`/`score` 的 DataFrame，并新增 `level` 列：score ≥ 90 为 `'优'`，≥ 60 为 `'良'`，否则 `'差'`。
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 ```python
 import pandas as pd, numpy as np
@@ -337,7 +337,7 @@ print(df)
 
 ### 2. `df.to_csv('a.csv')` 之后读回来多了一列 `Unnamed: 0`，为什么？怎么解决？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 因为 `to_csv` 的 `index` 参数默认为 `True`，会把行索引也写成一个真实数据列，但表头行没有这一列的名字（索引本身无名），读取时 Pandas 自动命名为 `Unnamed: 0`。
 
@@ -352,7 +352,7 @@ pd.read_csv('a.csv', index_col=0) # 方式二：读时把第一列当索引
 
 ### 3. 用 `merge` 合并订单表和商品表后，行数从 1000 变成 3000，可能是什么原因？如何排查和解决？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 **最可能的原因：关联键在某一侧不唯一，产生多对多笛卡尔积。** 若商品表某商品 ID 重复 3 次，对应每一行订单都会与 3 行商品匹配，行数被放大 3 倍。
 

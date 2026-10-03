@@ -464,22 +464,22 @@ def rule_fallback(price, config):
 
 ## 5. 面试问答
 
-<details>
-<summary><strong>Q1：这个项目算 AI Agent 吗？请给出判断依据。</strong></summary>
+<details markdown="1">
+<summary markdown="1"><strong>Q1：这个项目算 AI Agent 吗？请给出判断依据。</strong></summary>
 
 按对 Agent 的定义（能够感知环境、进行决策和执行动作的智能实体）以及五要素（Prompt / LLM / Memory / Planning / Action）来看，它只具备三个半要素：Memory（`commodity_state.json` 与 `commodity_history.json` 提供状态与历史）、Action（推送微信、写文件）、以及由人写死的 Planning（阈值比较），缺少 Prompt 与 LLM。因此它是一个**规则驱动的反应型 Agent**（与温度调节器同类），`ai_analysis.py` 里的「AI」只是规则计算加文案，没有任何模型调用。不过它的价值在于骨架完整：感知—决策—行动—记忆四层清晰分离，只要把决策层从 `decide()` 换成一次 LLM 调用，就能平滑升级为真正的 LLM Agent，其余三层可以原样复用。
 
 </details>
 
-<details>
-<summary><strong>Q2：为什么需要同时保存 `last_price`、`last_status`、`last_notify_time` 三个字段？各去掉一个会怎样？</strong></summary>
+<details markdown="1">
+<summary markdown="1"><strong>Q2：为什么需要同时保存 `last_price`、`last_status`、`last_notify_time` 三个字段？各去掉一个会怎样？</strong></summary>
 
 三者分别支撑三类判断。`last_price` 用于计算相比上次的涨跌幅，去掉后通知里就没有变化率信息，用户无法判断是急涨还是缓涨。`last_status` 用于判定「状态是否刚变化」，去掉后无法区分「刚刚跌破买入线」和「已经在买入区待了一整天」，会退化成每轮都推送或永远不推送。`last_notify_time` 用于对同一状态做周期提醒限流，去掉后要么在状态持续期间彻底沉默（漏报），要么按检查频率疯狂打扰（`check_interval_seconds=5` 意味着每 5 秒一条）。本质上，状态文件必须承载「一次决策所需的全部上下文」，才能让提醒行为与进程生命周期解耦、重启后保持一致。
 
 </details>
 
-<details>
-<summary><strong>Q3：如果让你把这个项目重构成生产可用版本，你会做哪五件事？</strong></summary>
+<details markdown="1">
+<summary markdown="1"><strong>Q3：如果让你把这个项目重构成生产可用版本，你会做哪五件事？</strong></summary>
 
 ①**统一配置与常量**：阈值、间隔、文件路径、截断上限全部收敛到一处，消除 700/800 与 800/900、相对/绝对路径、500/20000 三类不一致。②**修复外部调用的可靠性**：`session.get(url, timeout=15)` 显式超时，加指数退避重试与失败计数告警，把请求频率降到与数据源更新频率匹配。③**日志与可观测**：用 `logging` 写带时间戳的文件日志并轮转，给关键节点加耗时统计，连续失败时推送运维告警。④**安全与配置管理**：密钥迁移到环境变量，`config.json` 进 `.gitignore`，轮换已泄露的 Key。⑤**消除重复实现并补齐测试**：把重复的 `analyze_gold` 抽成公共模块，为「阈值判定 + 状态机 + 通知限流」这三段纯函数逻辑写单元测试（它们是整个系统唯一有决策风险的地方）。如果还要更进一步，则把决策层替换为可回退的 LLM 调用。
 
@@ -489,8 +489,8 @@ def rule_fallback(price, config):
 
 ## 6. 自测题
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **1. 项目用哪几个文件承载「记忆」？各自的读取者是谁？**
 
@@ -498,8 +498,8 @@ def rule_fallback(price, config):
 
 </details>
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **2. `session.timeout = 15` 为什么不能起到超时作用？**
 
@@ -507,8 +507,8 @@ def rule_fallback(price, config):
 
 </details>
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **3. 主循环里「条件 A / 条件 B」分别防的是什么问题？**
 
@@ -516,8 +516,8 @@ def rule_fallback(price, config):
 
 </details>
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **4. 为什么「当天没有数据时退回最近 20 条」是一个好设计？**
 
@@ -525,8 +525,8 @@ def rule_fallback(price, config):
 
 </details>
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **5. 把决策层换成 LLM 后，必须同时保留哪些东西？为什么？**
 

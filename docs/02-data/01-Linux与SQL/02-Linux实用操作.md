@@ -278,7 +278,7 @@ chmod 777 1.sh # 方式3/4：需要执行权限
 
 ### Q1：`chmod 755` 和 `chmod 777` 差在哪？为什么生产环境禁用 777？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 数字权限是 `r=4, w=2, x=1` 的求和，三位分别对应 **属主 / 属组 / 其他人**。
 
@@ -297,7 +297,7 @@ chmod 777 1.sh # 方式3/4：需要执行权限
 
 ### Q2：软链接和硬链接的区别是什么？分别适合什么场景？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 | 维度 | 软链接 `ln -s` | 硬链接 `ln` |
 | --- | --- | --- |
@@ -316,7 +316,7 @@ chmod 777 1.sh # 方式3/4：需要执行权限
 
 ### Q3：服务起不来，你按什么顺序排查？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 按"服务本体 → 端口 → 进程 → 日志 → 配置"的顺序，从内到外收窄：
 
@@ -334,7 +334,7 @@ chmod 777 1.sh # 方式3/4：需要执行权限
 
 ### 1. 创建用户 zhangsan，让其主组为 dev，并把 `/opt/demo` 目录及其内容的所有者改为 zhangsan、属组改为 dev。
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 ```sh
 groupadd dev
@@ -351,7 +351,7 @@ ls -l /opt/demo
 
 ### 2. `1.sh` 内容为 `echo hello`，为什么 `sh 1.sh` 能跑，而 `./1.sh` 报 `Permission denied`？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 `./1.sh` 是把该文件**当作可执行程序**直接执行，因此需要文件具备**执行权限 `x`**。新建的文件默认权限通常是 `644`（无 `x`），所以报 `Permission denied`。
 
@@ -370,7 +370,7 @@ chmod +x 1.sh
 
 ### 3. 写出：把 `/root` 下所有 `.txt` 打包为 `logs.tar.gz`，解压到 `/opt/bak` 目录。
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 ```sh
 cd /root
@@ -385,7 +385,7 @@ tar -zxvf logs.tar.gz -C /opt/bak
 
 ### 4. 想查看 3306 端口被哪个进程占用，并强制结束它，写出命令。
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 ```sh
 netstat -anp | grep 3306 # 观察最后一列，形如 12345/mysqld

@@ -93,7 +93,6 @@ extra_javascript:
   - javascripts/mermaid.js
 
 nav:
-  - 探针: _probe-details.md
   - 🏠 首页: README.md
   - 🧭 学习路线: roadmap.md
   - "🐍 Python":

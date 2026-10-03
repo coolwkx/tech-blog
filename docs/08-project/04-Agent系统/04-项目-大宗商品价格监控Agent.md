@@ -479,8 +479,8 @@ if __name__ == "__main__":
 
 ## 7. 面试问答
 
-<details>
-<summary><b>Q1：你的多数据源容灾是怎么设计的？为什么不用数据库或消息队列？</b></summary>
+<details markdown="1">
+<summary markdown="1"><b>Q1：你的多数据源容灾是怎么设计的？为什么不用数据库或消息队列？</b></summary>
 
 **容灾设计**是三级降级链：
 
@@ -513,8 +513,8 @@ if __name__ == "__main__":
 
 </details>
 
-<details>
-<summary><b>Q2：怎么保证用户不被重复消息轰炸？</b></summary>
+<details markdown="1">
+<summary markdown="1"><b>Q2：怎么保证用户不被重复消息轰炸？</b></summary>
 
 用一个**状态机 + 双条件触发 + 持久化状态**的组合。
 
@@ -550,8 +550,8 @@ else:
 
 </details>
 
-<details>
-<summary><b>Q3：这个项目叫"大宗商品价格监控 Agent"，它算 Agent 吗？如果让你升级成真正的 AI Agent 会怎么做？</b></summary>
+<details markdown="1">
+<summary markdown="1"><b>Q3：这个项目叫"大宗商品价格监控 Agent"，它算 Agent 吗？如果让你升级成真正的 AI Agent 会怎么做？</b></summary>
 
 **先说结论：按"感知-决策-记忆-行动"的最小闭环定义，它算一个（非常朴素的）Agent；但它不含任何 LLM，所以不是当下语境里通常说的"智能体"。**
 

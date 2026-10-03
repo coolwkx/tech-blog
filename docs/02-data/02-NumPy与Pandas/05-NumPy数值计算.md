@@ -203,7 +203,7 @@ s.sort(); print(s) # 原地排序 -> [1 2 5 34]
 
 ### Q1：`ndarray` 为什么比 Python 原生 `list` 快这么多？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 以 1 亿个数求和为例，`list` 约 1.13 s，`ndarray` 约 134 ms，快了近 10 倍。原因有三层：
 
@@ -217,7 +217,7 @@ s.sort(); print(s) # 原地排序 -> [1 2 5 34]
 
 ### Q2：广播机制（broadcasting）的规则是什么？举例说明何时能广播、何时不行。
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 广播是 NumPy 在形状不同的数组之间做运算时，**虚拟地**把较小数组扩展到相同形状的机制（不会真正复制内存）。三条规则：
 
@@ -248,7 +248,7 @@ np.array([[1,2,3,2,1,4],[5,6,1,2,3,1]]) + np.array([[1,2,3,4],[3,4,5,6]])
 
 ### Q3：`np.resize`、`ndarray.reshape`、`ndarray.resize` 有什么区别？`axis=0` 和 `axis=1` 怎么记？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 | 函数 | 类型 | 是否改原数组 | 元素个数不匹配时 |
 | --- | --- | --- | --- |
@@ -276,7 +276,7 @@ np.max(temp) # 标量，全班最高分
 
 ### 1. 创建 3 行 4 列、元素为 0~1 均匀分布随机数的数组，并输出 `shape`/`ndim`/`size`/`itemsize`/`dtype`。
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 ```python
 import numpy as np
@@ -291,7 +291,7 @@ print(a.shape, a.ndim, a.size, a.itemsize, a.dtype)
 
 ### 2. `arr = np.arange(12).reshape(3, 4)`，求 `np.sum(arr, axis=0)` 与 `axis=1` 的结果并解释含义。
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 ```python
 arr = np.arange(12).reshape(3, 4)
@@ -309,7 +309,7 @@ np.sum(arr) # 66 —— 全部元素求和
 
 ### 3. `a = np.array([[0],[1],[2],[3]])`（4×1）、`b = np.array([1,2,3])`（3），`a + b` 能否执行？结果形状是什么？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 可以执行，结果形状是 **(4, 3)**。按广播规则推演：① `b` 维数少，**前面补 1** 变成 `(1, 3)`；② 从最后一维往前比：`a` 是 1、`b` 是 3 → 其中一个为 1，**兼容**；倒数第二维 `a` 是 4、`b` 是 1 → **兼容**；③ 逐维取较大值得到 `(4, 3)`。
 
@@ -326,7 +326,7 @@ np.sum(arr) # 66 —— 全部元素求和
 
 ### 4. `s = np.array([55, 78, 92, 45, 88])`，把大于 60 的元素替换为 100、其余为 0，写出两种实现。
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 ```python
 import numpy as np
@@ -355,7 +355,7 @@ print(x * y)
 print(x.dot(y))
 ```
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 ```python
 print(x * y)

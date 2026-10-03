@@ -395,8 +395,8 @@ df.loc[df["a"] > 1, "a"] = 88 # 正确：单步 loc 赋值，直接改 df
 | `SettingWithCopyWarning` 找不到 | 代码里 `import` 报错 | pandas 3.0 已移除该类 | 不再依赖它，改用 CoW 语义 + `loc` 赋值 |
 
 ## 4. 面试问答
-<details>
-<summary><strong>Q1：`loc`、`iloc`、`[]` 有什么区别？什么时候用哪个？</strong></summary>
+<details markdown="1">
+<summary markdown="1"><strong>Q1：`loc`、`iloc`、`[]` 有什么区别？什么时候用哪个？</strong></summary>
 
 | 写法 | 索引依据 | 切片是否含右端点 | 典型用途 |
 | --- | --- | --- | --- |
@@ -410,8 +410,8 @@ df.loc[df["a"] > 1, "a"] = 88 # 正确：单步 loc 赋值，直接改 df
 
 </details>
 
-<details>
-<summary><strong>Q2：`concat` 和 `merge` 有什么区别？`how` 的四种取值各是什么？</strong></summary>
+<details markdown="1">
+<summary markdown="1"><strong>Q2：`concat` 和 `merge` 有什么区别？`how` 的四种取值各是什么？</strong></summary>
 
 `concat` 是**拼接**，`merge` 是**连接**：
 
@@ -431,8 +431,8 @@ df.loc[df["a"] > 1, "a"] = 88 # 正确：单步 loc 赋值，直接改 df
 
 </details>
 
-<details>
-<summary><strong>Q3：`groupby` 的 `agg`、`transform`、`apply` 有什么区别？</strong></summary>
+<details markdown="1">
+<summary markdown="1"><strong>Q3：`groupby` 的 `agg`、`transform`、`apply` 有什么区别？</strong></summary>
 
 三者都是 split-apply-combine 的"apply"环节，区别在**输出形状**和**灵活性**：
 
@@ -451,8 +451,8 @@ gb.apply(lambda sub: sub.nlargest(2, "revenue")) # 每组取 Top2
 </details>
 
 ## 5. 自测题
-<details>
-<summary>1. `df.loc[0:3]` 和 `df.iloc[0:3]` 返回的行数一样吗？</summary>
+<details markdown="1">
+<summary markdown="1">1. `df.loc[0:3]` 和 `df.iloc[0:3]` 返回的行数一样吗？</summary>
 
 **不一定，通常不一样。**
 
@@ -463,8 +463,8 @@ gb.apply(lambda sub: sub.nlargest(2, "revenue")) # 每组取 Top2
 
 </details>
 
-<details>
-<summary>2. 一张表某列有 30% 缺失，用该列均值填充合适吗？有哪些更好的选择？</summary>
+<details markdown="1">
+<summary markdown="1">2. 一张表某列有 30% 缺失，用该列均值填充合适吗？有哪些更好的选择？</summary>
 
 **直接用均值填充通常不合适**，原因：① 30% 的缺失比例较高，均值填充会把 30% 的样本强行拉到中心，人为压缩方差、削弱特征与目标的相关性；② 如果缺失非随机（例如"高收入者不愿填收入"），均值填充会系统性低估；③ 均值对极值敏感，长尾分布下均值本身就不代表"典型值"。
 
@@ -484,8 +484,8 @@ gb.apply(lambda sub: sub.nlargest(2, "revenue")) # 每组取 Top2
 
 </details>
 
-<details>
-<summary>3. 什么是 Copy-on-Write？它对链式赋值有什么影响？</summary>
+<details markdown="1">
+<summary markdown="1">3. 什么是 Copy-on-Write？它对链式赋值有什么影响？</summary>
 
 Copy-on-Write（CoW）是 pandas 2.0 引入、**3.0 起始终开启**的内存语义：任何从现有 DataFrame 派生出的对象（切片 `df[1:3]`、筛选 `df[df.a>1]`、列选择 `df["a"]`）都只是**惰性视图**，不复制数据；只有当其中一方被修改时，pandas 才真正复制一份，从而保证**任何一方的修改都不会影响另一方**。
 
@@ -499,8 +499,8 @@ df.loc[df["a"] > 1, "a"] = 99 # 明确"改 df 的哪些行哪些列"
 
 </details>
 
-<details>
-<summary>4. `read_csv` 读进来发现多了一列 `Unnamed: 0`，是什么原因？怎么修？</summary>
+<details markdown="1">
+<summary markdown="1">4. `read_csv` 读进来发现多了一列 `Unnamed: 0`，是什么原因？怎么修？</summary>
 
 原因是**写出时把行索引也写进了文件**：`to_csv` 默认 `index=True`，行索引会作为无名（或空白表头）的第一列写入。读回来时 pandas 找不到表头名，就命名为 `Unnamed: 0`。
 
@@ -510,8 +510,8 @@ df.loc[df["a"] > 1, "a"] = 99 # 明确"改 df 的哪些行哪些列"
 
 </details>
 
-<details>
-<summary>5. 统计"每个城市每个渠道的销售额平均值和成本总和"，写出 `groupby` 与 `pivot_table` 两种写法。</summary>
+<details markdown="1">
+<summary markdown="1">5. 统计"每个城市每个渠道的销售额平均值和成本总和"，写出 `groupby` 与 `pivot_table` 两种写法。</summary>
 
 ```python
 # 写法一：groupby + agg

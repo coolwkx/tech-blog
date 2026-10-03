@@ -309,8 +309,8 @@ print("all checks passed")
 
 **Q1：为什么 LSTM 能缓解梯度消失？请给出关键公式。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 RNN 的误差项递推为 $\delta_{t,k}=\prod_{\tau=k}^{t-1}\mathrm{diag}(f'(z_\tau))W^{\top}\delta_{t,t}$，连乘中含**矩阵** $W^{\top}$ 和饱和激活的导数，$\gamma=\|\mathrm{diag}(f')W^{\top}\|<1$ 时随间隔指数衰减。
 
@@ -326,8 +326,8 @@ $$\frac{\partial c_t}{\partial c_{t-1}}=f_t=\mathrm{diag}\big(\sigma(\cdot)\big)
 
 **Q2：LSTM 与 GRU 的区别？什么时候用哪个？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **结构区别**：LSTM 有 3 个门（输入门、遗忘门、输出门）和独立的记忆单元 $c_t$，$h_t=o_t\odot\tanh(c_t)$ 把记忆与输出解耦；GRU 只有 2 个门（更新门 $z_t$、重置门 $r_t$），$h_t=z_t\odot h_{t-1}+(1-z_t)\odot\tilde h_t$，直接用隐状态承载记忆，参数量约为 LSTM 的 3/4。
 
@@ -341,8 +341,8 @@ $$\frac{\partial c_t}{\partial c_{t-1}}=f_t=\mathrm{diag}\big(\sigma(\cdot)\big)
 
 **Q3：序列到类别任务中，为什么有时对全部隐状态取平均而不是取 $h_T$？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 取 $h_T$ 的前提是"最后时刻的状态已经聚合了整句信息"，但 RNN 的记忆是**有限且有偏**的：长序列中早期 token 的信息会衰减，$h_T$ 对末尾内容更敏感；短序列与长序列的 $h_T$ 统计分布也不一致，分类头难以适应。
 
@@ -356,8 +356,8 @@ $$\frac{\partial c_t}{\partial c_{t-1}}=f_t=\mathrm{diag}\big(\sigma(\cdot)\big)
 
 **1. 写出 SRN 的更新公式，并说明为什么它"等价于时间维度上权值共享的前馈网络"。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 $z_t=Wh_{t-1}+Ux_t+b,\ h_t=f(z_t),\ y_t=Vh_t$，$h_0=\mathbf 0$。
 
@@ -367,8 +367,8 @@ $z_t=Wh_{t-1}+Ux_t+b,\ h_t=f(z_t),\ y_t=Vh_t$，$h_0=\mathbf 0$。
 
 **2. 教材强调"RNN 的梯度消失不是 $\partial\mathcal L/\partial W$ 消失"。请解释这句话，并说明它的实际后果。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 $\partial\mathcal L/\partial W$ 是对所有时刻求和得到的量，其中当前时刻附近（$k$ 接近 $t$，即 $t-k$ 小）的项依然显著，所以总量不会变成 0。真正随间隔指数衰减的是**误差项** $\delta_{t,k}=\partial\mathcal L_t/\partial z_k$，即 $\partial\mathcal L/\partial h_t$ 意义上的跨时间敏感度。
 
@@ -378,8 +378,8 @@ $\partial\mathcal L/\partial W$ 是对所有时刻求和得到的量，其中当
 
 **3. GRU 在 $z_t=0, r_t=0$ 与 $z_t=0, r_t=1$ 两种情形下分别退化成什么？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 $z_t=0$ 时 $h_t=(1-z_t)\odot\tilde h_t=\tilde h_t$，输出完全由候选状态决定。
 
@@ -392,8 +392,8 @@ $z_t=0$ 时 $h_t=(1-z_t)\odot\tilde h_t=\tilde h_t$，输出完全由候选状�
 
 **4. 用 `nn.LSTM(input_size=10, hidden_size=20, num_layers=3, bidirectional=True, batch_first=True)` 处理 `(8, 15, 10)` 的输入，`output`、`h_n`、`c_n` 的形状各是什么？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 `output` 为 `(8, 15, 40)`：$40=20\times2$，双向输出拼接，第二维仍是 `seq_len`。
 
@@ -405,8 +405,8 @@ $z_t=0$ 时 $h_t=(1-z_t)\odot\tilde h_t=\tilde h_t$，输出完全由候选状�
 
 **5. 训练 RNN 时 loss 在第 300 步突然变成 `nan`，最可能的原因和最快的处置方式是什么？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 最可能是**梯度爆炸**（$\gamma>1$，误差项随间隔指数放大），也可能是学习率过大或序列中出现极端长句。
 

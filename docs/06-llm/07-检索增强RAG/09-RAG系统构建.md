@@ -279,8 +279,8 @@ for q in ["从上海发往北京用顺丰要多久？", "海运到南美洲需�
 
 **Q1：请完整描述 RAG 的工作流程，并说明每一步的关键设计决策。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 | 阶段 | 做什么 | 关键决策 |
 |---|---|---|
@@ -296,8 +296,8 @@ for q in ["从上海发往北京用顺丰要多久？", "海运到南美洲需�
 
 **Q2：RAG 相比微调有什么优势？什么情况下反而应该微调？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 RAG 的优势：
 1. **知识与参数解耦**——更新知识只需重建索引，不必重新训练，避免「知识过时」；
@@ -318,8 +318,8 @@ RAG 的优势：
 
 **Q3：HyDE、子查询、回溯三种策略分别解决什么问题？为什么需要「让 LLM 选策略」？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 - **HyDE（假设问题检索）**：解决「查询过于抽象、与文档用词不匹配」的问题。
  先让 LLM 生成一个假设答案，再用**假设答案**去检索——因为假设答案的用词风格更接近真实文档，
@@ -341,8 +341,8 @@ RAG 的优势：
 
 **1. 为什么要做「父子分层切分」？说明父块与子块各自的用途。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 切片粒度存在两难：切得太细，单块语义聚焦、向量表示准、检索精度高，但上下文被割裂，LLM 缺依据；
 切得太粗，上下文完整，但一个向量要代表多个主题，检索精度下降。
@@ -355,8 +355,8 @@ RAG 的优势：
 
 **2. Query 改写主要解决用户的哪两类问题？各举一种改写手法。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 两类问题是：**信息不完整**（提问没表达清楚所有关键信息）与**噪声问题**（提问包含与答案无关的内容）。
 
@@ -372,8 +372,8 @@ RAG 的优势：
 
 **3. RAG 为什么用 BERT 做查询分类而不直接让 LLM 判断？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 因为查询意图分类是**高频、低难度、对延迟敏感**的任务：每条用户查询都要过一次路由。
 用 `bert-base-chinese` 微调的二分类器（5000 条数据、3 个 epoch、验证准确率约 93%）在 CPU 上毫秒级完成，
@@ -387,8 +387,8 @@ RAG 的优势：
 
 **4. 物流 RAG 项目的 Prompt 里为什么要写「不允许在答案中添加编造成分」？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 因为大模型的默认行为是**用参数知识补全**：即使检索到的不包含答案，它也会顺着问题生成一个看起来合理的回答，
 这就是 RAG 场景下最常见的幻觉来源。写上这句约束后，模型被限制在「依据给定材料作答」的模式里。

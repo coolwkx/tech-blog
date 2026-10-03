@@ -243,7 +243,7 @@ print(stock.pivot_table(values='posi_neg', index='week', aggfunc='mean'))
 
 ### Q1：描述一下 `groupby` 的执行过程，它为什么比手写循环更好？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 `groupby` 遵循 **split-apply-combine（拆分—应用—合并）** 三步：
 
@@ -263,7 +263,7 @@ print(stock.pivot_table(values='posi_neg', index='week', aggfunc='mean'))
 
 ### Q2：`crosstab` 和 `pivot_table` 有什么区别？什么时候用哪个？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 | 维度 | `pd.crosstab` | `df.pivot_table` |
 | --- | --- | --- |
@@ -281,7 +281,7 @@ print(stock.pivot_table(values='posi_neg', index='week', aggfunc='mean'))
 
 ### Q3：`agg`、`transform`、`apply`、`filter` 分别适合什么场景？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 | 方法 | 返回形状 | 典型用途 | 性能 |
 | --- | --- | --- | --- |
@@ -307,7 +307,7 @@ df.groupby('city').apply(lambda g: g.nlargest(1, 'revenue')) # 任意形状
 
 ### 1. 用 `groupby` 求出"每个城市、每个渠道的客户数之和与销售额均值"，并把分组键变成普通列。
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 ```python
 result = df.groupby(['city', 'channel']).agg({'customer': 'sum', 'revenue': 'mean'})
@@ -327,7 +327,7 @@ result3 = df.groupby(['city', 'channel'], as_index=False).agg(
 
 ### 2. 用 `pivot_table` 把上题结果变成"行=城市、列=渠道"的二维表，并加上总计。
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 ```python
 pivot = df.pivot_table(index='city', columns='channel', values='customer',
@@ -348,7 +348,7 @@ city
 
 ### 3. 算出"星期几上涨的比例"，用 `crosstab` 与 `pivot_table` 两种方式实现。
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 ```python
 import numpy as np, pandas as pd

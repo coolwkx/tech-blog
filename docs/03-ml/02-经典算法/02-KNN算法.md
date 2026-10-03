@@ -385,7 +385,7 @@ def show_digit(idx, data):
 
 ## 5. 面试问答
 
-<details><summary>Q1：KNN 的 K 值大小如何影响模型？如何选择最优 K？</summary>
+<details markdown="1"><summary markdown="1">Q1：KNN 的 K 值大小如何影响模型？如何选择最优 K？</summary>
 
 **参考答案**
 
@@ -402,7 +402,7 @@ def show_digit(idx, data):
 **补充**：$K$ 的调优必须配合**标准化**，否则距离本身就被量纲污染，调 $K$ 意义不大。
 </details>
 
-<details><summary>Q2：KNN 与 KMeans 有什么区别？（名字像，本质完全不同）</summary>
+<details markdown="1"><summary markdown="1">Q2：KNN 与 KMeans 有什么区别？（名字像，本质完全不同）</summary>
 
 **参考答案**
 
@@ -417,7 +417,7 @@ def show_digit(idx, data):
 | 一句话 | "看邻居是谁" | "把样本分成 K 堆，让堆内最紧" |
 </details>
 
-<details><summary>Q3：为什么 KNN 对异常值敏感？有哪些改进手段？</summary>
+<details markdown="1"><summary markdown="1">Q3：为什么 KNN 对异常值敏感？有哪些改进手段？</summary>
 
 **参考答案**
 
@@ -436,7 +436,7 @@ def show_digit(idx, data):
 
 ## 6. 自测题
 
-<details><summary>1. 计算 $\boldsymbol{a}=(0,0)$ 与 $\boldsymbol{b}=(6,8)$ 的欧氏距离、曼哈顿距离、切比雪夫距离。</summary>
+<details markdown="1"><summary markdown="1">1. 计算 $\boldsymbol{a}=(0,0)$ 与 $\boldsymbol{b}=(6,8)$ 的欧氏距离、曼哈顿距离、切比雪夫距离。</summary>
 
 - 欧氏：$\sqrt{6^2+8^2} = 10$
 - 曼哈顿：$6 + 8 = 14$
@@ -445,24 +445,24 @@ def show_digit(idx, data):
 三者大小关系恒为：切比雪夫 ≤ 欧氏 ≤ 曼哈顿（对同一个点对）。
 </details>
 
-<details><summary>2. 闵氏距离中 $p=1,2,\infty$ 分别对应什么距离？为什么说它不是"新距离"？</summary>
+<details markdown="1"><summary markdown="1">2. 闵氏距离中 $p=1,2,\infty$ 分别对应什么距离？为什么说它不是"新距离"？</summary>
 
 $p=1$ 对应曼哈顿距离，$p=2$ 对应欧氏距离，$p\to\infty$ 对应切比雪夫距离。它不是一种新的度量方式，而是**对多个距离公式的概括性表述**——通过改变 $p$ 得到已知距离，所以又称"距离的组合"。
 </details>
 
-<details><summary>3. 为什么 KNN 之前必须做标准化，而决策树一般不需要？</summary>
+<details markdown="1"><summary markdown="1">3. 为什么 KNN 之前必须做标准化，而决策树一般不需要？</summary>
 
 KNN 用**距离**判断相似性，距离对特征量纲高度敏感，量纲大的特征会独占距离的绝大部分，使量纲小的特征失效。而决策树每次只在**单个特征**上找一个切分阈值，分裂不涉及不同特征之间的数值比较，因此对单调变换不敏感，标准化的影响通常可忽略。
 </details>
 
-<details><summary>4. 用 $K=1$ 的 KNN 在训练集上评估，准确率是多少？这说明什么？</summary>
+<details markdown="1"><summary markdown="1">4. 用 $K=1$ 的 KNN 在训练集上评估，准确率是多少？这说明什么？</summary>
 
 **恒为 100%**（在无重复且无冲突标签的前提下）。因为每个训练样本的最近邻居就是它自己，距离为 0。
 
 这说明：**训练集准确率不能用来评价 KNN**，必须使用测试集或交叉验证。$K=1$ 是过拟合的极端案例——它记住了所有训练样本，包括噪声。
 </details>
 
-<details><summary>5. 交叉验证与网格搜索分别解决什么问题？为什么 `GridSearchCV` 不能碰测试集？</summary>
+<details markdown="1"><summary markdown="1">5. 交叉验证与网格搜索分别解决什么问题？为什么 `GridSearchCV` 不能碰测试集？</summary>
 
 - **交叉验证**解决"评估不稳定、数据太少"的问题：通过轮换验证集，让每个样本都参与验证，得到更稳的泛化估计；
 - **网格搜索**解决"超参数怎么选"的问题：把候选参数组合逐一用交叉验证评分。

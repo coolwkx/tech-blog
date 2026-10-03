@@ -576,22 +576,22 @@ for doc in docs:
 
 ## 5. 面试问答
 
-<details>
-<summary><strong>Q1：为什么要做父子块分层切分，而不是只用一种粒度？</strong></summary>
+<details markdown="1">
+<summary markdown="1"><strong>Q1：为什么要做父子块分层切分，而不是只用一种粒度？</strong></summary>
 
 两种粒度的目标互相冲突：切得小，向量表达聚焦、召回精度高，但缺少上下文，交给 LLM 容易答不完整；切得大，语义完整，但向量被稀释、检索命中率下降。分层切分把两件事拆开——用子块建索引负责「找到」，用父块负责「答好」。实现上在子块元数据里冗余存一份 `parent_content`，命中后直接替换，无需二次查库。代价是存储冗余与写入成本上升，以及需要额外的父块去重逻辑。
 
 </details>
 
-<details>
-<summary><strong>Q2：混合检索为什么要同时用稠密和稀疏向量？`WeightedRanker` 的权重怎么定？</strong></summary>
+<details markdown="1">
+<summary markdown="1"><strong>Q2：混合检索为什么要同时用稠密和稀疏向量？`WeightedRanker` 的权重怎么定？</strong></summary>
 
 稠密向量（如 BGE-M3 的 dense 输出）擅长语义相似，能匹配「学费多少」与「收费标准」这类不同表述；稀疏向量（类似词权重的 sparse 输出）擅长精确词匹配，对专有名词、型号、人名这些语义模型不敏感的词更可靠。两者是互补关系：单用稠密会漏掉术语，单用稀疏会漏掉同义表述。`WeightedRanker(0.7, 1.0)` 中前者是稀疏权重、后者是稠密权重，给出的 0.7/1.0 是经验起点；实际调参依据是查询形态——查询多为短术语、专有名词密集时可提高稀疏权重，查询为自然语言长句时提高稠密权重，最终以离线评估集上的召回率/命中率为准。
 
 </details>
 
-<details>
-<summary><strong>Q3：为什么检索之后还需要重排？它和向量检索的本质区别是什么？</strong></summary>
+<details markdown="1">
+<summary markdown="1"><strong>Q3：为什么检索之后还需要重排？它和向量检索的本质区别是什么？</strong></summary>
 
 向量检索基于双塔（bi-encoder）结构：查询和文档各自独立编码成向量，再用余弦/内积比较。优点是文档向量可以离线预计算并建 ANN 索引，检索极快；缺点是无法建模查询与文档之间的细粒度交互，相似度只是两个独立表示的近似。重排用的是 CrossEncoder：把查询与文档拼成一个序列一起过模型，能做词级交互，精度显著更高，但无法预建索引，只能对少量候选逐个前向。因此标准范式是两阶段——用 ANN 做粗召回（追求高召回率），再用 CrossEncoder 做精排（追求高准确率），最后裁剪到 prompt 能容纳的数量。
 
@@ -601,8 +601,8 @@ for doc in docs:
 
 ## 6. 自测题
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **1. RAG 的三段式分别是什么？各由哪个模块负责？**
 
@@ -610,8 +610,8 @@ for doc in docs:
 
 </details>
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **2. 写出 Milvus 集合中 `dense_vector` 与 `sparse_vector` 两个字段的索引类型、度量方式与关键参数。**
 
@@ -619,8 +619,8 @@ for doc in docs:
 
 </details>
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **3. 检索时 `nprobe=10` 代表什么？调大它会有什么影响？**
 
@@ -628,8 +628,8 @@ for doc in docs:
 
 </details>
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **4. 为什么 `QueryClassifier` 要把查询分成「通用知识」和「专业咨询」？**
 
@@ -637,8 +637,8 @@ for doc in docs:
 
 </details>
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **5. 把 RAG 做成 Agent 的一个工具，相比用分类器路由，优缺点是什么？**
 

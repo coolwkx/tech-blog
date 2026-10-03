@@ -497,8 +497,8 @@ if __name__ == "__main__":
 
 **Q1. 情感分析和文本分类是什么关系？为什么情感分析更难？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **关系**：情感分析是文本分类的一个子类——把「情感极性」当作标签空间。文档级情感分析在建模上就是二分类（或几分类），可以直接复用第 05 篇的全部流水线（预处理 → 特征 → 模型 → 评估）。这也是为什么它可以作为「分类项目」的标准练习：任务简单，但对预处理和评估的要求完整。
 
@@ -514,8 +514,8 @@ if __name__ == "__main__":
 
 **Q2. 词袋模型完全处理不了「服务不好」，你会怎么改？请给出至少三种方案并说明取舍。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 | 方案 | 做法 | 效果 | 代价 |
 |------|------|------|------|
@@ -535,8 +535,8 @@ if __name__ == "__main__":
 
 **Q3. 情感分析项目上线后，产品说「负面评论老是漏掉」。你怎么定位和解决？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 先把它定义成一个可度量的工程问题：**「漏掉」= 负面类的召回率（Recall）不足**，对应混淆矩阵里的 FN 高。按「先量化 → 再归因 → 再修」的流程处理。
 
@@ -572,8 +572,8 @@ if __name__ == "__main__":
 
 **1. 某情感分类任务训练集正样本 8000 条、负样本 2000 条。模型在测试集上 accuracy = 0.88。你会对结果做什么判断？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **首先怀疑 accuracy 被多数类撑起来的**。正负比是 4:1，一个「全部预测为正」的模型 accuracy 就是 0.8。所以 0.88 相对基线（0.8）只提升了 8 个点，实际能力可能远不如 0.88 这个数字给人的印象。
 
@@ -593,8 +593,8 @@ if __name__ == "__main__":
 
 **2. 为什么「先划分数据集，再做 TF-IDF」很重要？在情感分析里泄漏的具体表现是什么？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **原因**：`fit` 阶段会从传入数据中学习**词表**和**IDF（文档频率）**。如果先在全量数据上 `fit`，测试集的统计信息就泄漏进了特征：
 
@@ -612,8 +612,8 @@ if __name__ == "__main__":
 
 **3. 请设计一个实验，验证「把否定词与后一词拼接」这个改动是否真的有效。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 核心原则：**单一变量 + 多次重复 + 统计显著**。不要只跑一次就下结论。
 

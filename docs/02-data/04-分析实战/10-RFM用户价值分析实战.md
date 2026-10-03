@@ -241,7 +241,7 @@ print(rfm_pd.head)
 
 ### Q1：RFM 三个维度的含义是什么？如果只能保留两个维度，你会保留哪两个？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 - **R（Recency）**：最近一次消费距截止时间节点的**间隔天数**，值越小越好——衡量用户的**活跃度与新鲜度**，反映"还会不会来"；
 - **F（Frequency）**：固定时间范围内的**购买次数**，值越大越好——衡量**忠诚度与黏性**，反映"来得勤不勤"；
@@ -260,7 +260,7 @@ print(rfm_pd.head)
 
 ### Q2：RFM 的分箱边界怎么确定？为什么本案例中 R 和 M 用分位数，而 F 用业务经验值？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 **通用三种套路**（案例三者都用到）：① **业务实际判断**——业务给出有意义的阈值，如"新用户注册 1 周内交易，7 天是重要的值；日用品采购周期 1 个月，30 天是重要的值"；② **平均值或中位数**——用中心位置把用户一分为二；③ **分位数/二八法则**——取 25%、75% 分位数把用户切成低/中/高三档。
 
@@ -279,7 +279,7 @@ m_bins = [0, 69, 1199, 206252]
 
 ### Q3：拿到 RFM 结果后，如何判断哪些群体值得重点运营，并给出策略？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 **第一步：按规模分层，因为规模决定落地方式。**
 
@@ -301,7 +301,7 @@ m_bins = [0, 69, 1199, 206252]
 
 ### 1. 说明 R、F、M 的含义和方向，并解释为什么 R 的 `labels` 要倒序。
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 **R**：最近一次消费距截止节点的间隔天数，**值越小越好**（越近越活跃）。**F**：固定周期内的购买次数，**值越大越好**（次数越多黏性越强）。**M**：固定周期内的消费总额，**值越大越好**（金额越高贡献越大）。
 
@@ -320,7 +320,7 @@ rfm_gb['m_label'] = pd.cut(rfm_gb['m'], bins=m_bins, labels=[1, 2, 3])
 
 ### 2. 为什么 `r_bins = [-1, 79, 255, 365]` 的左边界是 `-1` 而不是 `0`？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 因为 `pd.cut` 对自定义边界默认遵循**左开右闭** `(a, b]` 原则：`(-1, 79]` 表示大于 −1 且小于等于 79。若写成 `bins=[0, 79, 255, 365]`，第一个区间是 `(0, 79]`，那么 **R = 0 的用户（当天购买）将无法落进任何区间**，会被判为 `NaN`。一旦出现 NaN，`value_counts` 的总和就与用户总数对不上，后续字符串拼接组合得分时也会出错（`astype(str)` 会把 NaN 变成 `'nan'` 字符串）。
 
@@ -332,7 +332,7 @@ rfm_gb['m_label'] = pd.cut(rfm_gb['m'], bins=m_bins, labels=[1, 2, 3])
 
 ### 3. 为什么案例中没有对 4 年数据分别写 4 段代码计算 RFM，而是先 `concat` 再分组？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 因为 `groupby` 支持**多字段分组**，可以把"年份"作为一个分组维度一次性算完：
 
@@ -350,7 +350,7 @@ rfm_gb = data_merge.groupby(['year', '会员ID'], as_index=False).agg({
 
 ### 4. 加权得分和组合得分两种策略各有什么优缺点？实际项目里怎么选？
 
-<details><summary>参考答案</summary>
+<details markdown="1"><summary markdown="1">参考答案</summary>
 
 | 维度 | 加权得分 `rfm_wscore` | 组合得分 `rfm_group`（如 `"312"`） |
 | --- | --- | --- |

@@ -439,8 +439,8 @@ if __name__ == "__main__":
 
 **Q1：LoRA 为什么能省显存？省的是哪一部分？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 省的是**梯度与优化器状态**这两部分，而不是激活值。
 
@@ -452,8 +452,8 @@ if __name__ == "__main__":
 
 **Q2：$\alpha$ 和 $r$ 到底是什么关系？为什么推荐 $\alpha = 2r$ 这类比例写法？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 前向是 $h = W_0x + \frac{\alpha}{r}BAx$，$\frac{\alpha}{r}$ 是乘在 LoRA 分支上的缩放。由于它同时乘在 $\frac{\partial\mathcal{L}}{\partial A}$ 与 $\frac{\partial\mathcal{L}}{\partial B}$ 上，**它实际上等价于缩放 LoRA 分支的学习率**。
 
@@ -465,8 +465,8 @@ if __name__ == "__main__":
 
 **Q3：什么情况下你会选择不合并 LoRA 权重？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 三类场景：
 
@@ -482,8 +482,8 @@ if __name__ == "__main__":
 
 **1. $d=4096$、$k=4096$、$r=16$，LoRA 新增参数量与占比是多少？若 $r$ 改成 64 呢？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 $r=16$：$r(d+k) = 16\times8192 = 131{,}072$，占比 $131072/16{,}777{,}216 = 0.7813\%$。
 $r=64$：$64\times8192 = 524{,}288$，占比 $3.125\%$。
@@ -493,8 +493,8 @@ $r=64$：$64\times8192 = 524{,}288$，占比 $3.125\%$。
 
 **2. 为什么 $B$ 要零初始化而 $A$ 要随机初始化？两个都零会怎样？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 $B=0$ 使 $\Delta W = BA = 0$，训练起点与预训练模型完全一致，不破坏基座表征，也让训练更稳定。$A$ 必须随机，否则梯度恒为 0：$\frac{\partial\mathcal{L}}{\partial B} = \frac{\alpha}{r}g(Ax)^{\top}$ 在 $A=0$ 时为 0，$\frac{\partial\mathcal{L}}{\partial A}$ 在 $B=0$ 时也为 0，两者都零就永远学不动。
 
@@ -504,8 +504,8 @@ $B=0$ 使 $\Delta W = BA = 0$，训练起点与预训练模型完全一致，不
 
 **3. 写出 LoRA 前向的两种等价实现，并说明训练时该用哪一种。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 实现一（显式构造 $\Delta W$）：$h = W_0x + \frac{\alpha}{r}(BA)x$，先算 $d\times k$ 的矩阵 $BA$ 再与 $x$ 相乘。
 实现二（两步低秩乘）：$h = W_0x + \frac{\alpha}{r}B(Ax)$，先降维到 $r$ 再升维。
@@ -516,8 +516,8 @@ $B=0$ 使 $\Delta W = BA = 0$，训练起点与预训练模型完全一致，不
 
 **4. 合并 LoRA 时如果用 fp16 直接相加，可能出现什么问题？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 $\Delta W$ 经 $\alpha/r$ 缩放后数值通常远小于 $W_0$ 的元素量级。fp16 只有 10 位尾数，当 $|W_0|\gg|\Delta W|$ 时，相加会发生**有效位丢失**（swamping），$\Delta W$ 的大部分信息被舍入掉，导致合并后效果比不合并差。
 
@@ -527,8 +527,8 @@ $\Delta W$ 经 $\alpha/r$ 缩放后数值通常远小于 $W_0$ 的元素量级�
 
 **5. 你的 LoRA 训练 loss 一直停在 2.1 附近不降，列出排查顺序。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 ① 先 `print_trainable_parameters()`——如果可训练参数是 0，说明 `target_modules` 根本没匹配上（层名不对，很多模型用 `W_pack`、`c_attn`、`query_key_value` 等）。② 打印一个 batch 的 label，确认 label 没有全被 mask 成 -100（见 [05 篇](05-SFT训练循环与框架.md)）。③ 检查学习率是否过低（LoRA 通常需要 $1\times10^{-4}$ 以上）。④ 检查 $\alpha/r$ 是否过小。⑤ 检查数据本身是否有信号（把 loss 换成"直接记住 5 条样本"的过拟合测试，若连 5 条都记不住，问题在代码而非超参）。⑥ 尝试把 $r$ 从 8 提到 32，若出现下降说明是容量问题。
 

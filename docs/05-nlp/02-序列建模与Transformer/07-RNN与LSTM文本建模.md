@@ -367,8 +367,8 @@ def run(rnn_type, seq_len=60, steps=300):
 
 **Q1. LSTM 是怎么缓解梯度消失的？请从公式层面解释。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 先看问题根源。传统 RNN 的隐状态递推为
 
@@ -400,8 +400,8 @@ $$\frac{\partial c_t}{\partial c_{t-1}}=f_t$$
 
 **Q2. RNN、LSTM、GRU 应该怎么选？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 三个维度：数据量、任务对长依赖的需求、算力预算。
 
@@ -420,8 +420,8 @@ $$\frac{\partial c_t}{\partial c_{t-1}}=f_t$$
 
 **Q3. 为什么 RNN 无法并行，而 Transformer 可以？这对训练效率影响多大？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **RNN 无法并行的原因**是时间步之间存在**数据依赖**：$h_t$ 的计算需要 $h_{t-1}$，$h_{t-1}$ 又需要 $h_{t-2}$，因此必须逐步串行推进。整个序列的 $T$ 个时间步无法在一次矩阵运算中完成，GPU 的大量并行核心被空置。这对训练效率的影响是决定性的——序列越长，GPU 利用率越低，训练时间的增长接近线性而非饱和。
 
@@ -444,8 +444,8 @@ $$\text{Attention}(Q,K,V)=\text{softmax}\Big(\frac{QK^\top}{\sqrt{d_k}}\Big)V$$
 
 **1. 判断四个任务各属哪种 RNN 结构：① 词性标注；② 情感二分类；③ 英译法机器翻译；④ 看图生成一句描述。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 | 任务 | 结构 | 理由 |
 |------|------|------|
@@ -460,8 +460,8 @@ $$\text{Attention}(Q,K,V)=\text{softmax}\Big(\frac{QK^\top}{\sqrt{d_k}}\Big)V$$
 
 **2. 设 `nn.LSTM(64, 128, num_layers=2, bidirectional=True, batch_first=True)`，输入为 `(8, 20, 64)`。写出 `output`、`hn`、`cn` 的形状。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 - **output**：`(batch, seq_len, hidden_size × num_directions)` = `(8, 20, 256)`
 - **hn**：`(num_layers × num_directions, batch, hidden_size)` = `(4, 8, 128)`
@@ -478,8 +478,8 @@ $$\text{Attention}(Q,K,V)=\text{softmax}\Big(\frac{QK^\top}{\sqrt{d_k}}\Big)V$$
 
 **3. 为什么分类任务取 `output[:, -1, :]` 可能有问题？正确做法是什么？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **问题**：一个 batch 内的样本经过 padding 后长度被统一，但**真实长度不同**。如果统一取最后一个时间步 `output[:, -1, :]`，对那些真实长度较短的样本，取到的是 **PAD 位置的隐状态**，而不是最后一个真实 token 的隐状态。这会引入错误信息，尤其当 padding 比例很高时准确率明显下降。
 
@@ -495,8 +495,8 @@ $$\text{Attention}(Q,K,V)=\text{softmax}\Big(\frac{QK^\top}{\sqrt{d_k}}\Big)V$$
 
 **4. 一段代码 `out = model(x); loss = criterion(out, y)`，其中 `criterion = nn.CrossEntropyLoss` 且 `model` 内部最后一层是 `nn.Softmax(dim=-1)`。有什么问题？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 这是**双重归一化**错误，会导致训练效果严重变差（通常表现为 loss 下降极慢或卡住、准确率上不去）。
 
@@ -522,8 +522,8 @@ criterion = nn.NLLLoss
 
 **5. 在 60 步的长序列「记住第一个 token」任务上，RNN 准确率掉到随机水平而 LSTM 保持较高。请解释原因，并说明加大隐藏层维度能否救回 RNN。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **原因**：这个任务要求模型在最终时刻回忆起 $T-1$ 步之前的信息，本质考验**长距离梯度传播**。RNN 的梯度要连乘 $W_{hh}^\top\operatorname{diag}(1-\tanh^2)$ 共 $T-1\approx59$ 次；即便单步因子的谱半径接近 1，累积后梯度也会指数衰减到接近 0，导致早期时间步的权重几乎收不到有效梯度、学不到「把第一个 token 编码进记忆」这件事。LSTM 通过细胞状态通道 $c_t=f_t\odot c_{t-1}+\dots$ 使梯度传播近似恒等（$\partial c_t/\partial c_{t-1}=f_t\approx1$），因此信息能跨越几十步保留下来。
 

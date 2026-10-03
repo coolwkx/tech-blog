@@ -391,22 +391,22 @@ if __name__ == "__main__":
 
 ## 5. 面试问答
 
-<details>
-<summary><strong>Q1：Agent 的规划包含哪几个动作？为什么「目标设定」常被低估？</strong></summary>
+<details markdown="1">
+<summary markdown="1"><strong>Q1：Agent 的规划包含哪几个动作？为什么「目标设定」常被低估？</strong></summary>
 
 给出的四个动作是：任务分析（深入分析要完成的任务或问题）、目标设定（确定要达成什么）、搜索（生成可能的解法/路径）、路径规划（确定先后顺序）。「目标设定」常被低估，是因为大家默认「用户说了要什么就是目标」。但在多 Agent 与多步场景里，目标必须被转写成**可验证的终态契约**才有用，例如 CrewAI 的 Task description 以「你最后的答案必须是信息是否已被存储在本地磁盘中」结尾。没有这层契约，Agent 可能在「看起来做完了」时提前结束，或迟迟不肯结束。
 
 </details>
 
-<details>
-<summary><strong>Q2：HyDE 和「子查询检索」分别解决什么类型的检索困难？能否同时使用？</strong></summary>
+<details markdown="1">
+<summary markdown="1"><strong>Q2：HyDE 和「子查询检索」分别解决什么类型的检索困难？能否同时使用？</strong></summary>
 
 HyDE 解决的是**查询表述与文档表述不匹配**的问题：抽象问题的用词与知识库具体段落距离远，直接检索召回率低；先让模型生成一段假设答案（用词更接近文档），再拿它去检索，能显著提升召回。子查询检索解决的是**单一查询覆盖不全**的问题：当查询涉及多个实体或方面（如「比较 A 和 B」），一次检索只能命中其中一侧，拆成多个子查询分别检索再合并才能覆盖。二者可以叠加：先用子查询分解，再对每个抽象化的子查询套 HyDE。代价是 LLM 调用次数和检索次数成倍增加。
 
 </details>
 
-<details>
-<summary><strong>Q3：为什么说「先产出完整计划再执行」不一定更好？</strong></summary>
+<details markdown="1">
+<summary markdown="1"><strong>Q3：为什么说「先产出完整计划再执行」不一定更好？</strong></summary>
 
 因为计划的正确性依赖对环境的准确预期。在环境反馈快、情况易变的场景里，一份详细的初始计划很可能在第 2 步就被现实推翻，后续步骤集体偏航，反而比逐步试探（ReAct）更差。显式计划的真正优势在于可审计、可人工审核、可并行——适合步骤可预先枚举、合规要求高的任务。因此实践中常见的是折中方案：先让模型产出 3–7 步的计划，执行过程中允许根据 Observation 修订，同时对关键节点保留人工确认。
 
@@ -416,8 +416,8 @@ HyDE 解决的是**查询表述与文档表述不匹配**的问题：抽象问�
 
 ## 6. 自测题
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **1. 这里把 Planning 定义为什么？涉及哪几个环节？**
 
@@ -425,8 +425,8 @@ HyDE 解决的是**查询表述与文档表述不匹配**的问题：抽象问�
 
 </details>
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **2. RAG 系统里四种检索策略各自适用于什么查询？各举一例。**
 
@@ -434,8 +434,8 @@ HyDE 解决的是**查询表述与文档表述不匹配**的问题：抽象问�
 
 </details>
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **3. 子查询检索的结果合并阶段，为什么要先把所有子查询的结果收集完再统一裁剪？**
 
@@ -443,8 +443,8 @@ HyDE 解决的是**查询表述与文档表述不匹配**的问题：抽象问�
 
 </details>
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **4. 航班示例中体现了哪种任务依赖？如果用户问「郑州和天津哪个航班便宜」，依赖关系会怎样变化？**
 
@@ -452,8 +452,8 @@ HyDE 解决的是**查询表述与文档表述不匹配**的问题：抽象问�
 
 </details>
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 **5. 规划器（如策略选择器）为什么必须准备兜底默认值？**
 

@@ -449,8 +449,8 @@ if __name__ == "__main__":
 
 **Q1：RLHF 里四个模型分别是什么？哪些需要训练？为什么奖励模型可以冻结而 Critic 必须训练？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 Actor（策略模型，需要训练，通常从 SFT 模型初始化）、Critic（价值模型，需要训练，通常由奖励模型加一个 value head 初始化）、Reward（奖励模型，冻结）、Reference（参考模型，冻结，是 SFT 模型的副本）。
 
@@ -462,8 +462,8 @@ Critic 必须训练，是因为我们不可能在 $t$ 时刻就知道「从 $t$ 
 
 **Q2：KL 惩罚项为什么必要？如果去掉会发生什么？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 要点有三层。第一层是工程直觉：奖励模型是在有限偏好数据上拟合出来的代理，只在训练分布内可信；一旦策略被优化到分布外，RM 打分就不再有意义，而优化压力恰恰会主动搜索这种盲区（reward hacking），表现为回答变长、谄媚、堆格式。
 
@@ -475,8 +475,8 @@ Critic 必须训练，是因为我们不可能在 $t$ 时刻就知道「从 $t$ 
 
 **Q3：请写出 PPO 的 actor loss，并解释 clip 为什么取 min 而不是 max。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 $$L^{CLIP}(\theta)=-\,\mathbb{E}_t\Big[\min\big(w_tA_t,\ \operatorname{clip}(w_t,1-\epsilon,1+\epsilon)A_t\big)\Big],\quad w_t=\frac{\pi_\theta(a_t\mid s_t)}{\pi_{\theta_{old}}(a_t\mid s_t)}$$
 
@@ -488,8 +488,8 @@ $$L^{CLIP}(\theta)=-\,\mathbb{E}_t\Big[\min\big(w_tA_t,\ \operatorname{clip}(w_t
 
 **Q4：RLHF 中为什么只有最后一个 token 位置使用奖励模型的分数？中间位置的即时奖励从哪来？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 因为奖励模型的训练方式决定了它输出的是「整条回答」的分数：训练时取最后一个有效 token 位置的隐状态接一个标量头，用排序损失拟合整条回答的相对偏好。因此它天然只在序列末尾提供有意义的标量。
 
@@ -503,8 +503,8 @@ $$L^{CLIP}(\theta)=-\,\mathbb{E}_t\Big[\min\big(w_tA_t,\ \operatorname{clip}(w_t
 
 **1. 用一句话说明「监督学习反馈」与「强化学习反馈」在粒度上的区别，并各举一个模型会因此学到的坏习惯。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 监督学习按 token 给出「应该写什么」的交叉熵，反馈是密集的、逐 token 的模仿信号；强化学习只对整条输出给一个标量偏好分数，反馈是稀疏的、整段的。
 
@@ -514,8 +514,8 @@ $$L^{CLIP}(\theta)=-\,\mathbb{E}_t\Big[\min\big(w_tA_t,\ \operatorname{clip}(w_t
 
 **2. 推导 $\mathbb{E}_{a\sim\pi}[b(s)\nabla_\theta\log\pi_\theta(a\mid s)]=0$，并说明它为什么允许我们任意减基线。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 由 $\nabla_\theta\log\pi=\nabla_\theta\pi/\pi$ 得
 
@@ -527,8 +527,8 @@ $$\mathbb{E}_{a\sim\pi}\big[b(s)\nabla_\theta\log\pi_\theta(a\mid s)\big]=b(s)\s
 
 **3. 给定 $\gamma=1.0,\lambda=1.0$，$R=[0,0,2]$，$V=[0.5,0.5,0.5]$，$V_{T+1}=0$。手算优势和 returns。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 $t=2$：$\delta_2=R_2+\gamma V_3-V_2=2+0-0.5=1.5$，$A_2=\delta_2+\gamma\lambda A_3=1.5$。
 
@@ -542,8 +542,8 @@ returns $=A+V=[2.0,2.0,2.0]$。可以验证：当 $\lambda=1$ 且折扣为 1 时
 
 **4. 为什么 RLHF 的显存开销显著高于 SFT？请从「模型份数」的角度估算。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 SFT 只需要一份可训练权重（加梯度与优化器状态）。PPO 需要同时驻留四份权重：Actor（训练态，含梯度与 Adam 状态）、Critic（训练态，含梯度与 Adam 状态）、Reward（冻结，仅推理）、Reference（冻结，仅推理）。
 
@@ -553,8 +553,8 @@ SFT 只需要一份可训练权重（加梯度与优化器状态）。PPO 需要
 
 **5. 如果训练中出现「reward 持续上升但人工评分下降」，你的排查顺序是什么？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 ① 判断是否 reward hacking：抽样人工看输出，检查长度是否暴涨、是否堆格式、是否谄媚；对比 RL 前后同一批 prompt 的输出。
 

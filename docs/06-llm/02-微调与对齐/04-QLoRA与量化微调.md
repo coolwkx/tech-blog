@@ -380,8 +380,8 @@ print("合并完成：产物是 bf16 全精度模型，如需 4-bit 部署请重
 
 **Q1：NF4 和普通的 INT4 均匀量化有什么区别？为什么 NF4 更好？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 均匀 INT4 把数值区间等宽切成 16 段；NF4 则按**标准正态分布的分位点**切分，使每个桶在正态分布下拥有近似相等的概率质量。
 
@@ -393,8 +393,8 @@ print("合并完成：产物是 bf16 全精度模型，如需 4-bit 部署请重
 
 **Q2：双重量化具体省了多少？请推导。**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 不分块量化的权重本身是 4 bit/参数。分块量化后每块（64 个参数）需要一个 fp32 的 absmax 常量，即 $32/64 = 0.5$ bit/参数，合计 $4.5$ bit/参数。
 
@@ -406,8 +406,8 @@ print("合并完成：产物是 bf16 全精度模型，如需 4-bit 部署请重
 
 **Q3：QLoRA 微调后的 adapter 能直接合并进 4-bit 权重吗？为什么？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 不能。nf4 是**分块量化**：每个 64 元素的块共享一个 absmax 缩放常量，块内所有元素共用一套量化刻度。合并需要计算 $W_{\text{nf4}} + \frac{\alpha}{r}BA$，而加法结果的数值范围与原来不同，无法用同一组量化常量表示；强行合并会破坏量化结构或引入巨大误差。
 
@@ -419,8 +419,8 @@ print("合并完成：产物是 bf16 全精度模型，如需 4-bit 部署请重
 
 **1. 4-bit 分块量化、块大小 64、不开双重量化时，总存储是多少 bit/参数？7B 模型权重占多少 GB？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 $4 + 32/64 = 4.5$ bit/参数。7B：$4.5\times7\times10^9/8 = 3.9375\times10^9$ 字节 $\approx 3.94$ GB。开双重量化后为约 3.61 GB。
 
@@ -428,8 +428,8 @@ $4 + 32/64 = 4.5$ bit/参数。7B：$4.5\times7\times10^9/8 = 3.9375\times10^9$ 
 
 **2. 你的目标是"把已经训好的 13B 模型部署到一张 24 GB 卡上做推理"，应该选 QLoRA 还是 GPTQ/AWQ？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 选 GPTQ 或 AWQ。QLoRA 的价值在**训练阶段**省显存，它产出的仍然是需要训练/合并的模型；对"纯推理压缩"这个目标，GPTQ/AWQ 是专门的训练后量化方案，通常配合 vLLM/TensorRT-LLM 等推理栈能获得数倍吞吐提升。QLoRA 在这个场景下不带来额外收益。
 
@@ -439,8 +439,8 @@ $4 + 32/64 = 4.5$ bit/参数。7B：$4.5\times7\times10^9/8 = 3.9375\times10^9$ 
 
 **3. 为什么说"量化只省权重、不省激活"？这对长序列 QLoRA 意味着什么？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 QLoRA 的量化针对的是模型权重（$P$ 个参数），激活值由前向传播的中间张量决定，形状是 $b\times s\times h$ 和 $b\times a\times s\times s$，与权重存储精度无关。因此即便权重压到 4 bit，激活仍然按计算精度（通常 bf16）分配。
 
@@ -450,8 +450,8 @@ QLoRA 的量化针对的是模型权重（$P$ 个参数），激活值由前向�
 
 **4. QLoRA 训练中，反向传播会更新被量化的基座权重吗？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 不会。基座权重在 QLoRA 中是冻结的（`requires_grad=False`），并且量化权重本身也无法直接承载高精度梯度更新。反向传播只计算 LoRA 的 $A$、$B$ 的梯度。前向时 nf4 权重被反量化到 `bnb_4bit_compute_dtype` 指定的精度参与矩阵乘，反量化是前向计算的一部分，不产生对量化常量的梯度。
 
@@ -461,8 +461,8 @@ QLoRA 的量化针对的是模型权重（$P$ 个参数），激活值由前向�
 
 **5. 用 `paged_adamw_8bit` 之后训练变慢了很多，怎么判断是"分页换页"导致的？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 观察点：① 用 `nvidia-smi` 或 `torch.cuda.memory_summary()` 看显存是否长期贴着实测上限；② 用 profiler 或 `nvidia-smi dmon` 看 PCIe 吞吐是否出现周期性尖峰；③ 观察每步耗时是否呈双峰分布（部分步特别慢）。如果三个信号都有，说明优化器状态在被反复换出换入。
 

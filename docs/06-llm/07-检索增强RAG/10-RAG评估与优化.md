@@ -244,8 +244,8 @@ pd.DataFrame([result]).to_csv("ragas_evaluation_results.csv", index=False) # 多
 
 **Q1：RAGAS 的四个核心指标分别衡量什么？分数低时应优先改哪一侧？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 四个指标按「检索 / 生成」两侧划分：
 
@@ -267,8 +267,8 @@ pd.DataFrame([result]).to_csv("ragas_evaluation_results.csv", index=False) # 多
 
 **Q2：如何自动构造一份高质量的 RAG 评估数据集？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 用三个代理协作：
 
@@ -291,8 +291,8 @@ pd.DataFrame([result]).to_csv("ragas_evaluation_results.csv", index=False) # 多
 
 **Q3：`context_recall` 和 `faithfulness` 都在做「声明级」核对，它们有什么本质区别？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 两者的比较对象不同：
 
@@ -313,8 +313,8 @@ pd.DataFrame([result]).to_csv("ragas_evaluation_results.csv", index=False) # 多
 
 **1. RAGAS 评估数据集需要哪四个字段？哪个是唯一需要人工标注的？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 - `question`：作为 RAG 管道输入的用户查询（输入）；
 - `answer`：RAG 管道生成的答案（输出）；
@@ -328,8 +328,8 @@ RAGAS 的设计取向正是「不必依赖人工标注的标准答案，而是�
 
 **2. `answer_relevancy` 为什么用「反向生成问题」来实现？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 因为直接让 LLM 判断「这个答案切题吗」是主观打分，容易受评估模型偏好影响、且难以复现。
 反向生成的做法是：让 LLM 根据答案生成 n 个「这个答案可能在回答的问题」$q_i$，
@@ -343,8 +343,8 @@ RAGAS 的设计取向正是「不必依赖人工标注的标准答案，而是�
 
 **3. 设计评估 Prompt 时，为什么要给 1-5 分的 rubric 并要求先输出理由？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 给 rubric 的原因：**保持评估代理的一致性，避免因模糊标准导致评分结果波动**。
 没有明确标准时，同一份数据多次评估的分数可能差异很大，指标就失去了横向比较的意义。
@@ -358,8 +358,8 @@ RAGAS 的设计取向正是「不必依赖人工标注的标准答案，而是�
 
 **4. 为什么要对自动生成的测试样本做质量过滤？三维评分分别是什么？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 因为自动生成的样本可能存在质量问题（问题有歧义、无法从上下文回答、脱离上下文看不懂等），
 低质量样本会污染评估结论。因此引入样本质量评价代理，对每个问题按三个维度打 1~5 分：
@@ -375,8 +375,8 @@ RAGAS 的设计取向正是「不必依赖人工标注的标准答案，而是�
 
 **5. 评估指标四项都很高，但业务方仍不满意，可能是什么问题？**
 
-<details>
-<summary>参考答案</summary>
+<details markdown="1">
+<summary markdown="1">参考答案</summary>
 
 说明**指标体系没有覆盖业务的真实诉求**。常见情况：
 
