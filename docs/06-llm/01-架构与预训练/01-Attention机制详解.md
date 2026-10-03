@@ -511,7 +511,8 @@ print((out - manual).abs.max.item) # 6.66e-16，仅浮点误差
 
 **Q1：为什么缩放因子是 $\sqrt{d_k}$，而不是 $d_k$ 或其他值？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 从方差出发。设 $q,k$ 各分量独立、零均值、单位方差，则
 
@@ -529,7 +530,8 @@ $$\operatorname{Var}(s)=\sum_{i=1}^{d_k}\operatorname{Var}(q_ik_i)=\sum_{i=1}^{d
 
 **Q2：注意力权重能当作模型可解释性的证据吗？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **不能直接当作证据，这是一个有真实争议的问题。**
 
@@ -543,7 +545,8 @@ $$\operatorname{Var}(s)=\sum_{i=1}^{d_k}\operatorname{Var}(q_ik_i)=\sum_{i=1}^{d
 
 **Q3：FlashAttention 为什么能加速，却不改变结果？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 因为它优化的是**显存 IO**，不是数学。
 
@@ -559,7 +562,8 @@ $$\operatorname{Var}(s)=\sum_{i=1}^{d_k}\operatorname{Var}(q_ik_i)=\sum_{i=1}^{d
 
 **Q4：推理时为什么只缓存 K、V 而不缓存 Q？GQA 省的是什么？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **只缓存 K/V 的原因**：因果掩码下位置 $j$ 的 $k_j,v_j$ 只依赖 $x_{1..j}$，一旦算出**永不改变**，可跨解码步复用；而 $q_t$ 是"当前 token 的提问"，只服务当前这一步，下一步需要全新的 $q_{t+1}$，缓存它没有收益。Q 是一次性查询，K/V 是可复用的键值数据库。
 
@@ -579,7 +583,8 @@ $$\operatorname{Var}(s)=\sum_{i=1}^{d_k}\operatorname{Var}(q_ik_i)=\sum_{i=1}^{d
 4. 某模型 $d_{model}=4096$，原本 $h=32$、$d_{head}=128$，若改成 $h=64$：(a) $d_{head}$ 变成多少？(b) 注意力矩阵显存如何变化？(c) 参数量是否变化？(d) 缩放因子变成多少？
 5. 解释为什么无 KV cache 的自回归解码累计复杂度是 $O(n^3d)$ 而非 $O(n^2d)$，给出求和推导；再说明有 cache 后为何 $O(nd)$ 的注意力部分往往不是 decode 的主要耗时项。
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **1.** (a) $\operatorname{Var}(s)=\sum_{i=1}^{512}\operatorname{Var}(q_ik_i)=512$，标准差 $=\sqrt{512}\approx22.63$。(b) 除以 $\sqrt{512}\approx22.63$ 后标准差为 1。(c) 未缩放时 logit 极差约 $\pm3\sigma\approx\pm68$，任意两 logit 差 68 意味着概率比 $e^{68}$，softmax 近似 one-hot，$\sum p_i^2\to1$、$\operatorname{tr}(J)\to0$，梯度消失；缩放后 $\operatorname{tr}(J)$ 稳定在约 0.997（$n=1024$ 时上界 $1-1/1024=0.999$），梯度通畅。
 

@@ -762,7 +762,8 @@ if __name__ == "__main__":
 
 **Q1. 医疗文本分类的预处理里，只用 `[^\u4e00-\u9fa5]` 清洗有什么问题？你会怎么改？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **问题：丢掉了所有非中文字符，而医疗领域的关键信息大量存在于英文缩写与数字中。**
 
@@ -794,7 +795,8 @@ text = text.replace("ct", "CT").replace("Ct", "CT").replace("核磁", "MRI")
 
 **Q2. 随机森林在医疗文本上能到 0.82–0.85，FastText 到 0.86–0.89，BERT 到 0.90–0.93。业务上怎么选？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 按「精度需求 × 延迟要求 × 部署成本 × 数据量」四维决策，并且**一定要用真实业务指标而不是论文指标**来定。
 
@@ -818,7 +820,8 @@ text = text.replace("ct", "CT").replace("Ct", "CT").replace("核磁", "MRI")
 
 **Q3. 混淆矩阵显示「病因」和「相关病症」互判严重（各占该类错误的 40%）。你怎么处理？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 先判断是「模型能力不足」还是「类别体系本身重叠」——这个错例模式强烈提示后者。
 
@@ -858,7 +861,8 @@ text = text.replace("ct", "CT").replace("Ct", "CT").replace("核磁", "MRI")
 
 **1. 预处理流水线是「清洗 → 分词 → 去停用词 → 拼接」。如果把「分词」和「去停用词」的顺序调换，会发生什么？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 调换后变成「对原始文本去停用词 → 分词」，实际上**无法执行或效果错乱**，原因是去停用词的操作前提是「已经有词列表」。
 
@@ -880,7 +884,8 @@ text = text.replace("ct", "CT").replace("Ct", "CT").replace("核磁", "MRI")
 
 **2. 「什么」「怎么」「为什么」这类疑问词在通用停用词表里通常被过滤掉。为什么在医疗意图分类里它们反而是关键特征？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **根本原因：本项目的 13 个类别是「问句意图」，而不是「主题」。** 区分意图的主要信号就是疑问词与句式，而不是疾病名称。
 
@@ -920,7 +925,8 @@ text = text.replace("ct", "CT").replace("Ct", "CT").replace("核磁", "MRI")
 
 **3. 为什么说「疾病名称对区分 13 个类别几乎无用」？这对建模有什么指导意义？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **因为同一个疾病名可以出现在多种意图里**：
 

@@ -309,7 +309,8 @@ print("all checks passed")
 
 **Q1：为什么 LSTM 能缓解梯度消失？请给出关键公式。**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 RNN 的误差项递推为 $\delta_{t,k}=\prod_{\tau=k}^{t-1}\mathrm{diag}(f'(z_\tau))W^{\top}\delta_{t,t}$，连乘中含**矩阵** $W^{\top}$ 和饱和激活的导数，$\gamma=\|\mathrm{diag}(f')W^{\top}\|<1$ 时随间隔指数衰减。
 
@@ -320,11 +321,13 @@ $$\frac{\partial c_t}{\partial c_{t-1}}=f_t=\mathrm{diag}\big(\sigma(\cdot)\big)
 三点改善：(1) 连乘因子从矩阵降为**对角矩阵**，没有跨维度混合放大；(2) $f_\tau$ 是网络学出来的门，可接近 1，梯度近似无损穿过很多步；(3) 因为是加法，还额外存在 $\partial c_t/\partial\tilde c_t=i_t$ 这条**不经过连乘**的直接路径，提供稳定梯度。这就是"常数误差传送带"。
 
 补充：梯度爆炸并未被解决（$c$ 路径上仍可能过大），所以 LSTM 训练中仍需 gradient clipping。
+
 </details>
 
 **Q2：LSTM 与 GRU 的区别？什么时候用哪个？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **结构区别**：LSTM 有 3 个门（输入门、遗忘门、输出门）和独立的记忆单元 $c_t$，$h_t=o_t\odot\tanh(c_t)$ 把记忆与输出解耦；GRU 只有 2 个门（更新门 $z_t$、重置门 $r_t$），$h_t=z_t\odot h_{t-1}+(1-z_t)\odot\tilde h_t$，直接用隐状态承载记忆，参数量约为 LSTM 的 3/4。
 
@@ -333,42 +336,50 @@ $$\frac{\partial c_t}{\partial c_{t-1}}=f_t=\mathrm{diag}\big(\sigma(\cdot)\big)
 **选型经验**：序列很长、依赖结构复杂（长文档建模、语音）优先 LSTM；数据量中小、追求训练速度与显存时优先 GRU；两者在多数任务上差距不大，超参（层数、hidden size、学习率、embedding 维度）的影响往往大于单元类型的选择。工程上建议都试一遍，用验证集定夺。
 
 **共同局限**：都无法并行（时刻间有依赖），因此才有后续的卷积序列模型与 Transformer。
+
 </details>
 
 **Q3：序列到类别任务中，为什么有时对全部隐状态取平均而不是取 $h_T$？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 取 $h_T$ 的前提是"最后时刻的状态已经聚合了整句信息"，但 RNN 的记忆是**有限且有偏**的：长序列中早期 token 的信息会衰减，$h_T$ 对末尾内容更敏感；短序列与长序列的 $h_T$ 统计分布也不一致，分类头难以适应。
 
 平均池化 $\hat y=g\big(\frac1T\sum_t h_t\big)$ 让每个时刻都直接贡献梯度，缓解梯度消失、也降低对序列长度的敏感性，通常更稳。实践中还有三种常见做法：取 `max` 池化（捕捉显著特征）、只用 $h_T$ 但用双向编码器补足信息、以及用注意力加权求和（让模型自己学每个时刻的权重，后来直接演化成 Transformer）。
 
 选哪个要用验证集实验；对文本分类这种"关键词触发"的任务，mean/max 池化往往优于 $h_T$。
+
 </details>
 
 ## 6. 自测题
 
 **1. 写出 SRN 的更新公式，并说明为什么它"等价于时间维度上权值共享的前馈网络"。**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 $z_t=Wh_{t-1}+Ux_t+b,\ h_t=f(z_t),\ y_t=Vh_t$，$h_0=\mathbf 0$。
 
 把 $t=1..T$ 逐层代入，得到 $h_T=f(Wf(Wf(\dots)+Ux_2+b)+Ux_3+b)$ 这样的嵌套复合函数，其结构就是一个深度为 $T$ 的前馈网络（每层输入为 $[h_{t-1};x_t]$），且所有层共用同一组 $W,U,b$。因此反向传播求 $\partial\mathcal L/\partial W$ 时必须对所有时刻的贡献求和，得到 $\partial\mathcal L/\partial W=\sum_t\sum_k\delta_{t,k}h_{k-1}^{\top}$ 的双重求和形式——这就是 BPTT。
+
 </details>
 
 **2. 教材强调"RNN 的梯度消失不是 $\partial\mathcal L/\partial W$ 消失"。请解释这句话，并说明它的实际后果。**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 $\partial\mathcal L/\partial W$ 是对所有时刻求和得到的量，其中当前时刻附近（$k$ 接近 $t$，即 $t-k$ 小）的项依然显著，所以总量不会变成 0。真正随间隔指数衰减的是**误差项** $\delta_{t,k}=\partial\mathcal L_t/\partial z_k$，即 $\partial\mathcal L/\partial h_t$ 意义上的跨时间敏感度。
 
 后果：参数更新几乎完全由邻近几个时刻驱动，序列早期的状态对梯度没有贡献，模型"理论上能建模长程依赖，实际上只学到短期依赖"。这也是为什么解决梯度消失必须**换模型**（LSTM/GRU 的加性路径）而调学习率无效。
+
 </details>
 
 **3. GRU 在 $z_t=0, r_t=0$ 与 $z_t=0, r_t=1$ 两种情形下分别退化成什么？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 $z_t=0$ 时 $h_t=(1-z_t)\odot\tilde h_t=\tilde h_t$，输出完全由候选状态决定。
 
@@ -376,26 +387,31 @@ $z_t=0$ 时 $h_t=(1-z_t)\odot\tilde h_t=\tilde h_t$，输出完全由候选状�
 - $r_t=1$ 时 $\tilde h_t=\tanh(W_hx_t+U_hh_{t-1}+b_h)$，而 $h_t=\tilde h_t=f(W_hx_t+U_hh_{t-1}+b_h)$，**退化为简单循环网络 SRN**。
 
 另外 $z_t=1$ 时 $h_t=h_{t-1}$，直接复制历史、与当前输入无关。
+
 </details>
 
 **4. 用 `nn.LSTM(input_size=10, hidden_size=20, num_layers=3, bidirectional=True, batch_first=True)` 处理 `(8, 15, 10)` 的输入，`output`、`h_n`、`c_n` 的形状各是什么？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 `output` 为 `(8, 15, 40)`：$40=20\times2$，双向输出拼接，第二维仍是 `seq_len`。
 
 `h_n` 与 `c_n` 都是 `(6, 8, 20)`：第一维 $=\text{num\_layers}\times\text{num\_directions}=3\times2=6$（每个时刻每层每个方向一个末位状态），第二维 batch $=8$，第三维 hidden_size $=20$。注意 `batch_first=True` 只改前两维的顺序（seq/batch），**不改变** `h_n`/`c_n` 的层数维。
 
 补充：`h_n` 中前向与反向状态按方向交替排列（`view(num_layers, 2, batch, hidden)` 后 `[l,0]` 为前向、`[l,1]` 为反向）。
+
 </details>
 
 **5. 训练 RNN 时 loss 在第 300 步突然变成 `nan`，最可能的原因和最快的处置方式是什么？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 最可能是**梯度爆炸**（$\gamma>1$，误差项随间隔指数放大），也可能是学习率过大或序列中出现极端长句。
 
 处置顺序：(1) 加 `nn.utils.clip_grad_norm_(model.parameters(), max_norm=5)`（按模截断，教材 7.2.4.4 节指出它对阈值不敏感、是 RNN 的有效手段）；(2) 打印 `total_norm` 监控梯度模，确认是否真的爆掉；(3) 降低学习率或加入 warmup；(4) 加权重衰减/`dropout`；(5) 若同时存在长程依赖，考虑把 SRN 换成 LSTM/GRU 并检查遗忘门偏置初始化。
+
 </details>
 
 ## 7. 延伸阅读

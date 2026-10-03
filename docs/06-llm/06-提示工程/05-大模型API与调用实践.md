@@ -231,7 +231,8 @@ print("GPU 可用" if torch.cuda.is_available() else "使用 CPU（很慢，仅�
 
 **Q1：PET 的核心思想是什么？它相比「BERT + 新初始化 MLP」的优势在哪？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 PET（Pattern-Exploiting Training）的核心思想是**把下游分类任务改写成与预训练 MLM 一致的完形填空**：
 用人工先验知识设计含 `[MASK]` 的模板（Pattern），把原句拼进去，复用预训练好的 MLM head 得到 `[MASK]`
@@ -243,11 +244,13 @@ PET（Pattern-Exploiting Training）的核心思想是**把下游分类任务改
 
 代价是**对人工模板高度敏感**——不同模板在同一数据集上准确率可相差近 10 个百分点，且模板无法全局优化，
 需要领域先验知识。这直接催生了后续自动寻找模板的 Prompt-Tuning / P-Tuning 系列方法。
+
 </details>
 
 **Q2：Prompt Tuning、P-Tuning v1、P-Tuning v2 有什么区别？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 | 维度 | Prompt Tuning | P-Tuning v1 | P-Tuning v2 |
 |---|---|---|---|
@@ -262,11 +265,13 @@ PET（Pattern-Exploiting Training）的核心思想是**把下游分类任务改
 
 处理两个关键挑战的是 P-Tuning v1：**Discreteness（随机初始化的 prompt embedding 易陷入局部最优）**
 与 **Association（无法捕捉 prompt embedding 之间的相关性）**，方案是用 MLP + LSTM 做重参数化。
+
 </details>
 
 **Q3：一个业务需求来了，你怎么判断该用 API 调用 + 提示工程，还是参数高效微调？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 先看四个问题：
 
@@ -280,24 +285,28 @@ PET（Pattern-Exploiting Training）的核心思想是**把下游分类任务改
 实践中常见组合是「**先用提示工程快速跑通业务、验证价值，再把高频且稳定的子任务用 LoRA 固化**」。
 金融项目正是因为「不需要专业算法知识、无需训练」而选择 ChatGLM-6B + in-context learning；
 而电商评论分类项目则因为要提升固定任务的准确率，选择了 PET / P-Tuning 路线。
+
 </details>
 
 ## 6. 自测题
 
 **1. 写出 NLP 四范式，并说明第四范式相比第三范式的核心优势。**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 ① 传统机器学习（TF-IDF + 朴素贝叶斯等）；② 深度学习模型（word2vec + LSTM 等）；
 ③ 预训练模型 + Fine-Tuning（BERT + fine-tuning）；④ 预训练模型 + Prompt + 预测（BERT + Prompt）。
 
 第四范式的核心优势是：**训练数据量显著减少**——通过添加模板把下游任务转换为预训练任务的形式，
 让模型在小样本甚至零样本场景下也能达到理想效果，同时避免引入额外参数、缓解过拟合。
+
 </details>
 
 **2. 什么是 Hard Prompt 与 Soft Prompt？各自的优缺点是什么？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 Hard Prompt（离散提示）：提示模板固定，由真实文本字符串构成。
 优点是不需要显式指定模板中各 token 的语义；缺点是依赖人工、改变 prompt 中单个单词就会带来巨大差异，
@@ -309,11 +318,13 @@ Soft Prompt（连续提示）：输入一个**可参数化**的提示模板，�
 缺点是引入额外参数需要训练、收敛较慢、调参复杂、可解释性弱。
 
 训练时两者的共同点是**预训练模型参数冻结**，只更新 prompt 相关参数。
+
 </details>
 
 **3. 为什么 LoRA 能大幅降低显存占用？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 因为 LoRA 假设「下游任务所需的权重更新量是低秩的」，对原始权重矩阵 $W\in\mathbb{R}^{d\times d}$
 不做全量更新，而是用 $W + BA$ 表示，其中 $B\in\mathbb{R}^{d\times r}$、$A\in\mathbb{R}^{r\times d}$、$r\ll d$，
@@ -323,11 +334,13 @@ Soft Prompt（连续提示）：输入一个**可参数化**的提示模板，�
 因此优化器状态与梯度显存大幅减少；② 不需要为每个任务保存完整模型，只保存几十 MB 的 adapter；
 ③ 推理时可把 $BA$ 合并回 $W$，**不引入额外推理延迟**。
 工程上还需注意学习率要比全量微调大 1~2 个数量级，`lora_alpha` 通常取 `r` 的 2~4 倍。
+
 </details>
 
 **4. Chat 接口里 `system` / `user` / `assistant` 三种角色分别适合放什么内容？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 - `system`：稳定的角色设定、任务说明、输出格式与边界约束（如「你是金融文本分类器，只输出类别名」）。
  放这里便于复用与缓存，也让指令与用户数据天然分隔。
@@ -336,11 +349,13 @@ Soft Prompt（连续提示）：输入一个**可参数化**的提示模板，�
 
 给 few-shot 示例时要注意：示例必须与期望输出**逐字符同构**（含字段名、标点、大小写），
 否则模型会忠实模仿错误的格式。
+
 </details>
 
 **5. 基于 GPT2 的医疗问诊机器人与 PET 文本分类在技术路线上有什么本质区别？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 本质上一个是**生成式（自回归）**、一个是**判别式（完形填空/分类）**。
 
@@ -352,6 +367,7 @@ Soft Prompt（连续提示）：输入一个**可参数化**的提示模板，�
 
 工程含义：判别式方案输出可控、易评估，适合分类/抽取/匹配；生成式方案表达自由，
 在高风险领域（医疗）必须叠加检索增强（RAG）与免责声明，不能直接作为诊疗依据。
+
 </details>
 
 ## 7. 延伸阅读

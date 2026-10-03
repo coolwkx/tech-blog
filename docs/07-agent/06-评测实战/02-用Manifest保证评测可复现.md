@@ -501,9 +501,8 @@ if __name__ == "__main__":
 
 ### 6.1 面试问答
 
-<details><summary>参考答案</summary>
-
-**Q1：为什么说"评测不可复现"比"判分逻辑写错"更危险？**
+<details>
+<summary><strong>Q1：为什么说"评测不可复现"比"判分逻辑写错"更危险？</strong></summary>
 
 判分逻辑写错通常是**系统性的、可见的**：它在所有样本上一致地错，一查逐条结果就能看出方向，修完就不再犯。不可复现则是**随机的、隐形的**：表现为"同一个改动这次涨 5 点、下次跌 3 点"，你无法从数字本身判断它是信号还是噪声。它会污染整条决策链——基于不可复现数字做出的架构决策、资源分配都会是错的，而且**错误不会暴露**，因为下次评测又是另一个随机数。
 
@@ -511,9 +510,8 @@ if __name__ == "__main__":
 
 </details>
 
-<details><summary>参考答案</summary>
-
-**Q2：`seeds` 和 `repeatCount` 有什么区别？为什么 `repeatCount` 允许大于 `seeds.length`？**
+<details>
+<summary><strong>Q2：`seeds` 和 `repeatCount` 有什么区别？为什么 `repeatCount` 允许大于 `seeds.length`？</strong></summary>
 
 `seeds` 是**随机源集合**，约束是"每个任务必须在这几个随机源上都被执行过"（覆盖）。`repeatCount` 是**每个任务的配对重复总数**，约束是"每个任务应产出多少对 baseline/optimized 结果"（样本量）。规则是 `repeatCount ≥ seeds.length`，且每个任务必须覆盖全部声明 seed。
 
@@ -521,9 +519,8 @@ if __name__ == "__main__":
 
 </details>
 
-<details><summary>参考答案</summary>
-
-**Q3：数据集哈希应该哈希"标识"还是"内容"？如果内容是 JSONL 且记录顺序有意义，怎么办？**
+<details>
+<summary><strong>Q3：数据集哈希应该哈希"标识"还是"内容"？如果内容是 JSONL 且记录顺序有意义，怎么办？</strong></summary>
 
 应优先哈希**内容**。标识哈希（如 `sha256("my-dataset-v1")`）只能防"认错数据集"——它本质是版本号字符串，内容被悄悄改写（改了两条期望值、删了一条难任务）哈希完全不变，而这恰恰是最常见也最危险的变化。
 
@@ -535,7 +532,8 @@ if __name__ == "__main__":
 
 ### 6.2 自测题
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **1. Manifest 里为什么要声明 `taskIds`（应跑全集），而不是直接用实际跑出来的任务列表做分母？**
 
@@ -545,7 +543,8 @@ if __name__ == "__main__":
 
 </details>
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **2. 一个评测脚本记录 `model.name = "flash-lite"`，这足够吗？还需要什么？**
 
@@ -555,7 +554,8 @@ if __name__ == "__main__":
 
 </details>
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **3. 为什么 `pairKey` 必须在导入时**重新计算**并强制比对，而不是直接信任输入文件里的值？**
 
@@ -565,7 +565,8 @@ if __name__ == "__main__":
 
 </details>
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **4. 把评测接入 CI，Manifest 里哪些字段应该自动注入，哪些必须人工维护？**
 

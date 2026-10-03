@@ -244,7 +244,8 @@ pd.DataFrame([result]).to_csv("ragas_evaluation_results.csv", index=False) # 多
 
 **Q1：RAGAS 的四个核心指标分别衡量什么？分数低时应优先改哪一侧？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 四个指标按「检索 / 生成」两侧划分：
 
@@ -261,11 +262,13 @@ pd.DataFrame([result]).to_csv("ragas_evaluation_results.csv", index=False) # 多
 - **context_relevancy 低** → 检索结果冗余 → 加重排序、减小 `candidate_m`、加标量过滤。
 
 这就是评估体系最大的价值：把「效果不好」翻译成「该改哪一侧」。
+
 </details>
 
 **Q2：如何自动构造一份高质量的 RAG 评估数据集？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 用三个代理协作：
 
@@ -283,11 +286,13 @@ pd.DataFrame([result]).to_csv("ragas_evaluation_results.csv", index=False) # 多
  建议重点关注 **faithfulness** 作为主要指标，因为它能全面反映端到端性能。
 
 整体收益：把「试错式定性评估」变成「有量化依据的数据驱动迭代」，避免在无效改动上浪费时间。
+
 </details>
 
 **Q3：`context_recall` 和 `faithfulness` 都在做「声明级」核对，它们有什么本质区别？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 两者的比较对象不同：
 
@@ -301,13 +306,15 @@ pd.DataFrame([result]).to_csv("ragas_evaluation_results.csv", index=False) # 多
 所以两者对「不通过」的含义完全不同：`context_recall` 低说明检索漏料（**修检索**）；
 `faithfulness` 低说明模型脱离材料（**修生成**）。如果只用一个指标，就无法区分这两种故障模式——
 这正是评估体系需要同时覆盖检索侧与生成侧的原因。
+
 </details>
 
 ## 6. 自测题
 
 **1. RAGAS 评估数据集需要哪四个字段？哪个是唯一需要人工标注的？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 - `question`：作为 RAG 管道输入的用户查询（输入）；
 - `answer`：RAG 管道生成的答案（输出）；
@@ -316,11 +323,13 @@ pd.DataFrame([result]).to_csv("ragas_evaluation_results.csv", index=False) # 多
 
 RAGAS 的设计取向正是「不必依赖人工标注的标准答案，而是通过底层 LLM 来评估」，
 因此除了 `ground_truths`（且主要用于 `context_recall`），其余都可自动获得。
+
 </details>
 
 **2. `answer_relevancy` 为什么用「反向生成问题」来实现？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 因为直接让 LLM 判断「这个答案切题吗」是主观打分，容易受评估模型偏好影响、且难以复现。
 反向生成的做法是：让 LLM 根据答案生成 n 个「这个答案可能在回答的问题」$q_i$，
@@ -329,11 +338,13 @@ RAGAS 的设计取向正是「不必依赖人工标注的标准答案，而是�
 
 好处：① 把主观判断转化为**可量化的向量相似度**；② 能捕捉「答案是正确知识但答非所问」的情况——
 如果答案与问题无关，由它反推出来的问题就会与原问题距离很远。
+
 </details>
 
 **3. 设计评估 Prompt 时，为什么要给 1-5 分的 rubric 并要求先输出理由？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 给 rubric 的原因：**保持评估代理的一致性，避免因模糊标准导致评分结果波动**。
 没有明确标准时，同一份数据多次评估的分数可能差异很大，指标就失去了横向比较的意义。
@@ -342,11 +353,13 @@ RAGAS 的设计取向正是「不必依赖人工标注的标准答案，而是�
 ② **促使代理在回答过程中进行更深入的思考，从而提高评分的准确性**——这与「给模型充足思考时间」是同一个原理。
 
 此外输出格式要固定（如 `Feedback: ... [RESULT] n`），让程序能稳定抽取分数，避免解析失败。
+
 </details>
 
 **4. 为什么要对自动生成的测试样本做质量过滤？三维评分分别是什么？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 因为自动生成的样本可能存在质量问题（问题有歧义、无法从上下文回答、脱离上下文看不懂等），
 低质量样本会污染评估结论。因此引入样本质量评价代理，对每个问题按三个维度打 1~5 分：
@@ -357,11 +370,13 @@ RAGAS 的设计取向正是「不必依赖人工标注的标准答案，而是�
 
 **任一维度评分过低就直接剔除该问题**。经验值是过滤后大约能保留一半样本，
 所以想得到 100 条有效样本，建议先生成 200 条。
+
 </details>
 
 **5. 评估指标四项都很高，但业务方仍不满意，可能是什么问题？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 说明**指标体系没有覆盖业务的真实诉求**。常见情况：
 
@@ -377,6 +392,7 @@ RAGAS 的设计取向正是「不必依赖人工标注的标准答案，而是�
 需要按业务流量分布重新采样评估集。
 
 结论：RAGAS 四个指标是**必要但不充分**的，业务上线前仍需在真实流量上做人工抽检与 A/B。
+
 </details>
 
 ## 7. 延伸阅读

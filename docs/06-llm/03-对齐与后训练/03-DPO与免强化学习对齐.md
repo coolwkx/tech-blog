@@ -390,7 +390,8 @@ if __name__ == "__main__":
 
 **Q1：请完整推导 DPO 的损失函数。**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 四步。
 
@@ -410,7 +411,8 @@ $$\mathcal{L}_{DPO}=-\mathbb{E}\left[\log\sigma\!\left(\beta\log\frac{\pi_\theta
 
 **Q2：$\beta$ 的物理含义是什么？取太小或太大会发生什么？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 物理含义：$\beta$ 是「KL 约束的价格」，也就是「每偏离参考模型一个单位对数概率所需付出的代价」。从闭式解 $\pi^*\propto\pi_{ref}\exp(r/\beta)$ 看，$\beta$ 是温度——越小越激进地追逐奖励，越大越贴近参考。也可以从隐式奖励 $\hat r=\beta\log(\pi_\theta/\pi_{ref})$ 看：要达到同样的隐式奖励，$\beta$ 越小就需要越大的对数比，也就是离参考越远。
 
@@ -424,7 +426,8 @@ $$\mathcal{L}_{DPO}=-\mathbb{E}\left[\log\sigma\!\left(\beta\log\frac{\pi_\theta
 
 **Q3：DPO 与 RLHF 各自的适用场景是什么？为什么不干脆全用 DPO？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 DPO 适合：有高质量离线偏好数据、算力有限、需要快速迭代、偏好主要体现在风格/语气/格式/安全性上、以及不想维护 PPO 那套四模型基础设施的场景。它的训练成本接近 SFT，稳定性也更好。
 
@@ -438,7 +441,8 @@ RLHF（PPO/GRPO）适合：任务需要「探索」和在线纠偏；有可验�
 
 **Q4：写出 DPO 的梯度并解释其中的「动态权重」。**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 记 $u=\hat r_\theta(x,y_w)-\hat r_\theta(x,y_l)$，则
 
@@ -456,7 +460,8 @@ $$\nabla_\theta\mathcal{L}_{DPO}=-\beta\,\sigma(-u)\Big(\nabla_\theta\log\pi_\th
 
 **1. 为什么 DPO 的配分函数 $Z(x)$ 可以消掉？如果偏好数据跨 prompt 配对会发生什么？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 代回 Bradley-Terry 时，两条回答的奖励差为
 
@@ -470,7 +475,8 @@ $\beta\log Z(x)$ 只依赖 $x$，在同一 prompt 的两条回答上完全相同
 
 **2. 某次 DPO 训练中观察到：loss 从 0.69 降到 0.05，但人工评估变差，输出变短且套话变多。请给出三条最可能的原因与对应处理。**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 ① $\beta$ 太小导致策略离参考太远、过拟合偏好数据。处理：调大 $\beta$（例如 $0.1\to0.3$），并监控 chosen 的绝对对数概率是否在下降。
 
@@ -484,7 +490,8 @@ $\beta\log Z(x)$ 只依赖 $x$，在同一 prompt 的两条回答上完全相同
 
 **3. 计算：$\beta=0.1$，$\log\frac{\pi_\theta(y_w)}{\pi_{ref}(y_w)}=-0.4$，$\log\frac{\pi_\theta(y_l)}{\pi_{ref}(y_l)}=-0.9$。求 $\hat r_\theta(y_w)$、$\hat r_\theta(y_l)$、$u$、DPO 损失与梯度权重。**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 $\hat r_\theta(y_w)=\beta\times(-0.4)=-0.04$；$\hat r_\theta(y_l)=\beta\times(-0.9)=-0.09$。
 
@@ -500,7 +507,8 @@ $u=-0.04-(-0.09)=0.05$。
 
 **4. ORPO 和 SimPO 都去掉了参考模型，它们各自是怎么做到的？代价是什么？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 ORPO：损失 = 在 chosen 上计算的 SFT 交叉熵损失 $+\ \lambda\times$ odds ratio 惩罚。核心在于那个 SFT 项本身起到了「锚住 chosen 分布」的作用，替代了参考模型的角色；odds ratio 惩罚则承担「拉开好坏差距」的职责。代价是失去了对着参考模型的显式约束，无法直接控制 KL 偏移，只能靠 $\lambda$ 与学习率间接约束。
 
@@ -512,7 +520,8 @@ KTO 也值得一提：它面向「单个回答 + 好/坏标签」的场景，用
 
 **5. 什么情况下你会放弃 DPO，改回 RL？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 ① 任务有可验证奖励（数学答案、代码单测、工具调用是否成功）。这类任务的偏好不该由人类主观判断，规则奖励更准、更便宜、抗 hack，而 DPO 无法把「答案对错」写进离线偏好对里。
 

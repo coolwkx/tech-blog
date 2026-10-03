@@ -419,25 +419,22 @@ def store_poesy_to_txt(content: str) -> str:
 
 ## 5. 面试问答
 
-<details><summary>参考答案</summary>
-
-**Q1：LangChain 里 Chain 和 Agent 的本质区别是什么？什么时候该用哪个？**
+<details>
+<summary><strong>Q1：LangChain 里 Chain 和 Agent 的本质区别是什么？什么时候该用哪个？</strong></summary>
 
 区别在于「下一步做什么由谁决定」。Chain 的调用顺序由开发者写死在代码里，数据流是确定的，因此可预测、易测试、成本可控；Agent 把下一步的决策权交给 LLM，由模型根据当前上下文输出 `AgentAction`（选哪个工具、传什么参数）或 `AgentFinish`，AgentExecutor 负责把工具执行结果作为 Observation 回填并再次调用模型，直到模型宣布结束。选型上：流程稳定、路径唯一的任务（字段抽取、RAG 问答、固定格式转换）用 Chain；需要多步试探、动态选工具、失败后自行换路线的任务用 Agent。实践中常见做法是「外层 Agent 做路由 + 内层 Chain 做确定性处理」，兼顾灵活性与可控性。
 
 </details>
 
-<details><summary>参考答案</summary>
-
-**Q2：AgentExecutor 在循环里扮演什么角色？它如何避免死循环？**
+<details>
+<summary><strong>Q2：AgentExecutor 在循环里扮演什么角色？它如何避免死循环？</strong></summary>
 
 AgentExecutor 是把 Agent（决策器）与工具列表（执行器）包装起来的驱动器，负责迭代运行代理循环，并把每一步的 Observation 回填到下一次调用中；它还负责把 Agent 的输出解析成 `AgentAction` 或 `AgentFinish` 两种类型，前者触发工具执行，后者终止循环并返回结果。防止死循环的手段主要有：最大迭代次数（`max_iterations`）、解析失败时的错误处理策略（`handle_parsing_errors`，把解析失败信息回灌给模型让它自我纠正）、以及 `early_stopping_method`。此外工程上还应加上整体超时和重复动作检测，因为模型可能在参数微变的情况下反复调用同一个工具。
 
 </details>
 
-<details><summary>参考答案</summary>
-
-**Q3：多 Agent 协作（CrewAI）相比单 Agent 加了哪些东西？代价是什么？**
+<details>
+<summary><strong>Q3：多 Agent 协作（CrewAI）相比单 Agent 加了哪些东西？代价是什么？</strong></summary>
 
 加的是一层「角色化的任务分解」：CrewAI 用 Agent（个性、背景故事、技能）、Task（明确目标、可分解为子任务）、Crew（Agent + Task + Process 的容器）、Process（任务分解、资源分配、沟通协调）、Tools（定制化工具）五个组件把一个大目标拆给多个角色。收益是每个 Agent 的 system prompt 更聚焦、工具集更小，从而降低单 Agent 面对大工具集时的选择错误率，也便于并行与专业化。代价主要有四：token 成本与延迟随对话轮数放大；错误会沿链路传播（上游写错、下游照做）；调试需要开 `verbose` 看完整对话流；不同 Agent 的上下文不天然共享，靠 Task 描述显式传递，容易丢信息。
 
@@ -447,7 +444,8 @@ AgentExecutor 是把 Agent（决策器）与工具列表（执行器）包装起
 
 ## 6. 自测题
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **1. `zero-shot-react-description`、`structured-chat-zero-shot-react-description`、`conversational-react-description` 三者的区别是什么？**
 
@@ -455,7 +453,8 @@ AgentExecutor 是把 Agent（决策器）与工具列表（执行器）包装起
 
 </details>
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **2. CrewAI 的五个核心组件各是什么？`Process.sequential` 的含义？**
 
@@ -463,7 +462,8 @@ Agent（代理，有独特个性、背景故事和技能）、Task（任务，�
 
 </details>
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **3. 为什么 `load_tools(["llm-math"], llm=llm)` 必须传 `llm`？**
 
@@ -471,7 +471,8 @@ Agent（代理，有独特个性、背景故事和技能）、Task（任务，�
 
 </details>
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **4. 自定义工具时，工具名和工具描述分别来自哪里？为什么要写规范？**
 
@@ -479,7 +480,8 @@ Agent（代理，有独特个性、背景故事和技能）、Task（任务，�
 
 </details>
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **5. 同一个 `SimpleSequentialChain` 中，第二条链为什么只需要声明自己的输入变量？**
 

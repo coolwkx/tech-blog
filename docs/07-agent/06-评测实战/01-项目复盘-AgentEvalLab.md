@@ -470,9 +470,8 @@ Task-cluster 95% CI: [0.0000, 1.0000]
 
 ### 6.1 面试问答
 
-<details><summary>参考答案</summary>
-
-**Q1：为什么这个项目坚持用证据式判定，而不是检查最终状态字符串或退出码？请给出至少三种被它挡住的假成功。**
+<details>
+<summary><strong>Q1：为什么这个项目坚持用证据式判定，而不是检查最终状态字符串或退出码？请给出至少三种被它挡住的假成功。</strong></summary>
 
 退出码和状态字符串都是**被评测系统自己写出来的**，不是环境的客观事实。退出码只说"运行器正常结束"，状态字符串只说"Agent 声称自己做完了"——两者都可能在目标完全没达成时为真。证据式判定把判定依据换成"由成功的 `tool_result` 实际产出、经 `verification` 校验、并被 `final` 显式引用的结构化证据"，于是三条链路（来源事件存在、值/哈希一致、最终回答引用）任何一条断了都不算通过。
 
@@ -482,9 +481,8 @@ Task-cluster 95% CI: [0.0000, 1.0000]
 
 </details>
 
-<details><summary>参考答案</summary>
-
-**Q2：`violations` 是数组、`primaryFailure` 是单个值，为什么两个都要？汇总时 `failures` 计数为什么不能相加？**
+<details>
+<summary><strong>Q2：`violations` 是数组、`primaryFailure` 是单个值，为什么两个都要？汇总时 `failures` 计数为什么不能相加？</strong></summary>
 
 因为这两个字段服务**两种不同的消费者**。`violations` 服务于"分析与改进"：一次运行可能同时"缺少证据"和"工具失败后未恢复"，把信息压缩成一个标签会直接丢掉一条改进线索，所以 `violations` 保留全部违规（同 code 合并为一条、message 拼接、`evidenceIds` 求并集）。`primaryFailure` 服务于"聚合与呈现"：画失败分布图、做跨版本对比、写周报都需要一个稳定、可预期、单值的归因；它严格等于 `violations[0].code`，而顺序由代码书写顺序固定，所以"零步终止 + 缺证据"永远归为 `zero_step_termination`。
 
@@ -492,9 +490,8 @@ Task-cluster 95% CI: [0.0000, 1.0000]
 
 </details>
 
-<details><summary>参考答案</summary>
-
-**Q3：Bootstrap 为什么必须以 `taskId` 为聚类单位？如果按配对单位重采样会得到什么错误结论？**
+<details>
+<summary><strong>Q3：Bootstrap 为什么必须以 `taskId` 为聚类单位？如果按配对单位重采样会得到什么错误结论？</strong></summary>
 
 因为同一个任务的多轮 `repeat`/`seed` 之间**不独立**：它们共享同一套页面结构、同一条目标描述、同一种失败模式。一个难任务很可能 5 次重复全失败，一个易任务很可能 5 次全成功——簇内几乎完全相关。i.i.d. Bootstrap 假设每个配对是可独立交换的观测，它会把"50 个任务 × 2 次重复"当成 100 个独立样本，于是有效样本量被虚增约一倍，标准误被低估约 √2 倍，置信区间随之明显收窄。
 
@@ -504,7 +501,8 @@ Task-cluster 95% CI: [0.0000, 1.0000]
 
 ### 6.2 自测题
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **1. 把六段流水线写出来，并指出哪一段负责拒绝"脏数据"、哪一段负责拒绝"假成功"。**
 
@@ -514,7 +512,8 @@ Task-cluster 95% CI: [0.0000, 1.0000]
 
 </details>
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **2. 一条轨迹里 `tool_call` 事件有 5 条，`step` 分别为 1,1,2,3,3。它的 `steps` 是多少？为什么不能用 tool_call 条数？**
 
@@ -522,7 +521,8 @@ Task-cluster 95% CI: [0.0000, 1.0000]
 
 </details>
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **3. `generatedAt` 每次都变，那这份报告还算"可复现"吗？请区分两种可复现。**
 
@@ -532,7 +532,8 @@ Task-cluster 95% CI: [0.0000, 1.0000]
 
 </details>
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **4. 如果让你把 `LLM-as-a-Judge` 加进这个项目，最小侵入的方案是什么？必须先满足什么前提？**
 

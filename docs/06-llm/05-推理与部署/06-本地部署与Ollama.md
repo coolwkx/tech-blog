@@ -253,7 +253,8 @@ print(llm.invoke("你是谁"))
 
 **Q1：Ollama 相比直接用 transformers 加载模型，工程上解决了什么问题？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 主要解决四件事：
 
@@ -266,11 +267,13 @@ print(llm.invoke("你是谁"))
 代价是**定制能力弱于 transformers**：不能改模型结构、不能直接做训练，
 量化与推理参数的可调范围也受 llama.cpp 支持范围限制。所以「推理与部署」用 Ollama，
 「训练与微调」仍要用 transformers + PEFT 这类工具链。
+
 </details>
 
 **Q2：为什么要在安装后立刻配置 `OLLAMA_MODELS`？不配会怎样？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 Ollama 默认把模型存在用户目录下（Windows 为 `C:\Users\%username%\.ollama\models`，
 Linux/macOS 为 `~/.ollama/models`）。一个大模型动辄数 GB 到数十 GB，若不迁移：
@@ -280,11 +283,13 @@ Linux/macOS 为 `~/.ollama/models`）。一个大模型动辄数 GB 到数十 GB
 正确做法是：新建**系统**环境变量 `OLLAMA_MODELS` 指向数据盘（如 `D:\Work\ollama\models`），
 并且**先退出 Ollama 进程再改、改完重启**，否则运行中的进程仍用旧配置。
 Linux 下若用 systemd 管理服务，必须写进 service 的 `Environment=` 才持久有效。
+
 </details>
 
 **Q3：Ollama 的 `/api/generate` 和 `/api/chat` 有什么区别？RAG 应用该用哪个？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 `/api/generate` 是**单轮文本补全**接口，入参是 `prompt` 字符串，适合「给一段文本让它续写/改写」；
 `/api/chat` 是**多轮对话**接口，入参是 `messages` 列表（含 `role`/`content`），
@@ -296,13 +301,15 @@ RAG 应用应优先用 `/api/chat`：① 检索到的上下文与用户问题需
 
 另外 RAG 还需要 `/api/embed` 生成向量——**生成模型与 embedding 模型要分开选**
 （如生成用 `qwen2:7b`、向量用 `nomic-embed-text`），不要用一个模型硬兼两职。
+
 </details>
 
 ## 6. 自测题
 
 **1. Ollama 默认监听哪个端口？用 Python 远程调用另一台机器上的 Ollama，代码怎么写？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 默认端口 **11434**。远程调用：
 
@@ -315,11 +322,13 @@ print(resp["message"]["content"])
 
 需注意：服务端默认只监听本机，远程访问要在服务端配置 `OLLAMA_HOST=0.0.0.0`，
 并做好网络隔离与访问控制，避免把模型服务暴露到公网。
+
 </details>
 
 **2. 运行 13B 模型大约需要多少显存？显存不足时按什么顺序降级？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 给出的经验值：**13B 至少需要 16GB 显存**（7B 至少 8GB）。若没有 GPU 会默认加载 CPU，
 可运行但速度很慢。
@@ -327,11 +336,13 @@ print(resp["message"]["content"])
 显存不足时的降级顺序：① 换更低量化等级（如 Q4_K_M，7B 权重从约 14GB 降到约 4GB）；
 ② 降低 `num_ctx`（KV cache 随上下文线性增长）；③ 换更小参数规模的模型；
 ④ 减少并发/批量。显存 ≈ 权重 + KV cache + 运行开销，三项都要考虑。
+
 </details>
 
 **3. 写一个 Modelfile，把 `qwen2:7b` 定制成「只依据原文作答、温度 0.2、上下文 8K」的金融助手。**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 ```text
 FROM qwen2:7b
@@ -349,11 +360,13 @@ SYSTEM """你是一名严谨的金融文本分析助手。
 ollama create finance-qwen -f Modelfile.finance
 ollama run finance-qwen
 ```
+
 </details>
 
 **4. 为什么 Ollama 能在没有 GPU 的机器上运行？代价是什么？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 因为 Ollama 底层使用 **llama.cpp**，它支持 CPU 后端（并支持 AVX/NEON 等指令集加速）与 CPU/GPU 混合推理，
 模型以 GGUF 量化格式存储，量化本身也大幅降低了计算与内存需求。
@@ -362,11 +375,13 @@ ollama run finance-qwen
 代价是**推理速度显著下降**（通常每秒几个 token，长回答等待明显），
 且并发能力很弱；另外提醒「如果没有 GPU 默认加载 CPU；如果有默认加载 GPU」，
 说明这是自动降级而非等价替代。
+
 </details>
 
 **5. 用 Ollama 搭一个最小 RAG 后端，需要用到哪些端点？各自负责什么？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 - `POST /api/embed`：把知识库切分后的文本块和用户问题编码为向量，用于建库与检索；
 - `POST /api/chat`：把检索到的 Top-K 文本块与用户问题按角色拼进 `messages`，生成最终回答；
@@ -376,6 +391,7 @@ ollama run finance-qwen
 流程：文档切分 → `/api/embed` 入库（向量库如 Milvus）→ 用户提问 → `/api/embed` 编码问题 →
 向量检索 Top-K → 拼 prompt → `/api/chat` 生成 → 返回答案与引用来源。
 注意生成模型与 embedding 模型要分别选择，并控制 `num_ctx` 能容纳拼接后的上下文。
+
 </details>
 
 ## 7. 延伸阅读

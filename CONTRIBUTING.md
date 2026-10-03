@@ -20,6 +20,25 @@
 3. 提交信息格式 `类型: 简述`，类型取 `feat|fix|docs|refactor|ci`。
 4. 发起 PR 并说明「改了哪一节、为什么」。
 
+## 折叠答案的写法（重要）
+
+面试问答与自测题的答案放在折叠块里。**题目必须写进 summary，并用 HTML 标签而不是 Markdown 加粗**：
+
+```html
+<details>
+<summary><strong>Q1：为什么 x += 1 不是原子的？</strong></summary>
+
+（这里是答案，可以正常使用 Markdown）
+
+</details>
+```
+
+**为什么必须用 `<strong>` 而不是 Markdown 的加粗语法**：summary 属于 HTML 块，GitHub 不会在 HTML 块内解析 Markdown 强调语法。用 Markdown 加粗会把两个星号原样显示在页面上，看起来像题目丢失。`<strong>` 是 HTML 标签，在任何渲染器下都生效。
+
+**为什么题目要放进 summary**：题目直接显示在折叠条上，不用点开就知道问的是什么；点开才看答案。
+
+**结构要求**：`<details>`、`<summary>`、`</details>` 各自单独占一行，并在 `</summary>` 之后与 `</details>` 之前保留空行。
+
 ## 写作规范
 
 - 语言：中文为主，**英文术语保留原文**。

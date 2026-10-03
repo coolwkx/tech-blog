@@ -516,9 +516,8 @@ jobs:
 
 ### 6.4 面试问答
 
-<details><summary>参考答案</summary>
-
-**Q1：给一个只有文本日志的 Agent 补评测，第一步做什么？**
+<details>
+<summary><strong>Q1：给一个只有文本日志的 Agent 补评测，第一步做什么？</strong></summary>
 
 不是写脚本，而是**把日志改造成带证据的结构化轨迹**：①定义事件类型（`tool_call`/`tool_result`/`verification`/`final`），工具调用成对记录且 `tool_result` 必带 `success`；②每个工具成功时产出 `claimId` + `value` + `sourceEventId`，而不是一句人话；③结束时输出 `final` 并显式 `citations`。
 
@@ -526,9 +525,8 @@ jobs:
 
 </details>
 
-<details><summary>参考答案</summary>
-
-**Q2：为什么"推送失败未重试"用状态断言查不出来？**
+<details>
+<summary><strong>Q2：为什么"推送失败未重试"用状态断言查不出来？</strong></summary>
 
 因为**状态是系统自己写的**。典型形状是先 `state.notifyDelivered = true`，再 `http_post(...)`（异常被吞），最后落盘——从断言视角看完全成立，但**"状态推进"与"副作用发生"之间没有因果关系**。
 
@@ -538,9 +536,8 @@ jobs:
 
 </details>
 
-<details><summary>参考答案</summary>
-
-**Q3：15 条任务跑出 80% → 88%，能上线吗？**
+<details>
+<summary><strong>Q3：15 条任务跑出 80% → 88%，能上线吗？</strong></summary>
 
 四组信息缺一不可。①**配对结构**：8 点差是 `(b − c)/N`，必须拿到 2×2 表；重点看 `pass→fail`，若有 3 条原本通过的任务现在失败，说明改动**破坏了已工作的功能**，平均值涨了也不能上（这正是 `maxRegressions: 0` 的理由）。②**聚类 CI**：15 个任务簇的区间会宽到跨 0，要报 `88%（95% CI [x, y]，n=15）`——**增加任务簇数远比增加每任务重复次数有效**。③**失败类型分布**：若 `tool_error` 从 4 降到 0 而 `assertion_failed` 从 1 涨到 3，那是失败**换了个形式**，平均值看不出来。④**系统层与副作用**：全量/成功两种步数口径是否一致？送达率、一致率、时区正确率有没有退化？**成功率涨但送达率跌**是典型的"报了更多、发出去更少"。
 
@@ -548,7 +545,8 @@ jobs:
 
 ### 6.5 自测题
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **1. 为什么每条任务都要有 `requiredEvidence`，而不是只写 `assertions`？**
 
@@ -558,7 +556,8 @@ jobs:
 
 </details>
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **2. `stale-data-guard`（三源 null、缓存 6 小时前）的期望产物应该是什么？**
 
@@ -574,7 +573,8 @@ jobs:
 
 </details>
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **3. 如何让"回归"比"分数下降"更严格？**
 

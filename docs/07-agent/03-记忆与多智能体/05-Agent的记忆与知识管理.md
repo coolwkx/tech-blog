@@ -406,25 +406,22 @@ RAG 系统里的记忆属于「体量远超上下文窗口」的那一类，因�
 
 ## 5. 面试问答
 
-<details><summary>参考答案</summary>
-
-**Q1：大模型本身没有记忆，那 ChatGPT 是怎么「记住」上下文的？**
+<details>
+<summary><strong>Q1：大模型本身没有记忆，那 ChatGPT 是怎么「记住」上下文的？</strong></summary>
 
 靠封装层的回传。每次请求都把之前的对话历史（用户消息与模型回答）重新拼进本次的 prompt 一起发送，模型看到的是「完整对话文本」，因此表现得像记得。这带来两个工程约束：一是历史越长 token 成本越高、延迟越大；二是模型上下文窗口有限，超出就必须裁剪、摘要或改用检索方式召回。所以「记忆」在工程上是一套读写与遗忘机制，而不是模型的能力。
 
 </details>
 
-<details><summary>参考答案</summary>
-
-**Q2：短期记忆和长期记忆在实现上有什么不同？各举一个的例子。**
+<details>
+<summary><strong>Q2：短期记忆和长期记忆在实现上有什么不同？各举一个的例子。</strong></summary>
 
 短期记忆指单一会话中传递的数据，实现上就是一份随请求回传的 `messages` 列表或 token id 列表，进程结束即丢失——GPT2 医疗问诊机器人用 `history` 列表保存每轮的 token id，并只取 `history[-max_history_len:]` 拼进输入，就是典型实现；LangChain 的 `ChatMessageHistory` 是同一思路的组件化封装。长期记忆指跨多个会话获取和更新的信息，必须落到进程之外，例如大宗商品监控项目的 `gold_state.json`（保存 `last_price` / `last_status` / `last_notify_time`，实现重启后仍能判断「是否需要提醒」）、`gold_history.json`（保存历史价格序列，用于趋势分析与日报），以及 RAG 系统的 Milvus 向量库（保存文档向量，供跨会话检索）。核心区别是：短期记忆是「回传」，长期记忆是「持久化 + 按需读取」。
 
 </details>
 
-<details><summary>参考答案</summary>
-
-**Q3：为什么 `gold_state.json` 里需要 `last_notify_time` 而不只是 `last_status`？**
+<details>
+<summary><strong>Q3：为什么 `gold_state.json` 里需要 `last_notify_time` 而不只是 `last_status`？</strong></summary>
 
 因为 `last_status` 只能回答「状态变了没有」，不能回答「该不该再提醒一次」。如果用户长期处于 `buy` 状态（价格持续低于买入线），只靠状态变化判断就会一直沉默；如果改成每轮都提醒，又会在检查间隔只有几秒时疯狂轰炸。`last_notify_time` 提供了第二个维度：状态未变化时可以按 `notify_interval_seconds`（默认 3600 秒）做周期提醒限流。二者组合出代码里的两段式判定——状态变化立即提醒、否则超时提醒、都不满足则跳过。本质上是把「一次决策所需的全部上下文」都持久化，使提醒行为与进程生命周期解耦。
 
@@ -434,7 +431,8 @@ RAG 系统里的记忆属于「体量远超上下文窗口」的那一类，因�
 
 ## 6. 自测题
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **1. 这里把 Memory 分为哪两类？各自定义是什么？**
 
@@ -442,7 +440,8 @@ RAG 系统里的记忆属于「体量远超上下文窗口」的那一类，因�
 
 </details>
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **2. `messages_to_dict` 输出里 `type` 与 `data` 各自的作用是什么？**
 
@@ -450,7 +449,8 @@ RAG 系统里的记忆属于「体量远超上下文窗口」的那一类，因�
 
 </details>
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **3. GPT2 医疗问诊机器人的输入为什么要在每轮结尾加 `[SEP]`，并在最前面加 `[CLS]`？**
 
@@ -458,7 +458,8 @@ RAG 系统里的记忆属于「体量远超上下文窗口」的那一类，因�
 
 </details>
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **4. 大宗商品监控项目里，历史截断出现了 `history[-500:]` 与 `history[-20000:]` 两种写法，这会带来什么问题？**
 
@@ -466,7 +467,8 @@ RAG 系统里的记忆属于「体量远超上下文窗口」的那一类，因�
 
 </details>
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **5. 除了滑动窗口，还有哪些控制记忆长度的方式？各自的代价是什么？**
 

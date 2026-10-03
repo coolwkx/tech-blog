@@ -352,7 +352,8 @@ print("OK")
 
 **Q1. CBOW 和 Skip-gram 有什么区别？实际项目怎么选？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 | 维度 | CBOW | Skip-gram |
 |------|------|-----------|
@@ -369,7 +370,8 @@ print("OK")
 
 **Q2. 为什么需要负采样？噪声分布为什么要用词频的 3/4 次幂？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **为什么需要**：原始 word2vec 的输出层是 $V$ 分类 softmax，每一步都要对全部 $V$ 个词求指数与归一化，单步计算量 $O(V\cdot N)$。$V$ 是几万到几十万时，训练不可接受。
 
@@ -389,7 +391,8 @@ $$\ell=-\log\sigma(u_o^\top v_c)-\sum_{i=1}^{k}\log\sigma(-u_{w_i}^\top v_c)$$
 
 **Q3. FastText 怎么解决 OOV？它和 word2vec、BERT 的表示有什么本质区别？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **FastText 解决 OOV 的机制**是**子词（subword）合成**：每个词的向量不是查表得到，而是由「整词 + 所有字符 n-gram」的向量求和（或平均）得到：
 
@@ -413,7 +416,8 @@ $$v_w=\frac{1}{|G|}\sum_{g\in G}z_g,\quad G=\{\text{词本身}\}\cup\{\text{所�
 
 **1. 设词表 $V=10000$、词向量维度 $N=100$、窗口半径 $c=2$。分别写出 CBOW 与 Skip-gram 一次训练样本的输入输出形状。**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **CBOW**（用 4 个上下文词预测 1 个中心词）：
 
@@ -434,7 +438,8 @@ $$v_w=\frac{1}{|G|}\sum_{g\in G}z_g,\quad G=\{\text{词本身}\}\cup\{\text{所�
 
 **2. 负采样把 $O(V)$ 降到 $O(k)$。若 $V=50000$、$k=5$，一轮训练（1 个正样本 + 5 个负样本）的计算量大约降到原来的几分之几？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 原 softmax 需要 1 次完整的 $V$ 维 softmax（含 $V$ 次指数运算）+ 1 次 $N\times V$ 的梯度计算，量级按 $V=50000$ 计。
 
@@ -450,7 +455,8 @@ $$\frac{k+1}{V}=\frac{6}{50000}=\frac{1}{8333}$$
 
 **3. 为什么说 word2vec 是「自监督」而不是「无监督」？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 两者都强调「不需要人工标注」，但「自监督」更精确地描述了它的机制：**监督信号是从数据本身自动构造出来的**。
 
@@ -462,7 +468,8 @@ word2vec 的做法是：从原始文本中滑窗，把「上下文词 → 中心
 
 **4. 词向量迁移到下游任务时，什么情况下该冻结 embedding、什么情况下该微调？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 | 情况 | 选择 | 理由 |
 |------|------|------|
@@ -479,7 +486,8 @@ word2vec 的做法是：从原始文本中滑窗，把「上下文词 → 中心
 
 **5. 请设计一个评估方案，判断「我用 gensim 训出来的词向量是否比 fastText 训出来的更好」。**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 不能只凭感觉看几个近邻词，要分两层评估：
 

@@ -343,7 +343,8 @@ print("稀疏实际占用: %.2f MB" % ((X.data.nbytes + X.indices.nbytes + X.ind
 
 **Q1. 请解释 TF-IDF 的公式，以及为什么它能衡量词的重要性？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 $$\text{TF-IDF}(t,d)=\text{TF}(t,d)\times\text{IDF}(t),\qquad \text{IDF}(t)=\log\frac{N}{\text{DF}(t)}$$
 
@@ -358,7 +359,8 @@ $$\text{TF-IDF}(t,d)=\text{TF}(t,d)\times\text{IDF}(t),\qquad \text{IDF}(t)=\log
 
 **Q2. 词袋模型的两大缺陷是什么？各自怎么缓解？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **缺陷一：丢失词序**。"我爱你」与「你爱我」的词频向量完全相同，模型无法区分否定、主宾颠倒等语序敏感现象。
 
@@ -379,7 +381,8 @@ $$\text{TF-IDF}(t,d)=\text{TF}(t,d)\times\text{IDF}(t),\qquad \text{IDF}(t)=\log
 
 **Q3. 为什么 sklearn 的 `TfidfVectorizer` 默认要加 `smooth_idf` 和 L2 归一化？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **`smooth_idf=True`** 把 IDF 从 $\log\frac{N}{\text{DF}}$ 改成
 
@@ -399,7 +402,8 @@ $$\tilde v=\frac{v}{\lVert v\rVert_2}$$
 
 **Q4. 特征维度太高（比如 50 万）怎么办？请给出至少三种手段并说明取舍。**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 | 手段 | 做法 | 取舍 |
 |------|------|------|
@@ -418,7 +422,8 @@ $$\tilde v=\frac{v}{\lVert v\rVert_2}$$
 
 **1. 语料有 4 篇文档，`N=4`。词「苹果」出现在 2 篇文档中。请分别用朴素 IDF 与 sklearn 平滑 IDF 计算它的 IDF 值。**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 朴素形式：
 
@@ -436,7 +441,8 @@ $$\text{IDF} = \log\frac{1+N}{1+\text{DF}} + 1 = \log\frac{5}{3} + 1 \approx 0.5
 
 **2. 判断：「词袋模型的向量长度等于文档的词数。」**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 错。词袋向量的长度等于**词表大小 $V$**（语料去重后的词数），而不是某篇文档的词数。文档的词数只决定了向量中非零元素的个数。
 
@@ -448,7 +454,8 @@ $$\text{IDF} = \log\frac{1+N}{1+\text{DF}} + 1 = \log\frac{5}{3} + 1 \approx 0.5
 
 **3. 把 `ngram_range` 从 `(1,1)` 改成 `(1,2)`，特征维度大约会变成多少？会带来什么问题？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 维度从 $V$ 变为 $V + V_{\text{bigram}}$，其中 $V_{\text{bigram}}$ 是实际出现过的 bi-gram 种类数，理论上界是 $V^2$，实际取决于语料规模，通常会让总维度增长 3–10 倍。
 
@@ -465,7 +472,8 @@ $$\text{IDF} = \log\frac{1+N}{1+\text{DF}} + 1 = \log\frac{5}{3} + 1 \approx 0.5
 
 **4. 为什么推理阶段必须用 `transform` 而不是 `fit_transform`？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 `fit` 会从传入数据中**学习**词表（`vocabulary_`）和 IDF 权重；`transform` 只是**套用**已学到的映射做编码。训练集用 `fit_transform` 正确，推理阶段再用 `fit_transform` 会重新学一套映射，两个后果：
 
@@ -478,7 +486,8 @@ $$\text{IDF} = \log\frac{1+N}{1+\text{DF}} + 1 = \log\frac{5}{3} + 1 \approx 0.5
 
 **5. 在新闻分类任务里，TF-IDF + 线性模型已经能到 0.85 准确率，为什么还需要 BERT？请说出 TF-IDF 表示法的三个根本局限。**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 三个根本局限：
 

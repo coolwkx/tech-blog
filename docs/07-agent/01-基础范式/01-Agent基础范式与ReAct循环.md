@@ -404,25 +404,22 @@ if __name__ == "__main__":
 
 ## 5. 面试问答
 
-<details><summary>参考答案</summary>
-
-**Q1：AI Agent 和传统软件最本质的区别是什么？**
+<details>
+<summary><strong>Q1：AI Agent 和传统软件最本质的区别是什么？</strong></summary>
 
 传统软件是「面向过程」的：工程师把流程写成预定义的指令、逻辑和启发式算法，任务范围因此被限定在有限域内，用户按步骤操作、结果符合预期。Agent 是「面向目标」的：用户只描述目标，由 LLM 完成任务分析、目标设定、路径规划和工具调用，因而可以处理无限域的任务。机制上，主导方从「软件工程师写逻辑」迁移为「模型生成逻辑」；生产方式从「人类为中心、AI 辅助」迁移为「AI 为中心、人类辅助」。代价是引入了「计划」这一层不确定性，可靠性设计因此成为工程重点。
 
 </details>
 
-<details><summary>参考答案</summary>
-
-**Q2：AIAgent = LLM + 记忆 + 任务规划 + 工具使用，这四项各自解决什么问题？**
+<details>
+<summary><strong>Q2：AIAgent = LLM + 记忆 + 任务规划 + 工具使用，这四项各自解决什么问题？</strong></summary>
 
 LLM 提供通用推理与语言理解能力，负责任务规划与知识推理；记忆解决「模型本身无状态」的问题，保存用户输入、会话上下文、外部向量知识库与网页信息；任务规划把模糊目标拆成可执行的子目标序列，负责任务分析、目标设定、搜索与路径规划；工具使用解决模型的三类硬伤——信息实时性（训练数据有截止日期）、数据局限性（无法覆盖医疗/法律等专业领域）、功能扩展性（不能精确计算、不能访问私有系统），通过调用计算器、代码解释器、API 等补齐能力。四者缺一：只有 LLM 是聊天机器人，只有工具没有规划是脚本，没有记忆则无法多轮推进。
 
 </details>
 
-<details><summary>参考答案</summary>
-
-**Q3：ReAct 为什么要让推理和行动交替，而不是先想完再做？**
+<details>
+<summary><strong>Q3：ReAct 为什么要让推理和行动交替，而不是先想完再做？</strong></summary>
 
 因为纯推理（CoT）无法获取外部信息，一旦前提错误就会一路错到底，且无法自我纠正；纯行动（Act-only）则动作选择盲目，容易连续调用错误工具、浪费步数。ReAct 把 Thought、Action、Observation 放在同一条轨迹里交替产生，每一次环境反馈都会成为下一步推理的新证据，从而形成「假设—验证—修正」的闭环。代价是轨迹变长，token 成本与延迟上升，因此工程上需要配合步数上限与历史压缩。另外 Thought 只对模型自己可见、不执行，起到了显式草稿（scratchpad）的作用，这本身也能提升推理质量。
 
@@ -432,7 +429,8 @@ LLM 提供通用推理与语言理解能力，负责任务规划与知识推理�
 
 ## 6. 自测题
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **1. 判断：一个只会按顺序执行 RAG 检索、拼 prompt、调用模型的流程，算 Agent 吗？**
 
@@ -440,7 +438,8 @@ LLM 提供通用推理与语言理解能力，负责任务规划与知识推理�
 
 </details>
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **2. 把 Agent 分成哪三类？各举一个例子。**
 
@@ -448,7 +447,8 @@ LLM 提供通用推理与语言理解能力，负责任务规划与知识推理�
 
 </details>
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **3. 在退货请求的例子中，Planning 和 Action 分别做了什么？**
 
@@ -456,7 +456,8 @@ Planning：验证订单、确定客户想退货、核对库存是否符合退货
 
 </details>
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **4. Agent 循环可能失控的三种典型情况，以及对应的兜底手段？**
 
@@ -464,7 +465,8 @@ Planning：验证订单、确定客户想退货、核对库存是否符合退货
 
 </details>
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **5. 为什么说医疗问诊机器人是「对话式 Agent 的雏形」？**
 

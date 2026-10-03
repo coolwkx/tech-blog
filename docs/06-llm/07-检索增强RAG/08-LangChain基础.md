@@ -276,7 +276,8 @@ def get_history(session_id: str):
 
 **Q1：LangChain 的六大组件分别解决什么问题？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 | 组件 | 解决的问题 |
 |---|---|
@@ -288,11 +289,13 @@ def get_history(session_id: str):
 | Agents | 模型不能回答实时信息、数学逻辑弱 → 调用搜索引擎/计算器/数据库等工具，循环执行直到完成 |
 
 一句话：LangChain 自身不训练模型，价值在于**统一接口 + 编排能力 + 可替换的组件生态**。
+
 </details>
 
 **Q2：为什么大模型「需要」Memory 组件？实现长对话有哪些工程手段？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 根因是**大模型无状态**：每次请求都是独立的，模型不保存上次交互内容。
 我们感知到的「ChatGPT 记得上文」，其实是应用层把历史消息重新拼进 prompt 再发给模型。
@@ -307,11 +310,13 @@ Memory 组件做三件事：保存历史、按需拼进 prompt、把新消息写
 
 LangChain 中对应 `InMemoryChatMessageHistory`、`messages_to_dict/messages_from_dict`（序列化落库）、
 `RunnableWithMessageHistory`（按 `session_id` 隔离）。
+
 </details>
 
 **Q3：请描述一个完整 RAG 流程中 LangChain 各组件的分工。**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 | 阶段 | 组件 | 说明 |
 |---|---|---|
@@ -327,13 +332,15 @@ LangChain 中对应 `InMemoryChatMessageHistory`、`messages_to_dict/messages_fr
 
 关键工程点：建库与查询必须用**同一个 embedding 模型**；prompt 必须显式约束「只依据作答」，
 否则模型会用参数知识覆盖检索结果，导致幻觉与引用不一致。
+
 </details>
 
 ## 6. 自测题
 
 **1. 三类模型（LLMs / Chat Models / Embeddings）的输入输出分别是什么？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 | 模型类型 | 输入 | 输出 |
 |---|---|---|
@@ -343,11 +350,13 @@ LangChain 中对应 `InMemoryChatMessageHistory`、`messages_to_dict/messages_fr
 
 Embeddings 是检索系统的地基：`embed_query` 处理查询、`embed_documents` 处理建库，
 两者必须用同一个模型。
+
 </details>
 
 **2. 文本分割为什么不能简单按固定字符数切？两个关键参数是什么？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 因为硬切会**破坏语义单元**——一段代码或一个函数被割裂到两段就失去意义，
 检索到也无法提供有效信息。正确原则是**把语义相关的文本片段放在一起**，
@@ -355,11 +364,13 @@ Embeddings 是检索系统的地基：`embed_query` 处理查询、`embed_docume
 
 两个关键参数：`chunk_size`（切片最大长度，影响检索精度与上下文长度）、
 `chunk_overlap`（相邻切片重叠，避免答案落在边界导致两边都不完整，通常取 `chunk_size` 的 10%~20%）。
+
 </details>
 
 **3. Agent 的四个组成部分是什么？为什么需要 Agent？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 原因：大模型**不能回答实时信息、处理数学逻辑问题仍非常初级**，
 需要让它能访问搜索引擎、数据库、计算器等外部工具。
@@ -370,11 +381,13 @@ Embeddings 是检索系统的地基：`embed_query` 处理查询、`embed_docume
 
 示例：`load_tools(["llm-math"], llm=llm)` 加载数学工具，
 再用 `initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION)` 构造并 `run`。
+
 </details>
 
 **4. 语料里的 `LLMChain`、`ConversationChain` 在新版中对应什么？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 新版主推 **LCEL**，用管道符组合 `Runnable`：
 
@@ -386,6 +399,7 @@ Embeddings 是检索系统的地基：`embed_query` 处理查询、`embed_docume
 | `retriever.get_relevant_documents(q)` | `retriever.invoke(q)` |
 
 学习建议：**理解组件职责与数据流**比记 API 更重要——职责稳定，API 随版本演进。
+
 </details>
 
 ## 7. 延伸阅读

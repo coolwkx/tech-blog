@@ -480,7 +480,8 @@ if __name__ == "__main__":
 
 **Q1：SFT 为什么要做 label masking？不掩码会怎样？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 SFT 用的是自回归交叉熵，它会给序列里**每个位置**都分配一个"预测下一个 token"的监督信号。如果 prompt 部分也参与 loss，模型就被要求在给定前文的情况下高概率地"生成用户的问题"，这带来三个问题：
 
@@ -494,7 +495,8 @@ SFT 用的是自回归交叉熵，它会给序列里**每个位置**都分配一
 
 **Q2：你的 SFT 训练 loss 从 2.4 降到 0.3，但人工评测说模型变差了。排查思路是什么？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 按"数据 → 目标 → 超参 → 评测"的顺序查：
 
@@ -510,7 +512,8 @@ SFT 用的是自回归交叉熵，它会给序列里**每个位置**都分配一
 
 **Q3：SFT 训练需要监控哪些指标？OOM 时按什么顺序降负载？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **监控指标**：
 
@@ -536,7 +539,8 @@ SFT 用的是自回归交叉熵，它会给序列里**每个位置**都分配一
 
 **1. 写出掩码后的 SFT 损失公式，并说明分母为什么不是 $T$。**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 $$
 \mathcal{L} = -\frac{1}{\sum_t m_t}\sum_t m_t \log p_\theta(x_t\mid x_{<t})
@@ -548,7 +552,8 @@ $$
 
 **2. 训练时 padding 应该放哪一侧？推理时呢？为什么？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 训练时放**右侧**。因为因果语言模型的注意力掩码是下三角的，右侧 padding 不会影响前面 token 的表示；而左侧 padding 会让有效 token 的位置索引发生偏移，位置编码与注意力对齐出错（除非同时正确设置 `position_ids`）。
 
@@ -560,7 +565,8 @@ $$
 
 **3. 你的数据集是 `{"messages": [...]}`，如何检查 chat template 用对了？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 三个可执行的检查：
 
@@ -574,7 +580,8 @@ $$
 
 **4. 你的 SFT 跑了 5 个 epoch，下游任务提升了但通用问答退化了，怎么办？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 这是典型的灾难性遗忘。处理优先级：① **减少 epoch**（2～3 轮通常足够）并用验证集选最优 checkpoint，而不是用最后一个；② **数据混合**：掺入 5%～20% 通用指令数据，最有效且便宜；③ **降低学习率**，或改用 LoRA（冻结基座天然减轻遗忘）；④ 建立**通用能力评测**作为回归测试，训练中定期评估，一旦下降就早停；⑤ 若资源允许，用多任务联合训练代替单任务串行训练。补充：应记录"遗忘曲线"——通用能力随训练步数的变化，用它选停止点，而不是只看下游任务指标。
 

@@ -262,7 +262,8 @@ if client.has_collection(COLLECTION):
 
 **Q1：向量数据库和关系型数据库的本质区别是什么？Milvus 里有哪些概念与 MySQL 对应？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 本质区别在**数据形态与检索方式**：关系型数据库处理遵循预定义模式的结构化数据，靠精确匹配（`WHERE` 等值/范围条件）检索；
 向量数据库处理由非结构化数据（图像、音视频、自然语言）经嵌入模型转换来的**嵌入向量**，
@@ -280,11 +281,13 @@ Milvus 与关系数据库的概念对应：
 | Database | 数据库（一个集群最多 64 个） |
 
 多出来的概念是 **Partition（分区）**——关系库里没有直接对应物，它用于把集合切分成子集以缩小搜索范围。
+
 </details>
 
 **Q2：FLAT、IVF_FLAT、IVF_SQ8、IVF_PQ、HNSW 怎么选？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 按「精度优先 → 速度/内存优先」排序选择：
 
@@ -298,11 +301,13 @@ Milvus 与关系数据库的概念对应：
 
 决策顺序：先看**数据规模**（小于百万级直接用 FLAT），再看**内存预算**（紧张就上量化 PQ/SQ8），
 最后看**延迟要求**（苛刻就 HNSW）。选定后通过 `nprobe`/`ef` 在召回与延迟之间微调。
+
 </details>
 
 **Q3：混合检索为什么要重排序？WeightedRanker 与 RRFRanker 怎么选？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 因为稠密向量擅长语义相似、稀疏向量擅长关键词精确匹配，两路检索各自会返回一批候选，
 但**两路的分数不可直接比较**（量纲与分布不同），无法简单相加。因此需要一个重排序策略把多路结果融合成一个统一排序。
@@ -315,13 +320,15 @@ Milvus 与关系数据库的概念对应：
 
 选择原则：**没有特定侧重时用 RRFRanker**（明确推荐），因为它天然平衡各路的贡献，
 且对分数尺度不敏感、更鲁棒；需要突出某一路时才用 WeightedRanker。
+
 </details>
 
 ## 6. 自测题
 
 **1. 写出 Milvus 中 Field Schema 至少 5 个可配置属性及其含义。**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 - `name`（String，必填）：字段名称；
 - `dtype`（必填）：数据类型，如 INT64 / VARCHAR / FLOAT_VECTOR / SPARSE_FLOAT_VECTOR；
@@ -330,11 +337,13 @@ Milvus 与关系数据库的概念对应：
 - `max_length`（Integer）：VARCHAR 字段允许的最大长度，范围 `[1, 65535]`；
 - `dim`（Integer）：向量维度，范围 `[1, 32768]`；
 - `is_partition_key`（Boolean）：是否作为分区键；`description`（String，选填）：字段描述。
+
 </details>
 
 **2. IVF_FLAT 的三步工作机制是什么？`nlist` 和 `nprobe` 分别在哪一步起作用？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 ① **聚类**：用 k-means 之类的算法把高维空间划分为多个子空间（簇），每簇有一个代表向量（簇中心），
 这一步由 `nlist`（簇数量）控制；
@@ -343,11 +352,13 @@ Milvus 与关系数据库的概念对应：
 
 `nprobe` 在查询阶段起作用，控制搜索时考察的簇数量：增大则搜索更多簇、精度提高但耗时增加；
 减小则更快但可能牺牲精度。
+
 </details>
 
 **3. 用 Milvus 做一个「子块检索、父块返回」的设计，Schema 该怎么写？为什么这样做？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 Schema（参考 RAG 的 `vector_store.py`）至少包含：
 
@@ -366,11 +377,13 @@ schema.add_field(field_name="parent_content", datatype=DataType.VARCHAR, max_len
 原因：切片粒度存在两难——切得太细，单块语义清晰但上下文被割裂，LLM 回答缺依据；
 切得太粗，上下文完整但向量会把多个主题平均掉，检索精度下降。
 「子块检索 + 父块返回」同时拿到两者的好处。
+
 </details>
 
 **4. RAG 系统里为什么要引入 Redis？缓存 key 怎么设计？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 引入 Redis 的目的是**缓存问答结果**：一次完整 RAG 问答要经过「向量检索 + 大模型生成」，
 耗时从数百毫秒到数秒不等，而重复问题在实际业务中占比很高。把结果缓存后，命中即返回，可把响应降到毫秒级，
@@ -381,6 +394,7 @@ schema.add_field(field_name="parent_content", datatype=DataType.VARCHAR, max_len
 ② 对超长 query 取哈希（如 `answer:{sha1(query)}`）避免 key 过长；
 ③ 设置 TTL（`set(..., ex=...)`），并在知识库更新时主动失效（可按来源打标签批量删除）；
 ④ 把命中的答案与引用来源一起缓存，保证可追溯。
+
 </details>
 
 ## 7. 延伸阅读

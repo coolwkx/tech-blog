@@ -406,7 +406,8 @@ print(Mutable.__hash__ is None) # True —— 生成的 __eq__ 把 __hash__ 置�
 
 **Q1：为什么推荐 `len(x)` 而不是 `x.__len__`？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 `len(x)` 走 C 层 `PyObject_Size`，按 `type(x)` 的类型槽（`sq_length` / `mp_length`）查找 `__len__`，**不查实例 `__dict__`**，并校验返回值：必须是 `int`（`bool` 可以，它是 `int` 子类）且 `>= 0`，否则抛 `TypeError` / `ValueError: __len__ should return >= 0`。
 
@@ -416,7 +417,8 @@ print(Mutable.__hash__ is None) # True —— 生成的 __eq__ 把 __hash__ 置�
 
 **Q2：`==` 和 `is` 的本质区别？为什么不能用 `is` 比较数字和字符串？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 `is` 比较身份（CPython 比指针，即 `id(a) == id(b)`），不可重载；`==` 比较值，走 `type(a).__eq__(a, b)`，返回 `NotImplemented` 时反射 `type(b).__eq__(b, a)`，两边都放弃才回退到身份比较（默认 `object.__eq__` 就是 `is`）。
 
@@ -428,7 +430,8 @@ print(Mutable.__hash__ is None) # True —— 生成的 __eq__ 把 __hash__ 置�
 
 **Q3：`def f(x, acc=[])` 到底发生了什么？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 默认参数表达式在 **`def` 语句执行时**求值一次，结果存进函数对象的 `__defaults__`（仅位置参数）/ `__kwdefaults__`（keyword-only）。之后每次省略该参数，函数体拿到的都是**同一个对象**。`[]` 可变，所以 `acc.append(...)` 的副作用被持久化到下一次调用——本质是「传参是绑定 + 原地修改可见」的叠加。
 
@@ -438,7 +441,8 @@ print(Mutable.__hash__ is None) # True —— 生成的 __eq__ 把 __hash__ 置�
 
 **Q4：为什么 `list` 不能做字典键？`__hash__` 与 `__eq__` 的契约是什么？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 `dict` / `set` 是哈希表：先用 `hash(key)` 找桶，再用 `==` 确认。这要求键的哈希在生命周期内稳定，并且相等即同哈希。`list` 支持原地增删，哈希随时会变，会导致同一个键散落到不同桶、查不到或出现重复键，所以 CPython 不给它 `__hash__`（`TypeError: unhashable type: 'list'`）；`dict`、`set`、`bytearray` 同理。
 
@@ -466,7 +470,8 @@ print(Mutable.__hash__ is None) # True —— 生成的 __eq__ 把 __hash__ 置�
 4. 为什么定义了 `__eq__` 的类默认不能放进 `set`？给出两种修法。
 5. 一个类只实现了 `__getitem__`，没有 `__iter__` 和 `__contains__`：`for x in obj`、`5 in obj` 还能工作吗？`obj.__iter__` 呢？
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 1. `a` 变成 `[1, 2, 3]`：`+=` 调用 `list.__iadd__`（原地 `extend` 并返回 `self`），`a`、`b` 始终是同一个对象。换成 `b = b + [3]` 后 `b` 指向新建 list，`a` 保持 `[1, 2]`：`+` 走 `__add__` 产生新对象，再 `STORE` 回 `b`。
 

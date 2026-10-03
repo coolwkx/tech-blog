@@ -350,7 +350,8 @@ print(config)
 
 **Q1. BERT 的 MLM 为什么用 80%/10%/10% 的比例？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 三个比例分别解决三个不同的问题：
 
@@ -366,7 +367,8 @@ print(config)
 
 **Q2. Encoder-Only、Decoder-Only、Encoder-Decoder 该怎么选？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 按任务形态选：
 
@@ -387,7 +389,8 @@ print(config)
 
 **Q3. 什么是「微调」？为什么 BERT 微调的学习率要设得这么小？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **微调（fine-tuning）**：在预训练模型后面接一个自定义网络（如一层 `nn.Linear(768, num_labels)`），然后用垂直领域数据继续训练。参数更新策略有三档——全部微调、部分微调（冻结底层）、不微调（只用预训练模型当特征提取器，`requires_grad=False` + `torch.no_grad`）。
 
@@ -410,7 +413,8 @@ print(config)
 
 **1. BERT 的三种 Embedding 分别是什么？它们在经典 Transformer 中对应什么？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 | Embedding | 作用 | 经典 Transformer 中的对应 |
 |-----------|------|---------------------------|
@@ -426,7 +430,8 @@ print(config)
 
 **2. 计算：`bert-base-chinese` 有 12 层、768 维、12 个注意力头。请算出每个头的维度、前馈层的中间维度，以及一个 Encoder Block 里多头注意力的参数量（忽略偏置）。**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 - **每个头的维度**：$d_k = d_{model} / h = 768 / 12 = 64$
 - **前馈层中间维度**：按 4 倍关系，$d_{ff} = 4 \times 768 = 3072$
@@ -440,7 +445,8 @@ print(config)
 
 **3. 「BERT 是双向的，GPT 是单向的，ELMo 也是双向的」这句话哪里不严谨？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 不严谨在 **ELMo 的「双向」是伪双向**。
 
@@ -458,7 +464,8 @@ print(config)
 
 **4. 中文 BERT 是「字级」的，这会带来什么问题？有什么解决办法？**
 
-<details><summary>参考答案</summary>
+<details>
+<summary>参考答案</summary>
 
 **问题一：与词向量相关的应用不兼容。** 很多传统 NLP 应用（关键词抽取、词相似度、词级别的 TF-IDF 融合）需要**词**向量，而字级模型只给每个字一个向量。要得到词向量得自己对字向量做池化，效果不如原生词向量。
 
