@@ -1,0 +1,5 @@
+MathJax 3.2.2 tex-svg bundle: https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js
+License: Apache-2.0; see mathjax-LICENSE.txt.
+
+Mermaid 10.9.3 bundle: https://cdn.jsdelivr.net/npm/mermaid@10.9.3/dist/mermaid.min.js
+License: MIT; see mermaid-LICENSE.txt.

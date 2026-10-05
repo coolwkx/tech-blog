@@ -92,3 +92,20 @@ python tools/build_index.py # 改过目录或 nav 后刷新索引
 ## 📄 License
 
 [MIT](LICENSE) © 2026
+
+## 技术学习空间
+
+网站首页提供按知识体系浏览、完整文章阅读、全文搜索、深浅色主题、字号与行距调整、专注阅读、代码复制、公式和流程图，以及收藏、待复习、掌握标记、阅读位置和个人笔记。
+
+学习记录保存在当前浏览器，可通过侧栏导出备份；不同设备、浏览器或网站域名之间不会自动同步。首页只加载目录和摘要，使用搜索时再加载正文索引。文章正文按需加载，公式与流程图资源由仓库内置。
+
+所有笔记仍以 `docs/` 中的 Markdown 为内容源。GitHub Actions 会先构建 MkDocs，再从本次构建的文章生成学习界面，不依赖线上内容快照。原有文章地址继续可用。
+
+```bash
+pip install -r requirements-site.txt
+mkdocs build
+python tools/build_learning_site.py
+python -m http.server 8000 --directory site
+```
+
+打开 http://localhost:8000 查看学习界面。`mkdocs serve` 仍用于预览原始文档布局；`learning-ui/` 保存学习界面模板，`tools/build_learning_site.py` 生成目录、正文与延迟加载的搜索索引。`site/` 是生成产物，不提交到仓库。

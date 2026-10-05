@@ -31,11 +31,12 @@ jobs:
         with:
           python-version: "3.11"
       - name: 安装 mkdocs
-        run: pip install mkdocs-material
+        run: pip install -r requirements-site.txt
       - name: 构建站点
         run: |
           set -euo pipefail
           mkdocs build
+          python tools/build_learning_site.py
           touch site/.nojekyll
       - name: 上传站点产物
         uses: actions/upload-artifact@v4
