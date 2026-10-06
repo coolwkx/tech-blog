@@ -16,7 +16,7 @@ h1{text-wrap:balance}.article-top-anchor{display:block;scroll-margin-top:105px}@
 
 /* A calm, consistent reading space. All assets remain local. */
 :root{--bg:#f5f7f6;--paper:#fff;--ink:#243632;--muted:#60716c;--soft:#eaf3ef;--line:#e0e8e4;--accent:#24745f;--accent-ink:#1b604e;--code:#f3f6f4;--success:#24745f;--sidebar:284px;--surface:var(--paper);--border:var(--line);--text:var(--ink)}
-body{font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+body{font-family:"Microsoft YaHei UI","Microsoft YaHei","PingFang SC","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
 h1,h2,h3{font-weight:600;letter-spacing:-.025em}
 summary:focus-visible,button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex="0"]:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
 .topbar{padding:0 30px;background:var(--paper)}
