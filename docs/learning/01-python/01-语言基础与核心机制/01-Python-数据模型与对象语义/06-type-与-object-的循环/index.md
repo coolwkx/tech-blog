@@ -24,7 +24,7 @@ print(type(3) is int) # True
 print(type(int) is type) # True
 print(type(type) is type) # True
 print(type(object) is type) # True
-print(object.__bases__) # 
+print(object.__bases__) #
 print(type.__bases__) # (<class 'object'>,)
 print(isinstance(object, type)) # True
 print(int.__mro__) # (<class 'int'>, <class 'object'>)
