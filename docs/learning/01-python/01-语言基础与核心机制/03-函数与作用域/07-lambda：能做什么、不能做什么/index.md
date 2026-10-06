@@ -28,7 +28,7 @@ learning_objective: 理解并验证：lambda：能做什么、不能做什么
 | 调试 | 名字清晰、可断点 | 报错信息里只显示 `<lambda>` |
 | 适用场景 | 有复用价值的逻辑 | `key=` / 一次性短逻辑 |
 ```python
-students = [{"name": "王凯旋", "score": 90},
+students = [{"name": "酒窝", "score": 90},
 {"name": "刘浩存", "score": 100},
 {"name": "王月半", "score": 10}]
 students.sort(key=lambda s: s["score"], reverse=True)

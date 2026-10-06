@@ -1,6 +1,6 @@
 site_name: 技术复习笔记
 site_description: Python / 数据处理 / 机器学习 / 深度学习 / NLP / 大模型 / Agent / 项目实战 复习笔记
-site_author: 王凯旋
+site_author: 酒窝
 # site_url 影响搜索索引的绝对路径、sitemap 与分享链接的正确性，需与线上地址一致
 site_url: https://coolwkx.github.io/tech-blog/
 repo_url: https://github.com/coolwkx/tech-blog
