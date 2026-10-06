@@ -52,7 +52,7 @@ def check_links(files: list[Path]) -> list[str]:
             # 指向父级目录的兄弟仓库引用
             if target.strip("/").split("/")[-1] in SIBLINGS:
                 continue
-            if not (md.parent / target).exists():
+            if not (md.parent / target).resolve().exists():
                 rel = md.relative_to(ROOT).as_posix()
                 # 指向尚未产出的笔记（.md）只告警：增量写作期间属正常状态，不阻断 CI
                 level = "warning" if target.endswith(".md") else "error"
@@ -87,14 +87,20 @@ def check_code(files: list[Path]) -> list[str]:
 
 def check_structure(files: list[Path]) -> list[str]:
     problems = []
+    identifiers = {}
     for md in files:
-        if "topics" not in md.parts or md.name == "README.md" or "97-cheatsheet" in md.parts:
+        text = md.read_text(encoding='utf-8')
+        match = re.search(r'^article_id:\s*[\"\']?([a-zA-Z0-9-]+)', text, re.M)
+        if match:
+            identifier = match[1]
+            if identifier in identifiers:
+                problems.append(f'::error file={md.relative_to(ROOT).as_posix()}::article_id 与 {identifiers[identifier]} 重复')
+            identifiers[identifier] = md.relative_to(ROOT).as_posix()
+        if 'learning' not in md.parts or not re.search(r'^learning_kind:\s*[\"\']?article', text, re.M):
             continue
-        text = md.read_text(encoding="utf-8")
-        missing = [k for k in REQUIRED_SECTIONS if k not in text]
+        missing = [name for name in ('学习目标', '前置知识', '本次只学这一点', '验证理解', '自测与关联复习', '综合原文') if name not in text]
         if missing:
-            rel = md.relative_to(ROOT).as_posix()
-            problems.append(f"::warning file={rel}::缺少必需小节：{'、'.join(missing)}")
+            problems.append(f'::error file={md.relative_to(ROOT).as_posix()}::独立知识点缺少：{"、".join(missing)}')
     return problems
 
 

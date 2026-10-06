@@ -1,3 +1,9 @@
+---
+article_id: "b68d23b02557"
+learning_kind: "reference"
+learning_category: "06-llm"
+---
+
 # QLoRA 与量化微调
 
 > **一句话总结**：QLoRA 用"**nf4 分块量化冻结基座 + 双重量化压常量 + 分页优化器抗峰值**"三件套，把 7B 全参微调需要的上百 GB 显存压到单张 24 GB 消费级显卡可训的范围，代价是训练变慢、且量化基座上的 LoRA 权重不能直接合并回 nf4。

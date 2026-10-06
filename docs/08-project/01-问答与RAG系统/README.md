@@ -1,3 +1,9 @@
+---
+article_id: "ae9421924d20"
+learning_kind: "guide"
+learning_category: "08-project"
+---
+
 # ① 问答与 RAG 系统
 
 > 本章共 2 篇笔记。

@@ -1,3 +1,9 @@
+---
+article_id: "32c9894e7ac4"
+learning_kind: "guide"
+learning_category: "02-data"
+---
+
 # ① Linux 与 SQL
 
 > 本章共 4 篇笔记。

@@ -1,3 +1,9 @@
+---
+article_id: "5134879e6e0a"
+learning_kind: "guide"
+learning_category: "07-agent"
+---
+
 # ② 工具调用与规划
 
 > 本章共 2 篇笔记。

@@ -1,3 +1,9 @@
+---
+article_id: "f4120fb08e5f"
+learning_kind: "guide"
+learning_category: "07-agent"
+---
+
 # 🕹️ AI Agent
 
 > 把 LLM 变成能行动的智能体：循环、工具、记忆、评估与工程化
@@ -28,3 +34,11 @@
 ---
 
 [⬅️ 返回博客首页](../README.md)
+
+
+## 按学习方向复习
+
+- [智能体原理与能力构建](../learning/07-agent/01-智能体原理与能力构建/index.md)
+- [工程可靠性与评测实践](../learning/07-agent/02-工程可靠性与评测实践/index.md)
+
+原有章节保留作综合复习与完整案例参考。新学习目录将每个知识点放在独立目录中。

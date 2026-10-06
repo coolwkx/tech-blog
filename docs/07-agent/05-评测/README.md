@@ -1,3 +1,9 @@
+---
+article_id: "321733cde9e0"
+learning_kind: "guide"
+learning_category: "07-agent"
+---
+
 # ⑤ Agent 评测
 
 > 本章共 5 篇笔记。

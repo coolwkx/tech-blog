@@ -1,3 +1,9 @@
+---
+article_id: "2149576e2345"
+learning_kind: "guide"
+learning_category: "01-python"
+---
+
 # 速查 · 术语 · 面试题库
 
 > 三类「非正文」，用于快速检索与考前突击。

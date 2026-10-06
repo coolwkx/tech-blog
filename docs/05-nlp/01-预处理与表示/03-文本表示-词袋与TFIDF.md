@@ -1,3 +1,9 @@
+---
+article_id: "7afaf09df2e4"
+learning_kind: "reference"
+learning_category: "05-nlp"
+---
+
 # 文本表示：词袋与 TF-IDF
 
 > **一句话总结**：把变长文本压成定长稀疏向量——词袋负责「有哪些词」，TF-IDF 负责「哪些词更重要」。

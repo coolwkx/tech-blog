@@ -1,3 +1,12 @@
+---
+article_id: "0b49eeb55140"
+learning_kind: "reference"
+learning_category: "07-agent"
+---
+
+# -Agent基础范式与ReAct循环
+
+
 > **一句话总结**：AI Agent 本质是「用 LLM 当大脑、用工具当手脚、用记忆当上下文、用规划当路线」的代理系统（`AIAgent = LLM + Memory + Planning + Tools`），软件范式因此从「面向过程」迁移到「面向目标」。
 > **前置知识**：[../llm/05-大模型API与调用实践.md](../../06-llm/06-提示工程/05-大模型API与调用实践.md) 的消息角色与 API 调用、[../llm/04-提示词工程.md](../../06-llm/06-提示工程/04-提示词工程.md) 的 system prompt 用法、本目录 [02-Function-Calling与工具调用](../02-工具与规划/02-Function-Calling与工具调用.md)。
 > **学完能做到**：

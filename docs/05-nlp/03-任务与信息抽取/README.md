@@ -1,3 +1,9 @@
+---
+article_id: "986106dcc198"
+learning_kind: "guide"
+learning_category: "05-nlp"
+---
+
 # ③ 任务与信息抽取
 
 > 本章共 5 篇笔记。

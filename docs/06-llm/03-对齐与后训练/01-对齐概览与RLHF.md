@@ -1,3 +1,12 @@
+---
+article_id: "91e7f327ca9f"
+learning_kind: "reference"
+learning_category: "06-llm"
+---
+
+# -对齐概览与RLHF
+
+
 > **一句话总结**：对齐（alignment）要解决的问题是「预训练目标（最大化下一个词的对数似然）与人类真正想要的回答不一致」，RLHF 用「SFT → 奖励模型 → 强化学习」三阶段把这种不一致一点点纠回来，其中强化学习阶段用 PPO 在四个模型（Actor / Critic / Reward / Reference）之间做一次带 KL 约束的策略优化。
 > **前置知识**：Transformer 与自回归语言模型、交叉熵与最大似然、softmax 与对数概率、梯度的基本概念；了解「SFT 微调」是什么。有强化学习的策略（policy）与奖励（reward）概念更好，没有也能读，本文把需要的部分从头推导。
 > **学完能做到**：1. 用「目标不一致」这条主线讲清楚为什么预训练完的模型必须做后训练，以及 SFT / RM / RL 三个阶段各自补上了什么缺口；2. 逐个说出 PPO 四个模型的输入、输出、参数是否冻结，并写出 Actor loss 与 Critic loss 的完整公式；3. 独立推导「KL 惩罚项为什么能防止过度优化奖励模型」，并在给定的一组日志概率上手算一遍 reward / advantage / 裁剪后的 actor loss。

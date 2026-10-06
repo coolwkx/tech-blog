@@ -1,3 +1,9 @@
+---
+article_id: "fcff24de943a"
+learning_kind: "guide"
+learning_category: "02-data"
+---
+
 # ④ 分析实战
 
 > 本章共 2 篇笔记。

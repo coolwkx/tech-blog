@@ -1,3 +1,9 @@
+---
+article_id: "482a6fbc8b98"
+learning_kind: "guide"
+learning_category: "04-dl"
+---
+
 # ③ CNN 与视觉
 
 > 本章共 1 篇笔记。

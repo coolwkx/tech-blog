@@ -1,3 +1,9 @@
+---
+article_id: "c3d60ecbbf7d"
+learning_kind: "reference"
+learning_category: "06-llm"
+---
+
 # Attention 机制详解
 
 > **一句话总结**：Attention 用「查询-键-值」的软寻址取代循环结构，把序列建模的最长路径从 $O(n)$ 压到 $O(1)$，代价是 $O(n^2)$ 的时间与显存——理解这个代价如何在长上下文和推理解码中被放大，是理解整个大模型工程的地基。

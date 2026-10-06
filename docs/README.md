@@ -50,4 +50,4 @@ mkdocs serve   # http://127.0.0.1:8000
 
 ## 📄 License
 
-[MIT](../LICENSE) © 2026
+[MIT](https://github.com/coolwkx/tech-blog/blob/main/LICENSE) © 2026

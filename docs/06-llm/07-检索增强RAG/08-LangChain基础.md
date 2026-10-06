@@ -1,3 +1,12 @@
+---
+article_id: "1043063b962d"
+learning_kind: "reference"
+learning_category: "06-llm"
+---
+
+# -LangChain基础
+
+
 > **一句话总结**：LangChain 的价值不是「自己造大模型」，而是为各种 LLM 提供**统一接口**，并用 Models / Prompts / Chains / Memory / Indexes / Agents 六大组件把「模型 + 提示 + 外部数据 + 工具」串成可维护的应用流水线。
 > **前置知识**：大模型 API 与消息角色（见《05-大模型API与调用实践》）、embedding 与向量检索（见《07-向量数据库与Milvus》）。
 > **学完能做到**：1. 说清六大组件的职责并各写出一段最小代码；2. 用「加载 → 分割 → 向量化 → 检索」搭出 RAG 的检索侧；3. 识别语料中的旧版 API 并知道新版对应写法。

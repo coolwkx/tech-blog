@@ -1,3 +1,9 @@
+---
+article_id: "bfd3786d7d20"
+learning_kind: "guide"
+learning_category: "10-radar"
+---
+
 # ① 追踪方法
 
 > 本章共 2 篇笔记。

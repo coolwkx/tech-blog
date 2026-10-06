@@ -1,3 +1,9 @@
+---
+article_id: "ee3beecc6edd"
+learning_kind: "guide"
+learning_category: "07-agent"
+---
+
 # 速查 · 术语 · 面试题库
 
 > 三类「非正文」，用于快速检索与考前突击。

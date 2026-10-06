@@ -1,3 +1,9 @@
+---
+article_id: "8ecf1ce69b8f"
+learning_kind: "guide"
+learning_category: "03-ml"
+---
+
 # ③ 评估与调优
 
 > 本章共 1 篇笔记。

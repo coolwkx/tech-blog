@@ -1,3 +1,9 @@
+---
+article_id: "6e78c758ee40"
+learning_kind: "guide"
+learning_category: "02-data"
+---
+
 # 📦 数据处理与统计
 
 > Linux、SQL、NumPy/Pandas 到统计分析与实战案例
@@ -25,3 +31,11 @@
 ---
 
 [⬅️ 返回博客首页](../README.md)
+
+
+## 按学习方向复习
+
+- [数据工具与处理基础](../learning/02-data/01-数据工具与处理基础/index.md)
+- [分析方法与项目实践](../learning/02-data/02-分析方法与项目实践/index.md)
+
+原有章节保留作综合复习与完整案例参考。新学习目录将每个知识点放在独立目录中。

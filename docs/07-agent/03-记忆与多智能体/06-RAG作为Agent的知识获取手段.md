@@ -1,3 +1,12 @@
+---
+article_id: "d130ec37c55d"
+learning_kind: "reference"
+learning_category: "07-agent"
+---
+
+# -RAG作为Agent的知识获取手段
+
+
 > **一句话总结**：RAG（Retrieval-Augmented Generation）在 Agent 体系里承担「外部知识记忆」的角色——先把文档切成父子块向量化存库，再用「稠密 + 稀疏混合检索 → 重排 → 拼上下文」把与问题最相关的证据交给 LLM；的 RAG 系统还额外加了**查询意图识别**与**检索策略选择**两道规划，避免所有问题都硬走检索。
 > **前置知识**：[05-Agent的记忆与知识管理](05-Agent的记忆与知识管理.md) 的外部知识记忆、[04-Agent的规划与任务分解](../02-工具与规划/04-Agent的规划与任务分解.md) 的查询改写策略、[../llm/07-向量数据库与Milvus.md](../../06-llm/07-检索增强RAG/07-向量数据库与Milvus.md)。
 > **学完能做到**：

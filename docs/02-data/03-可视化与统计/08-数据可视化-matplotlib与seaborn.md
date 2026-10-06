@@ -1,3 +1,12 @@
+---
+article_id: "71094c625b7f"
+learning_kind: "reference"
+learning_category: "02-data"
+---
+
+# -数据可视化-matplotlib与seaborn
+
+
 > **一句话总结**：Matplotlib 的绘图流程永远是"**建画布（`plt.figure`）→ 画图（`plot/bar/hist/pie/scatter`）→ 加装饰（刻度、网格、标签、图例）→ 保存（`savefig`）→ 显示（`show`）**"五步；选图型只取决于你要表达"趋势、对比、分布、占比还是关系"。
 > **前置知识**：[05-NumPy数值计算](../02-NumPy与Pandas/05-NumPy数值计算.md)（`linspace`、`random`）；[07-Pandas分组聚合与透视](../02-NumPy与Pandas/07-Pandas分组聚合与透视.md)（`Series`/`DataFrame` 的 `.plot`）。
 > **学完能做到**：1. 独立完成一张规范图表：中文字体、刻度、网格、轴标签、标题、图例、保存一步不落；2. 按分析目的正确选择折线/柱状/直方/饼/散点图，并用 `subplots` 画多子图；3. 说清 `savefig` 与 `show` 的顺序问题，以及直方图与柱状图的本质区别。

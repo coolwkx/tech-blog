@@ -1,3 +1,9 @@
+---
+article_id: "2996977d7379"
+learning_kind: "reference"
+learning_category: "01-python"
+---
+
 # Python 数据模型与对象语义
 
 > **一句话总结**：CPython 里一切皆对象，变量只是「名字到对象的绑定」；`len`、`for`、`in`、`[]`、`==` 都是「按类型查找 dunder 方法」的语法糖，理解这套协议就理解了 Python 行为的第一性原理。
@@ -29,7 +35,7 @@ print(x is y) # True（写在这里），换个位置就可能是 False
 class Bag:
  def __len__(self): return 3
 
-print(len(Bag)) # 3 —— len 凭什么认识我的类？
+print(len(Bag())) # 3 —— len 凭什么认识我的类？
 ```
 
 把它们想成「变量是装值的盒子」无法解释；换成「变量是名字，名字指向对象，对象的类型决定它能做什么」，三条同时自然。这就是数据模型（data model）。

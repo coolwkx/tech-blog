@@ -1,3 +1,9 @@
+---
+article_id: "cb5dc981e947"
+learning_kind: "guide"
+learning_category: "06-llm"
+---
+
 # ③ 对齐与后训练
 
 > 本章共 4 篇笔记。

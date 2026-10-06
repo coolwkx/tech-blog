@@ -1,3 +1,9 @@
+---
+article_id: "9c08a660c6dc"
+learning_kind: "guide"
+learning_category: "01-python"
+---
+
 # ⑤ 工程化与实践
 
 > 本章共 4 篇笔记。

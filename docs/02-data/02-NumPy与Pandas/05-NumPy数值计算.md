@@ -1,3 +1,12 @@
+---
+article_id: "c0a892e8e152"
+learning_kind: "reference"
+learning_category: "02-data"
+---
+
+# -NumPy数值计算
+
+
 > **一句话总结**：NumPy 的核心是一个**同类型、内存连续**的 N 维数组 `ndarray`，它用"整块内存 + C 语言循环"换来了比 Python 列表快一个数量级的运算；掌握 `shape`/`axis` 两个概念和**广播机制**三条规则，就掌握了 NumPy 的 80%。
 > **前置知识**：Python 基础（列表、元组、字典、lambda、`import`）；了解"矩阵"的基本概念即可，无需线性代数基础。
 > **学完能做到**：1. 用 `np.array/zeros/ones/arange/linspace/random` 按需造出正确形状与 dtype 的数组；2. 熟练用切片、布尔索引、`np.where` 完成条件筛选与替换，并说清 `axis=0/1` 的统计方向；3. 判断两个数组能否运算（广播），并区分 `*` 逐元素乘法与 `dot` 矩阵乘法。

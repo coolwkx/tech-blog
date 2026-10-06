@@ -1,3 +1,9 @@
+---
+article_id: "66d84e4f4b99"
+learning_kind: "guide"
+learning_category: "10-radar"
+---
+
 # 📡 前沿追踪
 
 > 持续追踪 AI / Agent 领域的新技术：Jev、Muse 等，每条给出机制拆解与影响判断
@@ -24,3 +30,11 @@
 ---
 
 [⬅️ 返回博客首页](../README.md)
+
+
+## 按学习方向复习
+
+- [追踪方法与评估框架](../learning/10-radar/01-追踪方法与评估框架/index.md)
+- [技术条目与实践判断](../learning/10-radar/02-技术条目与实践判断/index.md)
+
+原有章节保留作综合复习与完整案例参考。新学习目录将每个知识点放在独立目录中。

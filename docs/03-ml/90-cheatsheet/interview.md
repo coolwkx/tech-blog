@@ -1,3 +1,9 @@
+---
+article_id: "2c429787bdc4"
+learning_kind: "reference"
+learning_category: "03-ml"
+---
+
 # 高频面试题库
 
 > 用法：先自己答，再展开看参考。标 🔥 的是高频题。

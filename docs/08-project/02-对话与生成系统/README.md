@@ -1,3 +1,9 @@
+---
+article_id: "7793d33a78c2"
+learning_kind: "guide"
+learning_category: "08-project"
+---
+
 # ② 对话与生成系统
 
 > 本章共 2 篇笔记。

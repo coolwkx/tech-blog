@@ -1,3 +1,12 @@
+---
+article_id: "cf848e0fe35f"
+learning_kind: "reference"
+learning_category: "07-agent"
+---
+
+# -用Manifest保证评测可复现
+
+
 > **一句话总结**：评测最大的陷阱不是判分逻辑写错，而是**两次评测根本不在同一个实验里**——模型、提示词、工具版本、数据、种子任何一项漂移，你比较的就是两团噪声；`ExperimentManifest` 的作用是把「这份报告是什么配置产生的」变成输入的一部分，让漂移从"事后回忆"变成"启动即报错"。
 > **前置知识**：[01 篇](01-项目复盘-AgentEvalLab.md) 的六段流水线与四道一致性闸门、SHA-256 与规范化（canonicalization）的基本概念、JSON/JSONL 基础。
 > **学完能做到**：

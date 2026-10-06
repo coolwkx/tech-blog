@@ -1,3 +1,9 @@
+---
+article_id: "56246789a04f"
+learning_kind: "guide"
+learning_category: "08-project"
+---
+
 # ③ 文本分类系统
 
 > 本章共 3 篇笔记。

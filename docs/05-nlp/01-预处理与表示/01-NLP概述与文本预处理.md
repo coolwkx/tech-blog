@@ -1,3 +1,9 @@
+---
+article_id: "3a7ffbbd54d5"
+learning_kind: "reference"
+learning_category: "05-nlp"
+---
+
 # NLP 概述与文本预处理
 
 > **一句话总结**：把人类语言变成模型能吃的「数字 + 定长张量」，这条流水线的每一步都直接决定模型上限。

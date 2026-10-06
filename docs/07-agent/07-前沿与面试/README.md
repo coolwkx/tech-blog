@@ -1,3 +1,9 @@
+---
+article_id: "289c4fb57943"
+learning_kind: "guide"
+learning_category: "07-agent"
+---
+
 # ⑦ 前沿与面试
 
 > 本章共 1 篇笔记。

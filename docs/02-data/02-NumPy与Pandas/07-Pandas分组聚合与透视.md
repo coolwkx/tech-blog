@@ -1,3 +1,12 @@
+---
+article_id: "7b8856bc8b6a"
+learning_kind: "reference"
+learning_category: "02-data"
+---
+
+# -Pandas分组聚合与透视
+
+
 > **一句话总结**：`groupby` 是 Pandas 里"化整为零再汇总"的总开关，遵循 **split（按 key 切分）→ apply（对每组算）→ combine（拼回一张表）** 三步；`crosstab`（交叉表）与 `pivot_table`（透视表）是同一思想的两种"表单化"表达——前者数**频数**，后者聚合**数值**。
 > **前置知识**：[06-Pandas数据清洗](06-Pandas数据清洗.md)（索引、`loc/iloc`、缺失值、`merge`）；[05-NumPy数值计算](05-NumPy数值计算.md) 的聚合函数与 `np.where`。
 > **学完能做到**：1. 用 `groupby + agg` 一次完成"多字段分组 + 不同列不同聚合"；2. 用 `crosstab` 与 `pivot_table` 把明细数据变成二维汇总表并算出比例；3. 独立完成"股票涨跌与星期几的关系"这类分组对比分析并出图。

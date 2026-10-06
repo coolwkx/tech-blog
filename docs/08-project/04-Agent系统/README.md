@@ -1,3 +1,9 @@
+---
+article_id: "52f1c7978fcc"
+learning_kind: "guide"
+learning_category: "08-project"
+---
+
 # ④ Agent 系统
 
 > 本章共 1 篇笔记。

@@ -1,3 +1,9 @@
+---
+article_id: "1237e3f17079"
+learning_kind: "guide"
+learning_category: "02-data"
+---
+
 # ② NumPy 与 Pandas
 
 > 本章共 3 篇笔记。

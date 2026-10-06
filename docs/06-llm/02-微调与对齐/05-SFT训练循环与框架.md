@@ -1,3 +1,9 @@
+---
+article_id: "b7b8e8f583cb"
+learning_kind: "reference"
+learning_category: "06-llm"
+---
+
 # SFT 训练循环与框架
 
 > **一句话总结**：SFT（Supervised Fine-Tuning）的本质是"**在 chat template 生成的目标序列上做下一 token 预测，但只对 assistant 的回答部分计算 loss**"——数据、模板、掩码、collator、监控这五步里任何一步错位，都会表现为"loss 在降但模型不会用"。

@@ -1,3 +1,9 @@
+---
+article_id: "21a1347a1b81"
+learning_kind: "reference"
+learning_category: "08-project"
+---
+
 # 项目实战笔记 04：大宗商品价格监控 Agent
 
 > **一句话总结**：一个只有几百行的轻量自动化 Agent —— 多数据源容灾抓价 → 状态机判断"该买/该卖" → Server酱推到微信 → JSON 落盘存历史 → Flask 出看板与日报，跑在无人值守的定时循环里。

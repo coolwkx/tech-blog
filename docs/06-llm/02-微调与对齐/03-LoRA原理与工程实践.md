@@ -1,3 +1,9 @@
+---
+article_id: "968a88f3144b"
+learning_kind: "reference"
+learning_category: "06-llm"
+---
+
 # LoRA 原理与工程实践
 
 > **一句话总结**：LoRA 冻结预训练权重 $W$，只训练一对低秩矩阵 $B\in\mathbb{R}^{d\times r}$、$A\in\mathbb{R}^{r\times k}$，把更新写成 $h = Wx + \frac{\alpha}{r}BAx$，参数量从 $dk$ 降到 $r(d+k)$；它的工程价值在于**可合并**（推理零延迟）、**可插拔**（一份基座挂多份 adapter）、**可低精度训练**（配合 QLoRA）。

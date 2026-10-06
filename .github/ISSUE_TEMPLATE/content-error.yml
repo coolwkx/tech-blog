@@ -1,0 +1,23 @@
+name: 知识点内容问题
+description: 报告解释、公式、示例或前置知识中的问题
+title: "[内容] "
+body:
+  - type: input
+    id: location
+    attributes:
+      label: 文章地址或知识点目录
+      placeholder: 请贴出具体页面链接
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: 具体问题与期望解释
+      description: 请指出段落、公式或代码，并说明为什么有问题。
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 复现步骤、环境或参考来源
+      description: 示例问题请注明 Python 和依赖版本，以及实际输出。

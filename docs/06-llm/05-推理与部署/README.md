@@ -1,3 +1,9 @@
+---
+article_id: "33c394a97001"
+learning_kind: "guide"
+learning_category: "06-llm"
+---
+
 # ④ 推理与部署
 
 > 本章共 1 篇笔记。

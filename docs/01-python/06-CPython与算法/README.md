@@ -1,3 +1,9 @@
+---
+article_id: "8019523ce46a"
+learning_kind: "guide"
+learning_category: "01-python"
+---
+
 # ⑥ CPython 内部机制与算法
 
 > 本章共 1 篇笔记。

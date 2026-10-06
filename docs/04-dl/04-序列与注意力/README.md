@@ -1,3 +1,9 @@
+---
+article_id: "b32e0dff9228"
+learning_kind: "guide"
+learning_category: "04-dl"
+---
+
 # ④ 序列与注意力
 
 > 本章共 1 篇笔记。

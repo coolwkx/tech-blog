@@ -1,3 +1,12 @@
+---
+article_id: "9a522c2cae70"
+learning_kind: "reference"
+learning_category: "07-agent"
+---
+
+# -Function-Calling与工具调用
+
+
 > **一句话总结**：Function Calling 让模型在生成文本的过程中**输出一段结构化的函数调用参数**（而不是直接执行函数），由开发者的后端真正执行函数、把结果回填给模型，从而补上大模型在信息实时性、数据局限性和功能扩展性上的三块短板。
 > **前置知识**：[01-Agent基础范式与ReAct循环](../01-基础范式/01-Agent基础范式与ReAct循环.md) 的 Action 环节、[../llm/05-大模型API与调用实践.md](../../06-llm/06-提示工程/05-大模型API与调用实践.md) 的 `messages` 角色约定。
 > **学完能做到**：

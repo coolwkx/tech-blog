@@ -1,3 +1,12 @@
+---
+article_id: "563344f304a7"
+learning_kind: "reference"
+learning_category: "06-llm"
+---
+
+# -大模型API与调用实践
+
+
 > **一句话总结**：大模型应用有两条落地路径——**不训练只调用**（API + 提示工程，低成本、快迭代）和**小代价训练**（Prompt-Tuning / P-Tuning / LoRA 等参数高效微调，让下游任务去迁就预训练目标）；生产上常见的组合是「API 调用跑通业务 + 少量参数高效微调换效果」。
 > **前置知识**：BERT 与 MLM 预训练目标（见《02-Transformer与注意力机制》）、Python 与 HTTP 基础、PyTorch 训练循环。
 > **学完能做到**：1. 熟练使用 Chat Completions 的各个参数并说明调参方向；2. 说清 PET 的 Pattern-Verbalizer 原理与 P-Tuning 演进；3. 判断一个业务需求该用 API 调用、提示工程还是参数高效微调。

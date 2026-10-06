@@ -1,3 +1,9 @@
+---
+article_id: "a1de76cd7ed6"
+learning_kind: "guide"
+learning_category: "03-ml"
+---
+
 # ① 基础与特征工程
 
 > 本章共 3 篇笔记。

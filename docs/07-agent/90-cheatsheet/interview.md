@@ -1,3 +1,9 @@
+---
+article_id: "a6e1e267b52d"
+learning_kind: "reference"
+learning_category: "07-agent"
+---
+
 # 高频面试题库
 
 > 用法：先自己答，再展开看参考。标 🔥 的是高频题。

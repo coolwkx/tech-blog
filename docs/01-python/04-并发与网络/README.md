@@ -1,3 +1,9 @@
+---
+article_id: "a4f6a7c39263"
+learning_kind: "guide"
+learning_category: "01-python"
+---
+
 # ④ 并发与网络
 
 > 本章共 2 篇笔记。

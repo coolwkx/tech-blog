@@ -1,3 +1,9 @@
+---
+article_id: "c3281980b3d9"
+learning_kind: "guide"
+learning_category: "03-ml"
+---
+
 # ⑤ 案例与面试
 
 > 本章共 1 篇笔记。

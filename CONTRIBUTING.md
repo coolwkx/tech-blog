@@ -67,3 +67,12 @@
 ## 笔记模板
 
 见 [`templates/`](templates/)。
+
+
+## 独立知识点维护约定
+
+每篇围绕一个可验证的学习目标，不把整个方向塞入一篇文章。先选择方向与主题，再创建独立目录；写清前置知识、核心内容、验证方法和综合原文入口。共用变量和代码片段必须注明上下文依赖。
+
+`article_id` 是学习记录的永久键，移动文件时保留它。新增页面使用 `tools/register_articles.py` 分配编号，并更新导航和目录登记。导入已有内容时避免重新生成编号。
+
+构建与预览统一使用 `python tools/site.py build` 和 `python tools/site.py preview`。生成的 `site/` 不提交。修改学习记录逻辑后运行 `node tests/records.test.cjs`。

@@ -1,3 +1,9 @@
+---
+article_id: "7f36aafe1891"
+learning_kind: "reference"
+learning_category: "07-agent"
+---
+
 # 从零实现一个最小 Agent
 
 > **一句话总结**：Agent 的本质就是「LLM 输出结构化动作 → 代码执行 → 结果喂回 → 再决策」的循环，LangChain 之类的框架只是把这圈循环包起来的胶水。

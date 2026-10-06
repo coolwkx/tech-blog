@@ -1,3 +1,9 @@
+---
+article_id: "307edbf3819f"
+learning_kind: "guide"
+learning_category: "07-agent"
+---
+
 # ④ 评估与工程化
 
 > 本章共 1 篇笔记。

@@ -1,3 +1,12 @@
+---
+article_id: "a3491ff89088"
+learning_kind: "reference"
+learning_category: "06-llm"
+---
+
+# -Transformer与注意力机制
+
+
 > **一句话总结**：Transformer 用 self-attention 取代循环结构实现并行建模，再由它分化出自编码（encoder-only）、自回归（decoder-only）与序列到序列（encoder-decoder）三大类架构；今天的大模型几乎都选择 decoder-only，因为它在同等参数量与推理成本下效率最高。
 > **前置知识**：矩阵乘法与张量维度、softmax、点积的几何含义、PyTorch/NumPy 基础。
 > **学完能做到**：1. 画出 Transformer 的整体结构并说明每层作用；2. 用代码从零实现缩放点积注意力与多头注意力，说清每个张量的形状；3. 对比 BERT/GPT/T5 的架构、预训练目标与适用任务，并解释 RoPE、RMSNorm、GQA 为什么要这样改。

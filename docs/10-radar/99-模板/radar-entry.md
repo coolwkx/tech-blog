@@ -1,3 +1,9 @@
+---
+article_id: "122854047f0d"
+learning_kind: "reference"
+learning_category: "10-radar"
+---
+
 # 技术名 —— 一句话说明它是什么
 
 <!--

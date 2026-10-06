@@ -1,3 +1,9 @@
+---
+article_id: "094a38ba6a28"
+learning_kind: "guide"
+learning_category: "07-agent"
+---
+
 # ⑥ 评测实战
 
 > 本章共 4 篇笔记。

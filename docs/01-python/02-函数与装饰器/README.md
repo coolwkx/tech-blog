@@ -1,3 +1,9 @@
+---
+article_id: "5fbfff8c4aca"
+learning_kind: "guide"
+learning_category: "01-python"
+---
+
 # ② 函数与装饰器
 
 > 本章共 2 篇笔记。

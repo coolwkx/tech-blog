@@ -1,3 +1,12 @@
+---
+article_id: "fe8ec5a80b7e"
+learning_kind: "reference"
+learning_category: "02-data"
+---
+
+# -RFM用户价值分析实战
+
+
 > **一句话总结**：RFM 用三个交易行为指标给用户打分——**R**（Recency，最近一次消费距今多久）、**F**（Frequency，消费频率）、**M**（Monetary，消费金额），再组合成分群把用户分为 3×3×3=27 组，从而对不同群体做差异化运营；技术难点不在算法，而在**分箱边界怎么定**与**分数怎么组合**。
 > **前置知识**：[06-Pandas数据清洗](../02-NumPy与Pandas/06-Pandas数据清洗.md)（`dropna`、`concat`、`dt` 时间属性）；[07-Pandas分组聚合与透视](../02-NumPy与Pandas/07-Pandas分组聚合与透视.md)（`groupby + agg`）；[09-统计分析基础](../03-可视化与统计/09-统计分析基础.md)（`describe` 与分位数）。
 > **学完能做到**：1. 独立完成从原始订单表到 RFM 分群结果的完整流水线（清洗 → 聚合 → 分箱 → 组合 → 出图 → 落库）；2. 依据 `describe` 与业务经验合理确定 R/F/M 分箱边界，并解释每个边界值从哪来；3. 针对不同 RFM 群体给出可落地的运营策略。

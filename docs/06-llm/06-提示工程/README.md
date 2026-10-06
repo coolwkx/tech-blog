@@ -1,3 +1,9 @@
+---
+article_id: "8e86159b8a15"
+learning_kind: "guide"
+learning_category: "06-llm"
+---
+
 # ⑤ 提示工程
 
 > 本章共 2 篇笔记。

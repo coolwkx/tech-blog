@@ -1,3 +1,9 @@
+---
+article_id: "c3da79d13dde"
+learning_kind: "guide"
+learning_category: "03-ml"
+---
+
 # ② 经典算法
 
 > 本章共 4 篇笔记。

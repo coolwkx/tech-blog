@@ -1,3 +1,12 @@
+---
+article_id: "3dbf2b7f4206"
+learning_kind: "reference"
+learning_category: "07-agent"
+---
+
+# -Agent的记忆与知识管理
+
+
 > **一句话总结**：大模型本身无状态、不保存上次交互的内容，Agent 的记忆全靠外部实现——**短期记忆**是会话内回传的 `messages`（对话历史），**长期记忆**是跨会话持久化的状态文件与向量知识库；三者共同决定了 Agent 能「记住多久、记住多少」。
 > **前置知识**：[03-LangChain与工具编排](03-LangChain与工具编排.md) 的 Memory 组件、[06-RAG作为Agent的知识获取手段](06-RAG作为Agent的知识获取手段.md) 的向量检索、[02-Function-Calling与工具调用](../02-工具与规划/02-Function-Calling与工具调用.md) 的 messages 角色约定。
 > **学完能做到**：

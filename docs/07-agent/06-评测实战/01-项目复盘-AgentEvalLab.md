@@ -1,3 +1,12 @@
+---
+article_id: "215b0af0476d"
+learning_kind: "reference"
+learning_category: "07-agent"
+---
+
+# -项目复盘-AgentEvalLab
+
+
 > **一句话总结**：`agent-eval-lab` 是一条**可复核的 Agent 评测工具链**——它把「进程退出码为 0」和「用户目标真的完成了」强行拆开，用 Manifest 钉住实验身份、用证据式判定拆掉假成功、用多标签归因替代 unknown、用配对统计回答「这点提升是不是噪声」。
 > **前置知识**：[01-为什么Agent评测比LLM评测难](../05-评测/01-为什么Agent评测比LLM评测难.md) 的结果层/过程层/系统层框架与四象限判定、[07-Agent工程化与可靠性设计](../04-评估与工程化/07-Agent工程化与可靠性设计.md) 的轨迹落盘与结构化日志、基础统计学中的二项分布与 Bootstrap 重采样。
 > **学完能做到**：

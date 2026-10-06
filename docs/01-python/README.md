@@ -1,3 +1,9 @@
+---
+article_id: "67f0445ee0be"
+learning_kind: "guide"
+learning_category: "01-python"
+---
+
 # 🐍 Python
 
 > 语言机制、工程实践与性能优化：把「会写」变成「写对、写快」
@@ -27,3 +33,11 @@
 ---
 
 [⬅️ 返回博客首页](../README.md)
+
+
+## 按学习方向复习
+
+- [语言基础与核心机制](../learning/01-python/01-语言基础与核心机制/index.md)
+- [工程实践与进阶应用](../learning/01-python/02-工程实践与进阶应用/index.md)
+
+原有章节保留作综合复习与完整案例参考。新学习目录将每个知识点放在独立目录中。

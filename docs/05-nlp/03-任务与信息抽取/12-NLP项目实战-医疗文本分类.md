@@ -1,3 +1,9 @@
+---
+article_id: "8b0a9bea9dde"
+learning_kind: "reference"
+learning_category: "05-nlp"
+---
+
 # NLP 项目实战：医疗文本分类
 
 > **一句话总结**：把「随机森林 → FastText → BERT」三档模型跑在同一份医疗问句数据上，用指标对比回答「这个业务到底该用哪个模型」。

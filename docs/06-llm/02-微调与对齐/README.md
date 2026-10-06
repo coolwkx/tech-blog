@@ -1,3 +1,9 @@
+---
+article_id: "94f7ec0f6061"
+learning_kind: "guide"
+learning_category: "06-llm"
+---
+
 # ② 微调与对齐
 
 > 本章共 8 篇笔记。

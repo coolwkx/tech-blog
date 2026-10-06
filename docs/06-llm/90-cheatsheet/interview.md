@@ -1,3 +1,9 @@
+---
+article_id: "ad7475955b56"
+learning_kind: "reference"
+learning_category: "06-llm"
+---
+
 # 高频面试题库
 
 > 用法：先自己答，再展开看参考。标 🔥 的是高频题。

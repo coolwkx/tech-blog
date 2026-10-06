@@ -1,10 +1,16 @@
+---
+article_id: "adf8201ba229"
+learning_kind: "reference"
+learning_category: "01-python"
+---
+
 # 必读论文清单
 
 | # | 论文 | 年份 | 一句话贡献 | 精读笔记 |
 | --- | --- | --- | --- | --- |
 | 1 | | | | 📝 |
 
-模板见 [templates/paper-review.md](../../../templates/paper-review.md)。
+模板见 [templates/paper-review.md](https://github.com/coolwkx/tech-blog/blob/main/templates/paper-review.md)。
 
 ---
 

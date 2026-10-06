@@ -1,3 +1,9 @@
+---
+article_id: "893d8e755beb"
+learning_kind: "guide"
+learning_category: "10-radar"
+---
+
 # ② 技术条目
 
 > 本章共 2 篇笔记。

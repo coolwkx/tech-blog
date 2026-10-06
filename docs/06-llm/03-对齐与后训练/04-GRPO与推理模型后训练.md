@@ -1,3 +1,12 @@
+---
+article_id: "d7276d2e491b"
+learning_kind: "reference"
+learning_category: "06-llm"
+---
+
+# -GRPO与推理模型后训练
+
+
 > **一句话总结**：GRPO（Group Relative Policy Optimization）保留了 PPO 的重要性采样与裁剪，但把「Critic 学出来的价值基线」换成「同一个 prompt 采一组回答、用组内奖励的均值作为基线、用标准差做归一化」，从而省掉一个与策略同规模的模型；这条路线配合可验证奖励，成为 DeepSeekMath 与 DeepSeek-R1 类推理模型后训练的核心算法。
 > **前置知识**：第 01 篇（PPO 的四个模型、GAE、KL 惩罚）与第 02 篇（奖励模型与 reward hacking）；对「基线为什么不引入偏差」有印象会更顺。
 > **学完能做到**：1. 写出 GRPO 的目标函数与组内归一化的优势估计公式，并说清它与 PPO 的差异点在哪里、省了什么、代价是什么；2. 完整讲出「冷启动 SFT → 推理导向 RL → 拒绝采样 → 再 SFT → 全场景 RL → 蒸馏」这条推理模型后训练流水线每一步的输入输出；3. 手算组内优势，判断「全对/全错组梯度为零」的成因与处理，并写一个可运行的 GRPO 优势估计实现。

@@ -1,3 +1,9 @@
+---
+article_id: "8f6e59312d25"
+learning_kind: "reference"
+learning_category: "08-project"
+---
+
 # 项目实战笔记 08：新闻文本分类三方案对比（随机森林 / FastText / BERT）
 
 > **一句话总结**：同一个 THUCNews 风格新闻 10 分类任务（18 万训练样本）跑三条技术路线——TF-IDF + 随机森林 81.48%、FastText 91.72%、BERT 93.64%，用真实数字看清"词袋 → 词向量 → 上下文预训练"的能力阶梯，再走完量化与蒸馏的部署优化。

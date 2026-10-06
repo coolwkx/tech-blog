@@ -1,0 +1,13 @@
+const assert=require('node:assert/strict');
+const {validate,restore}=require('../learning-ui/records.js');
+const current={records:{old:{status:'review',note:'保留'},same:{note:'旧'}},preferences:{theme:'dark'},last:'old'};
+const backup={version:2,records:{same:{note:'新',position:42},new:{status:'mastered',bookmarked:true}},preferences:{fontSize:20},last:'new'};
+const merged=restore(current,backup,'merge');
+assert.equal(merged.records.old.note,'保留');assert.equal(merged.records.same.note,'新');assert.equal(merged.preferences.theme,'dark');assert.equal(current.records.same.note,'旧');
+const replaced=restore(current,backup,'replace');assert.equal(replaced.records.old,undefined);assert.equal(replaced.last,'new');
+assert.throws(()=>validate({version:2,records:JSON.parse('{"__proto__":{"note":"x"}}')}));
+assert.throws(()=>validate({version:2,records:{x:{position:101}}}));
+assert.throws(()=>validate({version:2,records:{x:{status:'invalid'}}}));
+assert.throws(()=>validate({version:3,records:{}}));
+assert.equal(validate({version:2,records:{'old-stable-id':{note:'跨版本保留'}}}).records['old-stable-id'].note,'跨版本保留');
+console.log('Record validation, merge, replace and compatibility passed');

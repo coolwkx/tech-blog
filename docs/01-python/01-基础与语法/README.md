@@ -1,3 +1,9 @@
+---
+article_id: "abbda8af2926"
+learning_kind: "guide"
+learning_category: "01-python"
+---
+
 # ① 基础与语法
 
 > 本章共 2 篇笔记。

@@ -1,3 +1,9 @@
+---
+article_id: "7f77a654c1d2"
+learning_kind: "guide"
+learning_category: "01-python"
+---
+
 # ③ 面向对象与数据模型
 
 > 本章共 2 篇笔记。

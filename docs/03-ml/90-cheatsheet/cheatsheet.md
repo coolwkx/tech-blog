@@ -1,3 +1,9 @@
+---
+article_id: "08e4bf2973d3"
+learning_kind: "reference"
+learning_category: "03-ml"
+---
+
 # 速查表 · Cheatsheet
 
 > 面试前 10 分钟扫一遍。只放**能直接背 / 直接用**的东西。

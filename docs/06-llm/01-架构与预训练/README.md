@@ -1,3 +1,9 @@
+---
+article_id: "78c33f0333ce"
+learning_kind: "guide"
+learning_category: "06-llm"
+---
+
 # ① 架构与预训练
 
 > 本章共 4 篇笔记。

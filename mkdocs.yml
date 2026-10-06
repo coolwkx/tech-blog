@@ -23,6 +23,7 @@ theme:
     #
     # 也不要启用 navigation.tabs：顶栏标签会随正文一起滚走，
     # 换领域必须先把页面滚回顶部；侧栏是独立滚动的，任何时候都能直接切换领域。
+    - navigation.prune
     - navigation.indexes
     - navigation.path
     - navigation.footer
@@ -93,256 +94,1921 @@ extra_javascript:
   - javascripts/mermaid.js
 
 nav:
-  - 🏠 首页: README.md
-  - 🧭 学习路线: roadmap.md
-  - "🐍 Python":
-      - 领域目录: 01-python/README.md
-      - "① 基础与语法":
-          - 本节目录: 01-python/01-基础与语法/README.md
-          - "1.1 Python 数据模型与对象语义": 01-python/01-基础与语法/01-Python数据模型与对象语义.md
-          - "1.2 基础语法与数据类型": 01-python/01-基础与语法/01-基础语法与数据类型.md
-      - "② 函数与装饰器":
-          - 本节目录: 01-python/02-函数与装饰器/README.md
-          - "2.1 函数与作用域": 01-python/02-函数与装饰器/02-函数与作用域.md
-          - "2.2 装饰器与生成器": 01-python/02-函数与装饰器/06-装饰器与生成器.md
-      - "③ 面向对象与数据模型":
-          - 本节目录: 01-python/03-面向对象与数据模型/README.md
-          - "3.1 面向对象编程": 01-python/03-面向对象与数据模型/03-面向对象编程.md
-          - "3.2 文件与异常处理": 01-python/03-面向对象与数据模型/04-文件与异常处理.md
-      - "④ 并发与网络":
-          - 本节目录: 01-python/04-并发与网络/README.md
-          - "4.1 并发编程：进程与线程": 01-python/04-并发与网络/08-并发编程-进程与线程.md
-          - "4.2 网络编程": 01-python/04-并发与网络/09-网络编程.md
-      - "⑤ 工程化与实践":
-          - 本节目录: 01-python/05-工程化与实践/README.md
-          - "5.1 模块与包管理": 01-python/05-工程化与实践/05-模块与包管理.md
-          - "5.2 迭代器与内置函数": 01-python/05-工程化与实践/07-迭代器与内置函数.md
-          - "5.3 NumPy 入门": 01-python/05-工程化与实践/11-NumPy入门.md
-          - "5.4 Pandas 数据处理": 01-python/05-工程化与实践/12-Pandas数据处理.md
-      - "⑥ CPython 内部机制与算法":
-          - 本节目录: 01-python/06-CPython与算法/README.md
-          - "6.1 数据结构与算法基础": 01-python/06-CPython与算法/10-数据结构与算法基础.md
-      - "速查与面试":
-          - 本节目录: 01-python/90-cheatsheet/README.md
-          - "S1 速查表 · Cheatsheet": 01-python/90-cheatsheet/cheatsheet.md
-          - "S2 术语表 · Glossary": 01-python/90-cheatsheet/glossary.md
-          - "S3 高频面试题库": 01-python/90-cheatsheet/interview.md
-          - "S4 必读论文清单": 01-python/90-cheatsheet/papers.md
-  - "📦 数据处理与统计":
-      - 领域目录: 02-data/README.md
-      - "① Linux 与 SQL":
-          - 本节目录: 02-data/01-Linux与SQL/README.md
-          - "1.1 Linux 基础命令": 02-data/01-Linux与SQL/01-Linux基础命令.md
-          - "1.2 Linux 实用操作": 02-data/01-Linux与SQL/02-Linux实用操作.md
-          - "1.3 MySQL 基础与 SQL 语法": 02-data/01-Linux与SQL/03-MySQL基础与SQL语法.md
-          - "1.4 MySQL 进阶-索引与优化": 02-data/01-Linux与SQL/04-MySQL进阶-索引与优化.md
-      - "② NumPy 与 Pandas":
-          - 本节目录: 02-data/02-NumPy与Pandas/README.md
-          - "2.1 NumPy 数值计算": 02-data/02-NumPy与Pandas/05-NumPy数值计算.md
-          - "2.2 Pandas 数据清洗": 02-data/02-NumPy与Pandas/06-Pandas数据清洗.md
-          - "2.3 Pandas 分组聚合与透视": 02-data/02-NumPy与Pandas/07-Pandas分组聚合与透视.md
-      - "③ 可视化与统计":
-          - 本节目录: 02-data/03-可视化与统计/README.md
-          - "3.1 数据可视化-matplotlib 与 seaborn": 02-data/03-可视化与统计/08-数据可视化-matplotlib与seaborn.md
-          - "3.2 统计分析基础": 02-data/03-可视化与统计/09-统计分析基础.md
-      - "④ 分析实战":
-          - 本节目录: 02-data/04-分析实战/README.md
-          - "4.1 RFM 用户价值分析实战": 02-data/04-分析实战/10-RFM用户价值分析实战.md
-          - "4.2 数据分析项目流程": 02-data/04-分析实战/11-数据分析项目流程.md
-  - "📊 机器学习":
-      - 领域目录: 03-ml/README.md
-      - "① 基础与特征工程":
-          - 本节目录: 03-ml/01-基础与特征工程/README.md
-          - "1.1 机器学习核心概念与偏差方差分解": 03-ml/01-基础与特征工程/01-机器学习核心概念与偏差方差分解.md
-          - "1.2 机器学习概述与流程": 03-ml/01-基础与特征工程/01-机器学习概述与流程.md
-          - "1.3 特征工程": 03-ml/01-基础与特征工程/09-特征工程.md
-      - "② 经典算法":
-          - 本节目录: 03-ml/02-经典算法/README.md
-          - "2.1 KNN 算法": 03-ml/02-经典算法/02-KNN算法.md
-          - "2.2 线性回归": 03-ml/02-经典算法/03-线性回归.md
-          - "2.3 逻辑回归": 03-ml/02-经典算法/04-逻辑回归.md
-          - "2.4 决策树": 03-ml/02-经典算法/05-决策树.md
-      - "③ 评估与调优":
-          - 本节目录: 03-ml/03-评估与调优/README.md
-          - "3.1 模型评估与调优": 03-ml/03-评估与调优/08-模型评估与调优.md
-      - "④ 集成学习与无监督":
-          - 本节目录: 03-ml/04-集成与无监督/README.md
-          - "4.1 集成学习": 03-ml/04-集成与无监督/06-集成学习.md
-          - "4.2 KMeans 聚类": 03-ml/04-集成与无监督/07-KMeans聚类.md
-      - "⑤ 案例与面试":
-          - 本节目录: 03-ml/06-案例与面试/README.md
-          - "5.1 数据挖掘案例：电力负荷预测": 03-ml/06-案例与面试/10-数据挖掘案例-电力负荷预测.md
-      - "速查与面试":
-          - 本节目录: 03-ml/90-cheatsheet/README.md
-          - "S1 速查表 · Cheatsheet": 03-ml/90-cheatsheet/cheatsheet.md
-          - "S2 术语表 · Glossary": 03-ml/90-cheatsheet/glossary.md
-          - "S3 高频面试题库": 03-ml/90-cheatsheet/interview.md
-          - "S4 必读论文清单": 03-ml/90-cheatsheet/papers.md
-  - "🧠 深度学习":
-      - 领域目录: 04-dl/README.md
-      - "① 基础与反向传播":
-          - 本节目录: 04-dl/01-基础与反向传播/README.md
-          - "1.1 反向传播与计算图": 04-dl/01-基础与反向传播/01-反向传播与计算图.md
-          - "1.2 神经网络基础": 04-dl/01-基础与反向传播/01-神经网络基础.md
-          - "1.3 反向传播与梯度下降": 04-dl/01-基础与反向传播/03-反向传播与梯度下降.md
-      - "② 优化与训练":
-          - 本节目录: 04-dl/02-优化与训练/README.md
-          - "2.1 激活函数与损失函数": 04-dl/02-优化与训练/02-激活函数与损失函数.md
-          - "2.2 优化器与正则化": 04-dl/02-优化与训练/04-优化器与正则化.md
-          - "2.3 深度学习框架实践": 04-dl/02-优化与训练/07-深度学习框架实践.md
-      - "③ CNN 与视觉":
-          - 本节目录: 04-dl/03-CNN与视觉/README.md
-          - "3.1 CNN 卷积神经网络": 04-dl/03-CNN与视觉/05-CNN卷积神经网络.md
-      - "④ 序列与注意力":
-          - 本节目录: 04-dl/04-序列与注意力/README.md
-          - "4.1 RNN 与序列模型": 04-dl/04-序列与注意力/06-RNN与序列模型.md
-      - "速查与面试":
-          - 本节目录: 04-dl/90-cheatsheet/README.md
-          - "S1 速查表 · Cheatsheet": 04-dl/90-cheatsheet/cheatsheet.md
-          - "S2 术语表 · Glossary": 04-dl/90-cheatsheet/glossary.md
-          - "S3 高频面试题库": 04-dl/90-cheatsheet/interview.md
-          - "S4 必读论文清单": 04-dl/90-cheatsheet/papers.md
-  - "📝 自然语言处理":
-      - 领域目录: 05-nlp/README.md
-      - "① 预处理与文本表示":
-          - 本节目录: 05-nlp/01-预处理与表示/README.md
-          - "1.1 NLP 概述与文本预处理": 05-nlp/01-预处理与表示/01-NLP概述与文本预处理.md
-          - "1.2 文本预处理与分词全流程": 05-nlp/01-预处理与表示/01-文本预处理与分词全流程.md
-          - "1.3 中文分词与子词分词": 05-nlp/01-预处理与表示/02-中文分词与子词分词.md
-          - "1.4 文本表示：词袋与 TF-IDF": 05-nlp/01-预处理与表示/03-文本表示-词袋与TFIDF.md
-          - "1.5 词向量：Word2Vec 与 FastText": 05-nlp/01-预处理与表示/04-词向量-Word2Vec与FastText.md
-      - "② 序列建模与 Transformer":
-          - 本节目录: 05-nlp/02-序列建模与Transformer/README.md
-          - "2.1 RNN 与 LSTM 文本建模": 05-nlp/02-序列建模与Transformer/07-RNN与LSTM文本建模.md
-          - "2.2 Attention 与 Transformer": 05-nlp/02-序列建模与Transformer/08-Attention与Transformer.md
-          - "2.3 BERT 与预训练模型": 05-nlp/02-序列建模与Transformer/09-BERT与预训练模型.md
-      - "③ 任务与信息抽取":
-          - 本节目录: 05-nlp/03-任务与信息抽取/README.md
-          - "3.1 文本分类实战": 05-nlp/03-任务与信息抽取/05-文本分类实战.md
-          - "3.2 序列标注与实体识别": 05-nlp/03-任务与信息抽取/06-序列标注与实体识别.md
-          - "3.3 文本相似度与语义匹配": 05-nlp/03-任务与信息抽取/10-文本相似度与语义匹配.md
-          - "3.4 NLP 项目实战：情感分析": 05-nlp/03-任务与信息抽取/11-NLP项目实战-情感分析.md
-          - "3.5 NLP 项目实战：医疗文本分类": 05-nlp/03-任务与信息抽取/12-NLP项目实战-医疗文本分类.md
-      - "速查与面试":
-          - 本节目录: 05-nlp/90-cheatsheet/README.md
-          - "S1 速查表 · Cheatsheet": 05-nlp/90-cheatsheet/cheatsheet.md
-          - "S2 术语表 · Glossary": 05-nlp/90-cheatsheet/glossary.md
-          - "S3 高频面试题库": 05-nlp/90-cheatsheet/interview.md
-          - "S4 必读论文清单": 05-nlp/90-cheatsheet/papers.md
-  - "🤖 大语言模型":
-      - 领域目录: 06-llm/README.md
-      - "① 架构与预训练":
-          - 本节目录: 06-llm/01-架构与预训练/README.md
-          - "1.1 Attention 机制详解": 06-llm/01-架构与预训练/01-Attention机制详解.md
-          - "1.2 大模型基础与演进": 06-llm/01-架构与预训练/01-大模型基础与演进.md
-          - "1.3 Transformer 与注意力机制": 06-llm/01-架构与预训练/02-Transformer与注意力机制.md
-          - "1.4 主流大模型对比": 06-llm/01-架构与预训练/03-主流大模型对比.md
-      - "② 微调与对齐":
-          - 本节目录: 06-llm/02-微调与对齐/README.md
-          - "2.1 微调基础与决策": 06-llm/02-微调与对齐/01-微调基础与决策.md
-          - "2.2 全参微调与显存账本": 06-llm/02-微调与对齐/02-全参微调与显存账本.md
-          - "2.3 LoRA 原理与工程实践": 06-llm/02-微调与对齐/03-LoRA原理与工程实践.md
-          - "2.4 QLoRA 与量化微调": 06-llm/02-微调与对齐/04-QLoRA与量化微调.md
-          - "2.5 SFT 训练循环与框架": 06-llm/02-微调与对齐/05-SFT训练循环与框架.md
-          - "2.6 指令数据构造与清洗": 06-llm/02-微调与对齐/06-指令数据构造与清洗.md
-          - "2.7 微调效果评估与灾难性遗忘": 06-llm/02-微调与对齐/07-微调效果评估与灾难性遗忘.md
-          - "2.8 微调面试专题": 06-llm/02-微调与对齐/08-微调面试专题.md
-      - "③ 对齐与后训练":
-          - 本节目录: 06-llm/03-对齐与后训练/README.md
-          - "3.1 对齐概览与 RLHF": 06-llm/03-对齐与后训练/01-对齐概览与RLHF.md
-          - "3.2 奖励模型与偏好数据": 06-llm/03-对齐与后训练/02-奖励模型与偏好数据.md
-          - "3.3 DPO 与免强化学习对齐": 06-llm/03-对齐与后训练/03-DPO与免强化学习对齐.md
-          - "3.4 GRPO 与推理模型后训练": 06-llm/03-对齐与后训练/04-GRPO与推理模型后训练.md
-      - "④ 推理与部署":
-          - 本节目录: 06-llm/05-推理与部署/README.md
-          - "4.1 本地部署与 Ollama": 06-llm/05-推理与部署/06-本地部署与Ollama.md
-      - "⑤ 提示工程":
-          - 本节目录: 06-llm/06-提示工程/README.md
-          - "5.1 提示词工程": 06-llm/06-提示工程/04-提示词工程.md
-          - "5.2 大模型 API 与调用实践": 06-llm/06-提示工程/05-大模型API与调用实践.md
-      - "⑥ 检索增强 RAG":
-          - 本节目录: 06-llm/07-检索增强RAG/README.md
-          - "6.1 向量数据库与 Milvus": 06-llm/07-检索增强RAG/07-向量数据库与Milvus.md
-          - "6.2 LangChain 基础": 06-llm/07-检索增强RAG/08-LangChain基础.md
-          - "6.3 RAG 系统构建": 06-llm/07-检索增强RAG/09-RAG系统构建.md
-          - "6.4 RAG 评估与优化": 06-llm/07-检索增强RAG/10-RAG评估与优化.md
-      - "⑦ 面试专题":
-          - 本节目录: 06-llm/09-面试专题/README.md
-          - "7.1 大模型面试题库": 06-llm/09-面试专题/12-大模型面试题库.md
-      - "速查与面试":
-          - 本节目录: 06-llm/90-cheatsheet/README.md
-          - "S1 速查表 · Cheatsheet": 06-llm/90-cheatsheet/cheatsheet.md
-          - "S2 术语表 · Glossary": 06-llm/90-cheatsheet/glossary.md
-          - "S3 高频面试题库": 06-llm/90-cheatsheet/interview.md
-          - "S4 必读论文清单": 06-llm/90-cheatsheet/papers.md
-  - "🕹️ AI Agent":
-      - 领域目录: 07-agent/README.md
-      - "① 基础范式":
-          - 本节目录: 07-agent/01-基础范式/README.md
-          - "1.1 Agent 基础范式与 ReAct 循环": 07-agent/01-基础范式/01-Agent基础范式与ReAct循环.md
-          - "1.2 从零实现一个最小 Agent": 07-agent/01-基础范式/01-从零实现一个最小Agent.md
-      - "② 工具调用与规划":
-          - 本节目录: 07-agent/02-工具与规划/README.md
-          - "2.1 Function-Calling 与工具调用": 07-agent/02-工具与规划/02-Function-Calling与工具调用.md
-          - "2.2 Agent 的规划与任务分解": 07-agent/02-工具与规划/04-Agent的规划与任务分解.md
-      - "③ 记忆与多智能体":
-          - 本节目录: 07-agent/03-记忆与多智能体/README.md
-          - "3.1 LangChain 与工具编排": 07-agent/03-记忆与多智能体/03-LangChain与工具编排.md
-          - "3.2 Agent 的记忆与知识管理": 07-agent/03-记忆与多智能体/05-Agent的记忆与知识管理.md
-          - "3.3 RAG 作为 Agent 的知识获取手段": 07-agent/03-记忆与多智能体/06-RAG作为Agent的知识获取手段.md
-      - "④ 评估与工程化":
-          - 本节目录: 07-agent/04-评估与工程化/README.md
-          - "4.1 Agent 工程化与可靠性设计": 07-agent/04-评估与工程化/07-Agent工程化与可靠性设计.md
-      - "⑤ Agent 评测":
-          - 本节目录: 07-agent/05-评测/README.md
-          - "5.1 为什么 Agent 评测比 LLM 评测难": 07-agent/05-评测/01-为什么Agent评测比LLM评测难.md
-          - "5.2 评测指标设计": 07-agent/05-评测/02-评测指标设计.md
-          - "5.3 评测方法-单元测试与 LLM 即裁判": 07-agent/05-评测/03-评测方法-单元测试与LLM即裁判.md
-          - "5.4 评测基准全景": 07-agent/05-评测/04-评测基准全景.md
-          - "5.5 RAG 与多轮对话评测": 07-agent/05-评测/05-RAG与多轮对话评测.md
-      - "⑥ 评测实战":
-          - 本节目录: 07-agent/06-评测实战/README.md
-          - "6.1 项目复盘-AgentEvalLab": 07-agent/06-评测实战/01-项目复盘-AgentEvalLab.md
-          - "6.2 用 Manifest 保证评测可复现": 07-agent/06-评测实战/02-用Manifest保证评测可复现.md
-          - "6.3 失败归因与显著性检验实战": 07-agent/06-评测实战/03-失败归因与显著性检验实战.md
-          - "6.4 给一个真实 Agent 补评测": 07-agent/06-评测实战/04-给一个真实Agent补评测.md
-      - "⑦ 前沿与面试":
-          - 本节目录: 07-agent/07-前沿与面试/README.md
-          - "7.1 大宗商品价格监控 Agent 项目复盘": 07-agent/07-前沿与面试/08-大宗商品价格监控Agent项目复盘.md
-      - "速查与面试":
-          - 本节目录: 07-agent/90-cheatsheet/README.md
-          - "S1 速查表 · Cheatsheet": 07-agent/90-cheatsheet/cheatsheet.md
-          - "S2 术语表 · Glossary": 07-agent/90-cheatsheet/glossary.md
-          - "S3 高频面试题库": 07-agent/90-cheatsheet/interview.md
-          - "S4 必读论文清单": 07-agent/90-cheatsheet/papers.md
-  - "🚀 项目实战":
-      - 领域目录: 08-project/README.md
-      - "① 问答与 RAG 系统":
-          - 本节目录: 08-project/01-问答与RAG系统/README.md
-          - "1.1 项目实战笔记 01：法律咨询 RAG 问答系统": 08-project/01-问答与RAG系统/01-项目-法律咨询RAG问答系统.md
-          - "1.2 项目实战笔记 05：企业内部制度问答助手": 08-project/01-问答与RAG系统/05-项目-企业内部制度问答助手.md
-      - "② 对话与生成系统":
-          - 本节目录: 08-project/02-对话与生成系统/README.md
-          - "2.1 项目实战笔记 02：法律咨询问答机器人": 08-project/02-对话与生成系统/02-项目-法律咨询问答机器人.md
-          - "2.2 项目实战笔记 03：企业客服聊天机器人": 08-project/02-对话与生成系统/03-项目-企业客服聊天机器人.md
-      - "③ 文本分类系统":
-          - 本节目录: 08-project/03-文本分类系统/README.md
-          - "3.1 项目实战笔记 06：电商评论分类（BERT+PET 与 BERT+P-Tuning）": 08-project/03-文本分类系统/06-项目-电商评论分类（BERT+PET与P-Tuning）.md
-          - "3.2 项目实战笔记 07：监管公告分类与信息抽取": 08-project/03-文本分类系统/07-项目-监管公告分类与信息抽取.md
-          - "3.3 项目实战笔记 08：新闻文本分类三方案对比（随机森林 / FastText / BERT）": 08-project/03-文本分类系统/08-项目-新闻文本分类三方案对比（随机森林FastTextBERT）.md
-      - "④ Agent 系统":
-          - 本节目录: 08-project/04-Agent系统/README.md
-          - "4.1 项目实战笔记 04：大宗商品价格监控 Agent": 08-project/04-Agent系统/04-项目-大宗商品价格监控Agent.md
-  - "📡 前沿追踪":
-      - 领域目录: 10-radar/README.md
-      - "① 追踪方法":
-          - 本节目录: 10-radar/01-追踪方法/README.md
-          - "1.1 这个栏目怎么用": 10-radar/01-追踪方法/01-这个栏目怎么用.md
-          - "1.2 新技术评估框架": 10-radar/01-追踪方法/02-新技术评估框架.md
-      - "② 技术条目":
-          - 本节目录: 10-radar/02-条目/README.md
-          - "2.1 Jev —— 把 Agent 的判断从「生成」里拆出来：不写字，只给带概率的判定": 10-radar/02-条目/2026-09-Jev-决策模型.md
-          - "2.2 Muse —— 把 Agent 安全从「模型对齐」改成「外部权限工程」": 10-radar/02-条目/2026-09-Muse-个人Agent.md
-      - "③ 条目模板":
-          - 本节目录: 10-radar/99-模板/README.md
-          - "3.1 技术名 —— 一句话说明它是什么": 10-radar/99-模板/radar-entry.md
+- 学习首页: README.md
+- 跨领域学习路线: roadmap.md
+- Python:
+  - 语言基础与核心机制:
+    - 方向概览: learning/01-python/01-语言基础与核心机制/index.md
+    - Python 数据模型与对象语义:
+      - 主题目录: learning/01-python/01-语言基础与核心机制/01-Python-数据模型与对象语义/index.md
+      - Python 数据模型与对象语义：为什么需要它: learning/01-python/01-语言基础与核心机制/01-Python-数据模型与对象语义/01-Python-数据模型与对象语义：为什么需要它/index.md
+      - 对象 = id + type + 值: learning/01-python/01-语言基础与核心机制/01-Python-数据模型与对象语义/02-对象-=-id-+-type-+-值/index.md
+      - 名字绑定，不是盒子: learning/01-python/01-语言基础与核心机制/01-Python-数据模型与对象语义/03-名字绑定，不是盒子/index.md
+      - 语法糖都是协议调用: learning/01-python/01-语言基础与核心机制/01-Python-数据模型与对象语义/04-语法糖都是协议调用/index.md
+      - Python 数据模型与对象语义：最小可运行示例: learning/01-python/01-语言基础与核心机制/01-Python-数据模型与对象语义/05-Python-数据模型与对象语义：最小可运行示例/index.md
+      - type 与 object 的循环: learning/01-python/01-语言基础与核心机制/01-Python-数据模型与对象语义/06-type-与-object-的循环/index.md
+      - 名字绑定与 dis 字节码: learning/01-python/01-语言基础与核心机制/01-Python-数据模型与对象语义/07-名字绑定与-dis-字节码/index.md
+      - == 与 is：缓存与 interning 的真相: learning/01-python/01-语言基础与核心机制/01-Python-数据模型与对象语义/08-==-与-is：缓存与-interning-的真相/index.md
+      - 特殊方法在类型上查找，不在实例上: learning/01-python/01-语言基础与核心机制/01-Python-数据模型与对象语义/09-特殊方法在类型上查找，不在实例上/index.md
+      - 可变性、传参与默认参数: learning/01-python/01-语言基础与核心机制/01-Python-数据模型与对象语义/10-可变性、传参与默认参数/index.md
+      - 浅拷贝、深拷贝与 list * n: learning/01-python/01-语言基础与核心机制/01-Python-数据模型与对象语义/11-浅拷贝、深拷贝与-list---n/index.md
+      - 可哈希性与字典键的契约: learning/01-python/01-语言基础与核心机制/01-Python-数据模型与对象语义/12-可哈希性与字典键的契约/index.md
+      - __slots__ 与 dataclass 对对象语义的影响: learning/01-python/01-语言基础与核心机制/01-Python-数据模型与对象语义/13-__slots__-与-dataclass-对对象语义的影响/index.md
+    - 基础语法与数据类型:
+      - 主题目录: learning/01-python/01-语言基础与核心机制/02-基础语法与数据类型/index.md
+      - 变量、对象与"三要素": learning/01-python/01-语言基础与核心机制/02-基础语法与数据类型/01-变量、对象与-三要素/index.md
+      - 可变类型 vs 不可变类型（本课最核心的一张表）: learning/01-python/01-语言基础与核心机制/02-基础语法与数据类型/02-可变类型-vs-不可变类型（本课最核心的一张表）/index.md
+      - 四大容器选型表: learning/01-python/01-语言基础与核心机制/02-基础语法与数据类型/03-四大容器选型表/index.md
+      - 序列的通用操作（list / tuple / str 都支持）: learning/01-python/01-语言基础与核心机制/02-基础语法与数据类型/04-序列的通用操作（list---tuple---str-都支持）/index.md
+      - list 的增删改查: learning/01-python/01-语言基础与核心机制/02-基础语法与数据类型/05-list-的增删改查/index.md
+      - tuple：不可变带来的三个价值: learning/01-python/01-语言基础与核心机制/02-基础语法与数据类型/06-tuple：不可变带来的三个价值/index.md
+      - dict：把"查表"这件事做到 O(1): learning/01-python/01-语言基础与核心机制/02-基础语法与数据类型/07-dict：把-查表-这件事做到-O-1-/index.md
+      - set：去重与集合运算: learning/01-python/01-语言基础与核心机制/02-基础语法与数据类型/08-set：去重与集合运算/index.md
+      - 引用、浅拷贝与"别名": learning/01-python/01-语言基础与核心机制/02-基础语法与数据类型/09-引用、浅拷贝与-别名/index.md
+      - 基础语法与数据类型：最小可运行示例: learning/01-python/01-语言基础与核心机制/02-基础语法与数据类型/10-基础语法与数据类型：最小可运行示例/index.md
+    - 函数与作用域:
+      - 主题目录: learning/01-python/01-语言基础与核心机制/03-函数与作用域/index.md
+      - 函数定义与调用：三个最容易含混的点: learning/01-python/01-语言基础与核心机制/03-函数与作用域/01-函数定义与调用：三个最容易含混的点/index.md
+      - 返回值：return 的四种形态: learning/01-python/01-语言基础与核心机制/03-函数与作用域/02-返回值：return-的四种形态/index.md
+      - 参数四件套与"绑定顺序": learning/01-python/01-语言基础与核心机制/03-函数与作用域/03-参数四件套与-绑定顺序/index.md
+      - 变量作用域与 LEGB 规则: learning/01-python/01-语言基础与核心机制/03-函数与作用域/04-变量作用域与-LEGB-规则/index.md
+      - 参数传递：到底是"传值"还是"传引用": learning/01-python/01-语言基础与核心机制/03-函数与作用域/05-参数传递：到底是-传值-还是-传引用/index.md
+      - 函数是"一等对象"与高阶函数: learning/01-python/01-语言基础与核心机制/03-函数与作用域/06-函数是-一等对象-与高阶函数/index.md
+      - lambda：能做什么、不能做什么: learning/01-python/01-语言基础与核心机制/03-函数与作用域/07-lambda：能做什么、不能做什么/index.md
+      - 函数与作用域：最小可运行示例: learning/01-python/01-语言基础与核心机制/03-函数与作用域/08-函数与作用域：最小可运行示例/index.md
+    - 装饰器与生成器:
+      - 主题目录: learning/01-python/01-语言基础与核心机制/04-装饰器与生成器/index.md
+      - 从闭包到装饰器: learning/01-python/01-语言基础与核心机制/04-装饰器与生成器/01-从闭包到装饰器/index.md
+      - 通用装饰器模板（背下来）: learning/01-python/01-语言基础与核心机制/04-装饰器与生成器/02-通用装饰器模板（背下来）/index.md
+      - 的 timer 装饰器是错的: learning/01-python/01-语言基础与核心机制/04-装饰器与生成器/03-的-timer-装饰器是错的/index.md
+      - 多个装饰器的执行顺序: learning/01-python/01-语言基础与核心机制/04-装饰器与生成器/04-多个装饰器的执行顺序/index.md
+      - 带参数的装饰器：为什么必须三层: learning/01-python/01-语言基础与核心机制/04-装饰器与生成器/05-带参数的装饰器：为什么必须三层/index.md
+      - 装饰器的常见实战场景: learning/01-python/01-语言基础与核心机制/04-装饰器与生成器/06-装饰器的常见实战场景/index.md
+      - 生成器：惰性求值的状态机: learning/01-python/01-语言基础与核心机制/04-装饰器与生成器/07-生成器：惰性求值的状态机/index.md
+      - '@property：把方法伪装成属性': learning/01-python/01-语言基础与核心机制/04-装饰器与生成器/08-@property：把方法伪装成属性/index.md
+      - 装饰器与生成器：最小可运行示例: learning/01-python/01-语言基础与核心机制/04-装饰器与生成器/09-装饰器与生成器：最小可运行示例/index.md
+    - 面向对象编程:
+      - 主题目录: learning/01-python/01-语言基础与核心机制/05-面向对象编程/index.md
+      - 面向过程 vs 面向对象: learning/01-python/01-语言基础与核心机制/05-面向对象编程/01-面向过程-vs-面向对象/index.md
+      - 类与对象：模板与实例: learning/01-python/01-语言基础与核心机制/05-面向对象编程/02-类与对象：模板与实例/index.md
+      - __init__ / __str__ / __del__ 三个最常用的魔法方法: learning/01-python/01-语言基础与核心机制/05-面向对象编程/03-__init__---__str__---__del__-三个最常用的魔法方法/index.md
+      - 属性：类属性 vs 实例属性: learning/01-python/01-语言基础与核心机制/05-面向对象编程/04-属性：类属性-vs-实例属性/index.md
+      - 三大特性一览: learning/01-python/01-语言基础与核心机制/05-面向对象编程/05-三大特性一览/index.md
+      - 继承：单继承、多继承、MRO: learning/01-python/01-语言基础与核心机制/05-面向对象编程/06-继承：单继承、多继承、MRO/index.md
+      - 封装：私有属性与私有方法的真相: learning/01-python/01-语言基础与核心机制/05-面向对象编程/07-封装：私有属性与私有方法的真相/index.md
+      - 多态：同一接口，不同实现: learning/01-python/01-语言基础与核心机制/05-面向对象编程/08-多态：同一接口，不同实现/index.md
+      - 实例方法 / 类方法 / 静态方法: learning/01-python/01-语言基础与核心机制/05-面向对象编程/09-实例方法---类方法---静态方法/index.md
+      - 赋值 / 浅拷贝 / 深拷贝: learning/01-python/01-语言基础与核心机制/05-面向对象编程/10-赋值---浅拷贝---深拷贝/index.md
+      - 面向对象编程：最小可运行示例: learning/01-python/01-语言基础与核心机制/05-面向对象编程/11-面向对象编程：最小可运行示例/index.md
+    - 文件与异常处理:
+      - 主题目录: learning/01-python/01-语言基础与核心机制/06-文件与异常处理/index.md
+      - 为什么需要 with：从"手动关闭"到"自动释放": learning/01-python/01-语言基础与核心机制/06-文件与异常处理/01-为什么需要-with：从-手动关闭-到-自动释放/index.md
+      - open 的模式：一张表说清: learning/01-python/01-语言基础与核心机制/06-文件与异常处理/02-open-的模式：一张表说清/index.md
+      - 读写方法对比: learning/01-python/01-语言基础与核心机制/06-文件与异常处理/03-读写方法对比/index.md
+      - 指针：tell 与 seek: learning/01-python/01-语言基础与核心机制/06-文件与异常处理/04-指针：tell-与-seek/index.md
+      - 异常体系：先认族谱再抓异常: learning/01-python/01-语言基础与核心机制/06-文件与异常处理/05-异常体系：先认族谱再抓异常/index.md
+      - 两种风格：LBYL vs EAFP: learning/01-python/01-语言基础与核心机制/06-文件与异常处理/06-两种风格：LBYL-vs-EAFP/index.md
+      - 常用文件工具: learning/01-python/01-语言基础与核心机制/06-文件与异常处理/07-常用文件工具/index.md
+      - 文件与异常处理：最小可运行示例: learning/01-python/01-语言基础与核心机制/06-文件与异常处理/08-文件与异常处理：最小可运行示例/index.md
+    - 迭代器与内置函数:
+      - 主题目录: learning/01-python/01-语言基础与核心机制/07-迭代器与内置函数/index.md
+      - 可迭代对象（iterable）vs 迭代器（iterator）: learning/01-python/01-语言基础与核心机制/07-迭代器与内置函数/01-可迭代对象（iterable）vs-迭代器（iterator）/index.md
+      - for 循环的完整协议: learning/01-python/01-语言基础与核心机制/07-迭代器与内置函数/02-for-循环的完整协议/index.md
+      - 迭代器的"耗尽性": learning/01-python/01-语言基础与核心机制/07-迭代器与内置函数/03-迭代器的-耗尽性/index.md
+      - 内置函数分类速查: learning/01-python/01-语言基础与核心机制/07-迭代器与内置函数/04-内置函数分类速查/index.md
+      - 重点函数逐个说清: learning/01-python/01-语言基础与核心机制/07-迭代器与内置函数/05-重点函数逐个说清/index.md
+      - key 参数：Python 排序的核心设计: learning/01-python/01-语言基础与核心机制/07-迭代器与内置函数/06-key-参数：Python-排序的核心设计/index.md
+      - 推导式 vs map / filter: learning/01-python/01-语言基础与核心机制/07-迭代器与内置函数/07-推导式-vs-map---filter/index.md
+      - 迭代器与内置函数：最小可运行示例: learning/01-python/01-语言基础与核心机制/07-迭代器与内置函数/08-迭代器与内置函数：最小可运行示例/index.md
+  - 工程实践与进阶应用:
+    - 方向概览: learning/01-python/02-工程实践与进阶应用/index.md
+    - 并发编程：进程与线程:
+      - 主题目录: learning/01-python/02-工程实践与进阶应用/01-并发编程：进程与线程/index.md
+      - 并发 vs 并行: learning/01-python/02-工程实践与进阶应用/01-并发编程：进程与线程/01-并发-vs-并行/index.md
+      - 进程 / 线程 / 协程: learning/01-python/02-工程实践与进阶应用/01-并发编程：进程与线程/02-进程---线程---协程/index.md
+      - 为什么是"拷贝"：进程间数据隔离的原理: learning/01-python/02-工程实践与进阶应用/01-并发编程：进程与线程/03-为什么是-拷贝-：进程间数据隔离的原理/index.md
+      - multiprocessing 常用 API: learning/01-python/02-工程实践与进阶应用/01-并发编程：进程与线程/04-multiprocessing-常用-API/index.md
+      - threading 常用 API: learning/01-python/02-工程实践与进阶应用/01-并发编程：进程与线程/05-threading-常用-API/index.md
+      - GIL：它到底是什么: learning/01-python/02-工程实践与进阶应用/01-并发编程：进程与线程/06-GIL：它到底是什么/index.md
+      - 竞态条件（race condition）与锁: learning/01-python/02-工程实践与进阶应用/01-并发编程：进程与线程/07-竞态条件（race-condition）与锁/index.md
+      - daemon 与"主进程等待": learning/01-python/02-工程实践与进阶应用/01-并发编程：进程与线程/08-daemon-与-主进程等待/index.md
+      - 'Windows 上的 spawn 与 if __name__ == "__main__":': learning/01-python/02-工程实践与进阶应用/01-并发编程：进程与线程/09-Windows-上的-spawn-与-if-__name__-==--__main__/index.md
+      - 进程间通信（IPC）: learning/01-python/02-工程实践与进阶应用/01-并发编程：进程与线程/10-进程间通信（IPC）/index.md
+    - 网络编程:
+      - 主题目录: learning/01-python/02-工程实践与进阶应用/02-网络编程/index.md
+      - 网络编程三要素: learning/01-python/02-工程实践与进阶应用/02-网络编程/01-网络编程三要素/index.md
+      - TCP vs UDP: learning/01-python/02-工程实践与进阶应用/02-网络编程/02-TCP-vs-UDP/index.md
+      - 三次握手与四次挥手: learning/01-python/02-工程实践与进阶应用/02-网络编程/03-三次握手与四次挥手/index.md
+      - str 与 bytes：网络只认字节: learning/01-python/02-工程实践与进阶应用/02-网络编程/04-str-与-bytes：网络只认字节/index.md
+      - TCP 开发流程: learning/01-python/02-工程实践与进阶应用/02-网络编程/05-TCP-开发流程/index.md
+      - 关键 API 细节: learning/01-python/02-工程实践与进阶应用/02-网络编程/06-关键-API-细节/index.md
+      - 粘包：TCP 是字节流，没有"消息边界": learning/01-python/02-工程实践与进阶应用/02-网络编程/07-粘包：TCP-是字节流，没有-消息边界/index.md
+      - 短连接、长连接与多客户端: learning/01-python/02-工程实践与进阶应用/02-网络编程/08-短连接、长连接与多客户端/index.md
+      - 网络编程：最小可运行示例: learning/01-python/02-工程实践与进阶应用/02-网络编程/09-网络编程：最小可运行示例/index.md
+    - 模块与包管理:
+      - 主题目录: learning/01-python/02-工程实践与进阶应用/03-模块与包管理/index.md
+      - 模块的三种来源: learning/01-python/02-工程实践与进阶应用/03-模块与包管理/01-模块的三种来源/index.md
+      - 四种导入形式对比: learning/01-python/02-工程实践与进阶应用/03-模块与包管理/02-四种导入形式对比/index.md
+      - import 背后到底做了什么: learning/01-python/02-工程实践与进阶应用/03-模块与包管理/03-import-背后到底做了什么/index.md
+      - 模块搜索路径 sys.path: learning/01-python/02-工程实践与进阶应用/03-模块与包管理/04-模块搜索路径-sys.path/index.md
+      - '__name__ 与 if __name__ == "__main__":': learning/01-python/02-工程实践与进阶应用/03-模块与包管理/05-__name__-与-if-__name__-==--__main__/index.md
+      - 包（package）与 __init__.py: learning/01-python/02-工程实践与进阶应用/03-模块与包管理/06-包（package）与-__init__.py/index.md
+      - pip、虚拟环境与依赖管理: learning/01-python/02-工程实践与进阶应用/03-模块与包管理/07-pip、虚拟环境与依赖管理/index.md
+      - 模块设计原则: learning/01-python/02-工程实践与进阶应用/03-模块与包管理/08-模块设计原则/index.md
+      - 模块与包管理：最小可运行示例: learning/01-python/02-工程实践与进阶应用/03-模块与包管理/09-模块与包管理：最小可运行示例/index.md
+    - NumPy 入门:
+      - 主题目录: learning/01-python/02-工程实践与进阶应用/04-NumPy-入门/index.md
+      - NumPy 解决了什么问题: learning/01-python/02-工程实践与进阶应用/04-NumPy-入门/01-NumPy-解决了什么问题/index.md
+      - 核心属性: learning/01-python/02-工程实践与进阶应用/04-NumPy-入门/02-核心属性/index.md
+      - 常用 dtype: learning/01-python/02-工程实践与进阶应用/04-NumPy-入门/03-常用-dtype/index.md
+      - 创建数组的方法: learning/01-python/02-工程实践与进阶应用/04-NumPy-入门/04-创建数组的方法/index.md
+      - 索引与切片的三种玩法: learning/01-python/02-工程实践与进阶应用/04-NumPy-入门/05-索引与切片的三种玩法/index.md
+      - 形状操作: learning/01-python/02-工程实践与进阶应用/04-NumPy-入门/06-形状操作/index.md
+      - 广播机制（broadcasting）三条规则: learning/01-python/02-工程实践与进阶应用/04-NumPy-入门/07-广播机制（broadcasting）三条规则/index.md
+      - axis 参数：一句话记住: learning/01-python/02-工程实践与进阶应用/04-NumPy-入门/08-axis-参数：一句话记住/index.md
+      - 统计、逻辑与 where: learning/01-python/02-工程实践与进阶应用/04-NumPy-入门/09-统计、逻辑与-where/index.md
+      - '* 与 @：最容易被搞混的一组运算': learning/01-python/02-工程实践与进阶应用/04-NumPy-入门/10-与-@：最容易被搞混的一组运算/index.md
+      - NumPy 入门：最小可运行示例: learning/01-python/02-工程实践与进阶应用/04-NumPy-入门/11-NumPy-入门：最小可运行示例/index.md
+    - Pandas 数据处理:
+      - 主题目录: learning/01-python/02-工程实践与进阶应用/05-Pandas-数据处理/index.md
+      - Series 与 DataFrame: learning/01-python/02-工程实践与进阶应用/05-Pandas-数据处理/01-Series-与-DataFrame/index.md
+      - 索引对齐：Pandas 最重要的一条规则: learning/01-python/02-工程实践与进阶应用/05-Pandas-数据处理/02-索引对齐：Pandas-最重要的一条规则/index.md
+      - 取数三件套：[] / loc / iloc: learning/01-python/02-工程实践与进阶应用/05-Pandas-数据处理/03-取数三件套：-----loc---iloc/index.md
+      - 增删改查速查: learning/01-python/02-工程实践与进阶应用/05-Pandas-数据处理/04-增删改查速查/index.md
+      - 过滤：布尔 / query / isin: learning/01-python/02-工程实践与进阶应用/05-Pandas-数据处理/05-过滤：布尔---query---isin/index.md
+      - 缺失值处理: learning/01-python/02-工程实践与进阶应用/05-Pandas-数据处理/06-缺失值处理/index.md
+      - 数据合并：concat vs merge: learning/01-python/02-工程实践与进阶应用/05-Pandas-数据处理/07-数据合并：concat-vs-merge/index.md
+      - 分组聚合：split-apply-combine: learning/01-python/02-工程实践与进阶应用/05-Pandas-数据处理/08-分组聚合：split-apply-combine/index.md
+      - 透视表与交叉表: learning/01-python/02-工程实践与进阶应用/05-Pandas-数据处理/09-透视表与交叉表/index.md
+      - 读写数据: learning/01-python/02-工程实践与进阶应用/05-Pandas-数据处理/10-读写数据/index.md
+      - pandas 3.x 与老的差异（务必注意）: learning/01-python/02-工程实践与进阶应用/05-Pandas-数据处理/11-pandas-3.x-与老的差异（务必注意）/index.md
+    - 数据结构与算法基础:
+      - 主题目录: learning/01-python/02-工程实践与进阶应用/06-数据结构与算法基础/index.md
+      - 两个定义与算法的五大特性: learning/01-python/02-工程实践与进阶应用/06-数据结构与算法基础/01-两个定义与算法的五大特性/index.md
+      - 时间复杂度：大 O 记法: learning/01-python/02-工程实践与进阶应用/06-数据结构与算法基础/02-时间复杂度：大-O-记法/index.md
+      - 最优 / 最坏 / 平均情况: learning/01-python/02-工程实践与进阶应用/06-数据结构与算法基础/03-最优---最坏---平均情况/index.md
+      - 线性结构 vs 非线性结构: learning/01-python/02-工程实践与进阶应用/06-数据结构与算法基础/04-线性结构-vs-非线性结构/index.md
+      - 顺序表 vs 链表: learning/01-python/02-工程实践与进阶应用/06-数据结构与算法基础/05-顺序表-vs-链表/index.md
+      - 排序算法对比与稳定性: learning/01-python/02-工程实践与进阶应用/06-数据结构与算法基础/06-排序算法对比与稳定性/index.md
+      - 二分查找: learning/01-python/02-工程实践与进阶应用/06-数据结构与算法基础/07-二分查找/index.md
+      - 树与二叉树: learning/01-python/02-工程实践与进阶应用/06-数据结构与算法基础/08-树与二叉树/index.md
+      - 数据结构与算法基础：最小可运行示例: learning/01-python/02-工程实践与进阶应用/06-数据结构与算法基础/09-数据结构与算法基础：最小可运行示例/index.md
+  - 综合复习与参考:
+    - 领域目录: 01-python/README.md
+    - ① 基础与语法:
+      - 本节目录: 01-python/01-基础与语法/README.md
+      - 1.1 Python 数据模型与对象语义: 01-python/01-基础与语法/01-Python数据模型与对象语义.md
+      - 1.2 基础语法与数据类型: 01-python/01-基础与语法/01-基础语法与数据类型.md
+    - ② 函数与装饰器:
+      - 本节目录: 01-python/02-函数与装饰器/README.md
+      - 2.1 函数与作用域: 01-python/02-函数与装饰器/02-函数与作用域.md
+      - 2.2 装饰器与生成器: 01-python/02-函数与装饰器/06-装饰器与生成器.md
+    - ③ 面向对象与数据模型:
+      - 本节目录: 01-python/03-面向对象与数据模型/README.md
+      - 3.1 面向对象编程: 01-python/03-面向对象与数据模型/03-面向对象编程.md
+      - 3.2 文件与异常处理: 01-python/03-面向对象与数据模型/04-文件与异常处理.md
+    - ④ 并发与网络:
+      - 本节目录: 01-python/04-并发与网络/README.md
+      - 4.1 并发编程：进程与线程: 01-python/04-并发与网络/08-并发编程-进程与线程.md
+      - 4.2 网络编程: 01-python/04-并发与网络/09-网络编程.md
+    - ⑤ 工程化与实践:
+      - 本节目录: 01-python/05-工程化与实践/README.md
+      - 5.1 模块与包管理: 01-python/05-工程化与实践/05-模块与包管理.md
+      - 5.2 迭代器与内置函数: 01-python/05-工程化与实践/07-迭代器与内置函数.md
+      - 5.3 NumPy 入门: 01-python/05-工程化与实践/11-NumPy入门.md
+      - 5.4 Pandas 数据处理: 01-python/05-工程化与实践/12-Pandas数据处理.md
+    - ⑥ CPython 内部机制与算法:
+      - 本节目录: 01-python/06-CPython与算法/README.md
+      - 6.1 数据结构与算法基础: 01-python/06-CPython与算法/10-数据结构与算法基础.md
+    - 速查与面试:
+      - 本节目录: 01-python/90-cheatsheet/README.md
+      - S1 速查表 · Cheatsheet: 01-python/90-cheatsheet/cheatsheet.md
+      - S2 术语表 · Glossary: 01-python/90-cheatsheet/glossary.md
+      - S3 高频面试题库: 01-python/90-cheatsheet/interview.md
+      - S4 必读论文清单: 01-python/90-cheatsheet/papers.md
+- 数据处理与统计:
+  - 数据工具与处理基础:
+    - 方向概览: learning/02-data/01-数据工具与处理基础/index.md
+    - -Linux基础命令:
+      - 主题目录: learning/02-data/01-数据工具与处理基础/01-Linux基础命令/index.md
+      - Linux 目录结构：没有盘符，只有一棵树: learning/02-data/01-数据工具与处理基础/01-Linux基础命令/01-Linux-目录结构：没有盘符，只有一棵树/index.md
+      - 命令的通用格式: learning/02-data/01-数据工具与处理基础/01-Linux基础命令/02-命令的通用格式/index.md
+      - 路径与定位: learning/02-data/01-数据工具与处理基础/01-Linux基础命令/03-路径与定位/index.md
+      - 命令速查表: learning/02-data/01-数据工具与处理基础/01-Linux基础命令/04-命令速查表/index.md
+      - vi / vim 的三种模式: learning/02-data/01-数据工具与处理基础/01-Linux基础命令/05-vi---vim-的三种模式/index.md
+      - -Linux基础命令：可运行示例: learning/02-data/01-数据工具与处理基础/01-Linux基础命令/06-Linux基础命令：可运行示例/index.md
+    - -Linux实用操作:
+      - 主题目录: learning/02-data/01-数据工具与处理基础/02-Linux实用操作/index.md
+      - 用户、用户组与权限模型: learning/02-data/01-数据工具与处理基础/02-Linux实用操作/01-用户、用户组与权限模型/index.md
+      - 命令速查表: learning/02-data/01-数据工具与处理基础/02-Linux实用操作/02-命令速查表/index.md
+      - 软链接 vs 硬链接: learning/02-data/01-数据工具与处理基础/02-Linux实用操作/03-软链接-vs-硬链接/index.md
+      - 账号与权限闭环: learning/02-data/01-数据工具与处理基础/02-Linux实用操作/04-账号与权限闭环/index.md
+      - 服务、网络与端口排查: learning/02-data/01-数据工具与处理基础/02-Linux实用操作/05-服务、网络与端口排查/index.md
+      - 软链接、环境变量、打包与 Shell 脚本: learning/02-data/01-数据工具与处理基础/02-Linux实用操作/06-软链接、环境变量、打包与-Shell-脚本/index.md
+    - -MySQL基础与SQL语法:
+      - 主题目录: learning/02-data/01-数据工具与处理基础/03-MySQL基础与SQL语法/index.md
+      - 为什么需要数据库: learning/02-data/01-数据工具与处理基础/03-MySQL基础与SQL语法/01-为什么需要数据库/index.md
+      - SQL 语句基本规则: learning/02-data/01-数据工具与处理基础/03-MySQL基础与SQL语法/02-SQL-语句基本规则/index.md
+      - 常用数据类型: learning/02-data/01-数据工具与处理基础/03-MySQL基础与SQL语法/03-常用数据类型/index.md
+      - 约束（constraint）: learning/02-data/01-数据工具与处理基础/03-MySQL基础与SQL语法/04-约束（constraint）/index.md
+      - DDL：库、表、字段: learning/02-data/01-数据工具与处理基础/03-MySQL基础与SQL语法/05-DDL：库、表、字段/index.md
+      - DML：增、删、改: learning/02-data/01-数据工具与处理基础/03-MySQL基础与SQL语法/06-DML：增、删、改/index.md
+      - DQL：单表查询的完整语法（必须背的顺序）: learning/02-data/01-数据工具与处理基础/03-MySQL基础与SQL语法/07-DQL：单表查询的完整语法（必须背的顺序）/index.md
+      - -MySQL基础与SQL语法：可运行示例: learning/02-data/01-数据工具与处理基础/03-MySQL基础与SQL语法/08-MySQL基础与SQL语法：可运行示例/index.md
+    - -MySQL进阶-索引与优化:
+      - 主题目录: learning/02-data/01-数据工具与处理基础/04-MySQL进阶-索引与优化/index.md
+      - 表关系与建表原则: learning/02-data/01-数据工具与处理基础/04-MySQL进阶-索引与优化/01-表关系与建表原则/index.md
+      - 连接查询类型对照: learning/02-data/01-数据工具与处理基础/04-MySQL进阶-索引与优化/02-连接查询类型对照/index.md
+      - 子查询与自关联: learning/02-data/01-数据工具与处理基础/04-MySQL进阶-索引与优化/03-子查询与自关联/index.md
+      - 窗口函数（window function，MySQL 8.x 新增）: learning/02-data/01-数据工具与处理基础/04-MySQL进阶-索引与优化/04-窗口函数（window-function，MySQL-8.x-新增）/index.md
+      - CTE 与 case when: learning/02-data/01-数据工具与处理基础/04-MySQL进阶-索引与优化/05-CTE-与-case-when/index.md
+      - 延伸补充（本主题展开）: learning/02-data/01-数据工具与处理基础/04-MySQL进阶-索引与优化/06-延伸补充（本主题展开）/index.md
+    - -NumPy数值计算:
+      - 主题目录: learning/02-data/01-数据工具与处理基础/05-NumPy数值计算/index.md
+      - NumPy 是什么，为什么快: learning/02-data/01-数据工具与处理基础/05-NumPy数值计算/01-NumPy-是什么，为什么快/index.md
+      - ndarray 的属性: learning/02-data/01-数据工具与处理基础/05-NumPy数值计算/02-ndarray-的属性/index.md
+      - dtype 常用类型: learning/02-data/01-数据工具与处理基础/05-NumPy数值计算/03-dtype-常用类型/index.md
+      - 创建数组的常用函数: learning/02-data/01-数据工具与处理基础/05-NumPy数值计算/04-创建数组的常用函数/index.md
+      - -NumPy数值计算：可运行示例: learning/02-data/01-数据工具与处理基础/05-NumPy数值计算/05-NumPy数值计算：可运行示例/index.md
+    - -Pandas数据清洗:
+      - 主题目录: learning/02-data/01-数据工具与处理基础/06-Pandas数据清洗/index.md
+      - 两个核心数据结构: learning/02-data/01-数据工具与处理基础/06-Pandas数据清洗/01-两个核心数据结构/index.md
+      - Pandas 数据类型: learning/02-data/01-数据工具与处理基础/06-Pandas数据清洗/02-Pandas-数据类型/index.md
+      - 索引设置三件套: learning/02-data/01-数据工具与处理基础/06-Pandas数据清洗/03-索引设置三件套/index.md
+      - 三种定位方式（务必分清）: learning/02-data/01-数据工具与处理基础/06-Pandas数据清洗/04-三种定位方式（务必分清）/index.md
+      - 数据读写: learning/02-data/01-数据工具与处理基础/06-Pandas数据清洗/05-数据读写/index.md
+      - 增删改查速查: learning/02-data/01-数据工具与处理基础/06-Pandas数据清洗/06-增删改查速查/index.md
+      - 缺失值处理的决策表: learning/02-data/01-数据工具与处理基础/06-Pandas数据清洗/07-缺失值处理的决策表/index.md
+      - 数据合并: learning/02-data/01-数据工具与处理基础/06-Pandas数据清洗/08-数据合并/index.md
+      - -Pandas数据清洗：可运行示例: learning/02-data/01-数据工具与处理基础/06-Pandas数据清洗/09-Pandas数据清洗：可运行示例/index.md
+    - -Pandas分组聚合与透视:
+      - 主题目录: learning/02-data/01-数据工具与处理基础/07-Pandas分组聚合与透视/index.md
+      - groupby 的三步心智模型: learning/02-data/01-数据工具与处理基础/07-Pandas分组聚合与透视/01-groupby-的三步心智模型/index.md
+      - 分组对象与常用操作: learning/02-data/01-数据工具与处理基础/07-Pandas分组聚合与透视/02-分组对象与常用操作/index.md
+      - 聚合函数与 agg 的四种写法: learning/02-data/01-数据工具与处理基础/07-Pandas分组聚合与透视/03-聚合函数与-agg-的四种写法/index.md
+      - 交叉表 crosstab: learning/02-data/01-数据工具与处理基础/07-Pandas分组聚合与透视/04-交叉表-crosstab/index.md
+      - 透视表 pivot_table: learning/02-data/01-数据工具与处理基础/07-Pandas分组聚合与透视/05-透视表-pivot_table/index.md
+      - crosstab vs pivot_table vs groupby: learning/02-data/01-数据工具与处理基础/07-Pandas分组聚合与透视/06-crosstab-vs-pivot_table-vs-groupby/index.md
+      - 完整案例的业务逻辑：股票涨跌与星期几的关系: learning/02-data/01-数据工具与处理基础/07-Pandas分组聚合与透视/07-完整案例的业务逻辑：股票涨跌与星期几的关系/index.md
+      - -Pandas分组聚合与透视：可运行示例: learning/02-data/01-数据工具与处理基础/07-Pandas分组聚合与透视/08-Pandas分组聚合与透视：可运行示例/index.md
+  - 分析方法与项目实践:
+    - 方向概览: learning/02-data/02-分析方法与项目实践/index.md
+    - -数据可视化-matplotlib与seaborn:
+      - 主题目录: learning/02-data/02-分析方法与项目实践/01-数据可视化-matplotlib与seaborn/index.md
+      - 为什么学 Matplotlib: learning/02-data/02-分析方法与项目实践/01-数据可视化-matplotlib与seaborn/01-为什么学-Matplotlib/index.md
+      - 绘图五步法与核心 API: learning/02-data/02-分析方法与项目实践/01-数据可视化-matplotlib与seaborn/02-绘图五步法与核心-API/index.md
+      - 辅助功能 API 速查: learning/02-data/02-分析方法与项目实践/01-数据可视化-matplotlib与seaborn/03-辅助功能-API-速查/index.md
+      - 颜色与线型字符表: learning/02-data/02-分析方法与项目实践/01-数据可视化-matplotlib与seaborn/04-颜色与线型字符表/index.md
+      - legend 的 loc 参数: learning/02-data/02-分析方法与项目实践/01-数据可视化-matplotlib与seaborn/05-legend-的-loc-参数/index.md
+      - 常见图形选型对照表: learning/02-data/02-分析方法与项目实践/01-数据可视化-matplotlib与seaborn/06-常见图形选型对照表/index.md
+      - 中文字体问题的两种解决方案: learning/02-data/02-分析方法与项目实践/01-数据可视化-matplotlib与seaborn/07-中文字体问题的两种解决方案/index.md
+      - Pandas 集成的绘图接口: learning/02-data/02-分析方法与项目实践/01-数据可视化-matplotlib与seaborn/08-Pandas-集成的绘图接口/index.md
+      - 关于 Seaborn: learning/02-data/02-分析方法与项目实践/01-数据可视化-matplotlib与seaborn/09-关于-Seaborn/index.md
+      - 主线示例：城市温度变化图（逐步加功能）: learning/02-data/02-分析方法与项目实践/01-数据可视化-matplotlib与seaborn/10-主线示例：城市温度变化图（逐步加功能）/index.md
+      - 多子图：plt.subplots（面向对象风格）: learning/02-data/02-分析方法与项目实践/01-数据可视化-matplotlib与seaborn/11-多子图：plt.subplots（面向对象风格）/index.md
+      - 五种常见图形: learning/02-data/02-分析方法与项目实践/01-数据可视化-matplotlib与seaborn/12-五种常见图形/index.md
+      - Pandas 集成绘图: learning/02-data/02-分析方法与项目实践/01-数据可视化-matplotlib与seaborn/13-Pandas-集成绘图/index.md
+      - 延伸补充：Seaborn（这里仅点名，未展开）: learning/02-data/02-分析方法与项目实践/01-数据可视化-matplotlib与seaborn/14-延伸补充：Seaborn（这里仅点名，未展开）/index.md
+    - -统计分析基础:
+      - 主题目录: learning/02-data/02-分析方法与项目实践/02-统计分析基础/index.md
+      - 统计描述的四个维度: learning/02-data/02-分析方法与项目实践/02-统计分析基础/01-统计描述的四个维度/index.md
+      - 统计量速查表: learning/02-data/02-分析方法与项目实践/02-统计分析基础/02-统计量速查表/index.md
+      - 方差与标准差的定义: learning/02-data/02-分析方法与项目实践/02-统计分析基础/03-方差与标准差的定义/index.md
+      - describe 输出逐项解读: learning/02-data/02-分析方法与项目实践/02-统计分析基础/04-describe-输出逐项解读/index.md
+      - axis 的语义（NumPy 与 Pandas 的差异）: learning/02-data/02-分析方法与项目实践/02-统计分析基础/05-axis-的语义（NumPy-与-Pandas-的差异）/index.md
+      - 累计统计函数: learning/02-data/02-分析方法与项目实践/02-统计分析基础/06-累计统计函数/index.md
+      - 延伸补充：相关关系（本主题展开）: learning/02-data/02-分析方法与项目实践/02-统计分析基础/07-延伸补充：相关关系（本主题展开）/index.md
+      - -统计分析基础：可运行示例: learning/02-data/02-分析方法与项目实践/02-统计分析基础/08-统计分析基础：可运行示例/index.md
+    - -RFM用户价值分析实战:
+      - 主题目录: learning/02-data/02-分析方法与项目实践/03-RFM用户价值分析实战/index.md
+      - RFM 是什么: learning/02-data/02-分析方法与项目实践/03-RFM用户价值分析实战/01-RFM-是什么/index.md
+      - 八个用户类别: learning/02-data/02-分析方法与项目实践/03-RFM用户价值分析实战/02-八个用户类别/index.md
+      - 完整实现流程: learning/02-data/02-分析方法与项目实践/03-RFM用户价值分析实战/03-完整实现流程/index.md
+      - 两种组合策略对比: learning/02-data/02-分析方法与项目实践/03-RFM用户价值分析实战/04-两种组合策略对比/index.md
+      - 确定分箱边界的三种套路: learning/02-data/02-分析方法与项目实践/03-RFM用户价值分析实战/05-确定分箱边界的三种套路/index.md
+      - 区间边界的三条基本原则: learning/02-data/02-分析方法与项目实践/03-RFM用户价值分析实战/06-区间边界的三条基本原则/index.md
+      - 结果如何应用: learning/02-data/02-分析方法与项目实践/03-RFM用户价值分析实战/07-结果如何应用/index.md
+      - 简化版：五分位法（ 04-扩展 的写法）: learning/02-data/02-分析方法与项目实践/03-RFM用户价值分析实战/08-简化版：五分位法（-04-扩展-的写法）/index.md
+      - 群体策略速查（可直接用于分析报告）: learning/02-data/02-分析方法与项目实践/03-RFM用户价值分析实战/09-群体策略速查（可直接用于分析报告）/index.md
+    - -数据分析项目流程:
+      - 主题目录: learning/02-data/02-分析方法与项目实践/04-数据分析项目流程/index.md
+      - 数据分析的标准流程: learning/02-data/02-分析方法与项目实践/04-数据分析项目流程/01-数据分析的标准流程/index.md
+      - 为什么用 Python 做数据分析: learning/02-data/02-分析方法与项目实践/04-数据分析项目流程/02-为什么用-Python-做数据分析/index.md
+      - Python 数据分析技术栈: learning/02-data/02-分析方法与项目实践/04-数据分析项目流程/03-Python-数据分析技术栈/index.md
+      - 环境搭建：Anaconda + 虚拟环境: learning/02-data/02-分析方法与项目实践/04-数据分析项目流程/04-环境搭建：Anaconda-+-虚拟环境/index.md
+      - Jupyter Notebook 使用要点: learning/02-data/02-分析方法与项目实践/04-数据分析项目流程/05-Jupyter-Notebook-使用要点/index.md
+      - 交付物规范（以 RFM 案例为模板）: learning/02-data/02-分析方法与项目实践/04-数据分析项目流程/06-交付物规范（以-RFM-案例为模板）/index.md
+      - 分析目标的规划：为什么是 3×3×3: learning/02-data/02-分析方法与项目实践/04-数据分析项目流程/07-分析目标的规划：为什么是-3×3×3/index.md
+      - 项目目录结构（推荐约定）: learning/02-data/02-分析方法与项目实践/04-数据分析项目流程/08-项目目录结构（推荐约定）/index.md
+      - 端到端骨架：从取数到交付: learning/02-data/02-分析方法与项目实践/04-数据分析项目流程/09-端到端骨架：从取数到交付/index.md
+      - 项目复盘清单（交付前自查）: learning/02-data/02-分析方法与项目实践/04-数据分析项目流程/10-项目复盘清单（交付前自查）/index.md
+  - 综合复习与参考:
+    - 领域目录: 02-data/README.md
+    - ① Linux 与 SQL:
+      - 本节目录: 02-data/01-Linux与SQL/README.md
+      - 1.1 Linux 基础命令: 02-data/01-Linux与SQL/01-Linux基础命令.md
+      - 1.2 Linux 实用操作: 02-data/01-Linux与SQL/02-Linux实用操作.md
+      - 1.3 MySQL 基础与 SQL 语法: 02-data/01-Linux与SQL/03-MySQL基础与SQL语法.md
+      - 1.4 MySQL 进阶-索引与优化: 02-data/01-Linux与SQL/04-MySQL进阶-索引与优化.md
+    - ② NumPy 与 Pandas:
+      - 本节目录: 02-data/02-NumPy与Pandas/README.md
+      - 2.1 NumPy 数值计算: 02-data/02-NumPy与Pandas/05-NumPy数值计算.md
+      - 2.2 Pandas 数据清洗: 02-data/02-NumPy与Pandas/06-Pandas数据清洗.md
+      - 2.3 Pandas 分组聚合与透视: 02-data/02-NumPy与Pandas/07-Pandas分组聚合与透视.md
+    - ③ 可视化与统计:
+      - 本节目录: 02-data/03-可视化与统计/README.md
+      - 3.1 数据可视化-matplotlib 与 seaborn: 02-data/03-可视化与统计/08-数据可视化-matplotlib与seaborn.md
+      - 3.2 统计分析基础: 02-data/03-可视化与统计/09-统计分析基础.md
+    - ④ 分析实战:
+      - 本节目录: 02-data/04-分析实战/README.md
+      - 4.1 RFM 用户价值分析实战: 02-data/04-分析实战/10-RFM用户价值分析实战.md
+      - 4.2 数据分析项目流程: 02-data/04-分析实战/11-数据分析项目流程.md
+- 机器学习:
+  - 核心原理与模型方法:
+    - 方向概览: learning/03-ml/01-核心原理与模型方法/index.md
+    - 机器学习核心概念与偏差方差分解:
+      - 主题目录: learning/03-ml/01-核心原理与模型方法/01-机器学习核心概念与偏差方差分解/index.md
+      - 机器学习核心概念与偏差方差分解：为什么需要它: learning/03-ml/01-核心原理与模型方法/01-机器学习核心概念与偏差方差分解/01-机器学习核心概念与偏差方差分解：为什么需要它/index.md
+      - 监督学习的形式化: learning/03-ml/01-核心原理与模型方法/01-机器学习核心概念与偏差方差分解/02-监督学习的形式化/index.md
+      - 极大似然估计：为什么回归用 MSE: learning/03-ml/01-核心原理与模型方法/01-机器学习核心概念与偏差方差分解/03-极大似然估计：为什么回归用-MSE/index.md
+      - 伯努利似然：为什么分类用交叉熵: learning/03-ml/01-核心原理与模型方法/01-机器学习核心概念与偏差方差分解/04-伯努利似然：为什么分类用交叉熵/index.md
+      - 最大后验：正则项就是先验: learning/03-ml/01-核心原理与模型方法/01-机器学习核心概念与偏差方差分解/05-最大后验：正则项就是先验/index.md
+      - 机器学习核心概念与偏差方差分解：最小可运行示例: learning/03-ml/01-核心原理与模型方法/01-机器学习核心概念与偏差方差分解/06-机器学习核心概念与偏差方差分解：最小可运行示例/index.md
+      - 期望泛化误差的分解推导: learning/03-ml/01-核心原理与模型方法/01-机器学习核心概念与偏差方差分解/07-期望泛化误差的分解推导/index.md
+      - 用实验验证分解恒等式: learning/03-ml/01-核心原理与模型方法/01-机器学习核心概念与偏差方差分解/08-用实验验证分解恒等式/index.md
+      - 偏差-方差权衡（bias-variance tradeoff）: learning/03-ml/01-核心原理与模型方法/01-机器学习核心概念与偏差方差分解/09-偏差-方差权衡（bias-variance-tradeoff）/index.md
+      - 为什么"更多数据只能降方差，不能降偏差": learning/03-ml/01-核心原理与模型方法/01-机器学习核心概念与偏差方差分解/10-为什么-更多数据只能降方差，不能降偏差/index.md
+      - 学习曲线怎么读: learning/03-ml/01-核心原理与模型方法/01-机器学习核心概念与偏差方差分解/11-学习曲线怎么读/index.md
+      - 正则化的统一视角: learning/03-ml/01-核心原理与模型方法/01-机器学习核心概念与偏差方差分解/12-正则化的统一视角/index.md
+      - 可操作的诊断流程: learning/03-ml/01-核心原理与模型方法/01-机器学习核心概念与偏差方差分解/13-可操作的诊断流程/index.md
+    - 机器学习概述与流程:
+      - 主题目录: learning/03-ml/01-核心原理与模型方法/02-机器学习概述与流程/index.md
+      - 从"写规则"到"学参数": learning/03-ml/01-核心原理与模型方法/02-机器学习概述与流程/01-从-写规则-到-学参数/index.md
+      - 三大概念与包含关系: learning/03-ml/01-核心原理与模型方法/02-机器学习概述与流程/02-三大概念与包含关系/index.md
+      - 学习方式的分类（最重要的分类维度）: learning/03-ml/01-核心原理与模型方法/02-机器学习概述与流程/03-学习方式的分类（最重要的分类维度）/index.md
+      - 常见术语速查: learning/03-ml/01-核心原理与模型方法/02-机器学习概述与流程/04-常见术语速查/index.md
+      - 建模流程（本节的七步法）: learning/03-ml/01-核心原理与模型方法/02-机器学习概述与流程/05-建模流程（本节的七步法）/index.md
+      - 拟合问题：整门课的心跳: learning/03-ml/01-核心原理与模型方法/02-机器学习概述与流程/06-拟合问题：整门课的心跳/index.md
+      - 监督学习的数学形式: learning/03-ml/01-核心原理与模型方法/02-机器学习概述与流程/07-监督学习的数学形式/index.md
+      - 偏差-方差分解（为什么会有过拟合）: learning/03-ml/01-核心原理与模型方法/02-机器学习概述与流程/08-偏差-方差分解（为什么会有过拟合）/index.md
+      - 用学习曲线诊断（工程做法）: learning/03-ml/01-核心原理与模型方法/02-机器学习概述与流程/09-用学习曲线诊断（工程做法）/index.md
+      - 机器学习概述与流程：可运行示例: learning/03-ml/01-核心原理与模型方法/02-机器学习概述与流程/10-机器学习概述与流程：可运行示例/index.md
+    - KNN 算法:
+      - 主题目录: learning/03-ml/01-核心原理与模型方法/03-KNN-算法/index.md
+      - 一句话直觉: learning/03-ml/01-核心原理与模型方法/03-KNN-算法/01-一句话直觉/index.md
+      - KNN 的关键属性: learning/03-ml/01-核心原理与模型方法/03-KNN-算法/02-KNN-的关键属性/index.md
+      - 分类流程 vs 回归流程: learning/03-ml/01-核心原理与模型方法/03-KNN-算法/03-分类流程-vs-回归流程/index.md
+      - $K$ 值的选择：整门课最关键的一个超参数: learning/03-ml/01-核心原理与模型方法/03-KNN-算法/04-K--值的选择：整门课最关键的一个超参数/index.md
+      - KNN 的优缺点: learning/03-ml/01-核心原理与模型方法/03-KNN-算法/05-KNN-的优缺点/index.md
+      - 距离度量（四种距离的统一视角）: learning/03-ml/01-核心原理与模型方法/03-KNN-算法/06-距离度量（四种距离的统一视角）/index.md
+      - 手算示例：三种距离的差异: learning/03-ml/01-核心原理与模型方法/03-KNN-算法/07-手算示例：三种距离的差异/index.md
+      - 标准化：为什么 KNN 一定要做: learning/03-ml/01-核心原理与模型方法/03-KNN-算法/08-标准化：为什么-KNN-一定要做/index.md
+      - KNN 的预测公式化描述: learning/03-ml/01-核心原理与模型方法/03-KNN-算法/09-KNN-的预测公式化描述/index.md
+      - 交叉验证与网格搜索: learning/03-ml/01-核心原理与模型方法/03-KNN-算法/10-交叉验证与网格搜索/index.md
+      - 距离公式的 numpy 实现: learning/03-ml/01-核心原理与模型方法/03-KNN-算法/11-距离公式的-numpy-实现/index.md
+      - 鸢尾花分类：完整流程 + 交叉验证网格搜索: learning/03-ml/01-核心原理与模型方法/03-KNN-算法/12-鸢尾花分类：完整流程-+-交叉验证网格搜索/index.md
+      - KNN 回归：验证"取邻居均值"这一条: learning/03-ml/01-核心原理与模型方法/03-KNN-算法/13-KNN-回归：验证-取邻居均值-这一条/index.md
+      - 手写数字识别的关键片段: learning/03-ml/01-核心原理与模型方法/03-KNN-算法/14-手写数字识别的关键片段/index.md
+    - 线性回归:
+      - 主题目录: learning/03-ml/01-核心原理与模型方法/04-线性回归/index.md
+      - 从"身高预测体重"说起: learning/03-ml/01-核心原理与模型方法/04-线性回归/01-从-身高预测体重-说起/index.md
+      - 一元 vs 多元: learning/03-ml/01-核心原理与模型方法/04-线性回归/02-一元-vs-多元/index.md
+      - 应用场景: learning/03-ml/01-核心原理与模型方法/04-线性回归/03-应用场景/index.md
+      - 求解线性回归需要什么？: learning/03-ml/01-核心原理与模型方法/04-线性回归/04-求解线性回归需要什么？/index.md
+      - 三种回归评估指标速览: learning/03-ml/01-核心原理与模型方法/04-线性回归/05-三种回归评估指标速览/index.md
+      - 数学复习（够用即可）: learning/03-ml/01-核心原理与模型方法/04-线性回归/06-数学复习（够用即可）/index.md
+      - 损失函数：从"误差和最小"到 MSE: learning/03-ml/01-核心原理与模型方法/04-线性回归/07-损失函数：从-误差和最小-到-MSE/index.md
+      - 一元线性回归的解析解（手推）: learning/03-ml/01-核心原理与模型方法/04-线性回归/08-一元线性回归的解析解（手推）/index.md
+      - 多元线性回归与正规方程: learning/03-ml/01-核心原理与模型方法/04-线性回归/09-多元线性回归与正规方程/index.md
+      - 梯度下降法: learning/03-ml/01-核心原理与模型方法/04-线性回归/10-梯度下降法/index.md
+      - 梯度下降的四种变体: learning/03-ml/01-核心原理与模型方法/04-线性回归/11-梯度下降的四种变体/index.md
+      - 正规方程 vs 梯度下降: learning/03-ml/01-核心原理与模型方法/04-线性回归/12-正规方程-vs-梯度下降/index.md
+      - 欠拟合、过拟合与正则化: learning/03-ml/01-核心原理与模型方法/04-线性回归/13-欠拟合、过拟合与正则化/index.md
+      - 身高体重：一元线性回归与手解对照: learning/03-ml/01-核心原理与模型方法/04-线性回归/14-身高体重：一元线性回归与手解对照/index.md
+      - 波士顿房价预测（正规方程 vs 梯度下降）: learning/03-ml/01-核心原理与模型方法/04-线性回归/15-波士顿房价预测（正规方程-vs-梯度下降）/index.md
+      - 欠拟合 / 正好 / 过拟合 / 正则化 四段对照: learning/03-ml/01-核心原理与模型方法/04-线性回归/16-欠拟合---正好---过拟合---正则化-四段对照/index.md
+      - sklearn 线性回归 API 速查: learning/03-ml/01-核心原理与模型方法/04-线性回归/17-sklearn-线性回归-API-速查/index.md
+    - 逻辑回归:
+      - 主题目录: learning/03-ml/01-核心原理与模型方法/05-逻辑回归/index.md
+      - 为什么线性回归不能直接做分类: learning/03-ml/01-核心原理与模型方法/05-逻辑回归/01-为什么线性回归不能直接做分类/index.md
+      - 基本思想三步走: learning/03-ml/01-核心原理与模型方法/05-逻辑回归/02-基本思想三步走/index.md
+      - sigmoid 函数一览: learning/03-ml/01-核心原理与模型方法/05-逻辑回归/03-sigmoid-函数一览/index.md
+      - 分类评估指标总表（逻辑回归的核心考点）: learning/03-ml/01-核心原理与模型方法/05-逻辑回归/04-分类评估指标总表（逻辑回归的核心考点）/index.md
+      - sigmoid 及其导数（手推）: learning/03-ml/01-核心原理与模型方法/05-逻辑回归/05-sigmoid-及其导数（手推）/index.md
+      - 概率复习: learning/03-ml/01-核心原理与模型方法/05-逻辑回归/06-概率复习/index.md
+      - 极大似然估计（Maximum Likelihood Estimation）: learning/03-ml/01-核心原理与模型方法/05-逻辑回归/07-极大似然估计（Maximum-Likelihood-Estimation）/index.md
+      - 从似然到交叉熵损失（完整手推）: learning/03-ml/01-核心原理与模型方法/05-逻辑回归/08-从似然到交叉熵损失（完整手推）/index.md
+      - 混淆矩阵与指标（含完整计算示例）: learning/03-ml/01-核心原理与模型方法/05-逻辑回归/09-混淆矩阵与指标（含完整计算示例）/index.md
+      - ROC 曲线与 AUC（含完整绘制过程）: learning/03-ml/01-核心原理与模型方法/05-逻辑回归/10-ROC-曲线与-AUC（含完整绘制过程）/index.md
+      - API 参数详解: learning/03-ml/01-核心原理与模型方法/05-逻辑回归/11-API-参数详解/index.md
+      - 手写 sigmoid 与损失函数（验证推导）: learning/03-ml/01-核心原理与模型方法/05-逻辑回归/12-手写-sigmoid-与损失函数（验证推导）/index.md
+      - 癌症分类（乳腺癌数据集）: learning/03-ml/01-核心原理与模型方法/05-逻辑回归/13-癌症分类（乳腺癌数据集）/index.md
+      - 混淆矩阵、P/R/F1 与 ROC 的一体化演示: learning/03-ml/01-核心原理与模型方法/05-逻辑回归/14-混淆矩阵、P-R-F1-与-ROC-的一体化演示/index.md
+      - 电信客户流失预测（含 one-hot 与特征筛选）: learning/03-ml/01-核心原理与模型方法/05-逻辑回归/15-电信客户流失预测（含-one-hot-与特征筛选）/index.md
+    - 决策树:
+      - 主题目录: learning/03-ml/01-核心原理与模型方法/06-决策树/index.md
+      - 一棵"见不见男朋友"的树: learning/03-ml/01-核心原理与模型方法/06-决策树/01-一棵-见不见男朋友-的树/index.md
+      - 三种主流算法总览（最重要的一张表）: learning/03-ml/01-核心原理与模型方法/06-决策树/02-三种主流算法总览（最重要的一张表）/index.md
+      - 三种"不纯度"指标: learning/03-ml/01-核心原理与模型方法/06-决策树/03-三种-不纯度-指标/index.md
+      - 决策树的优缺点: learning/03-ml/01-核心原理与模型方法/06-决策树/04-决策树的优缺点/index.md
+      - 信息熵: learning/03-ml/01-核心原理与模型方法/06-决策树/05-信息熵/index.md
+      - 信息增益（ID3）: learning/03-ml/01-核心原理与模型方法/06-决策树/06-信息增益（ID3）/index.md
+      - 信息增益率（C4.5）: learning/03-ml/01-核心原理与模型方法/06-决策树/07-信息增益率（C4.5）/index.md
+      - 基尼指数（CART 分类树）: learning/03-ml/01-核心原理与模型方法/06-决策树/08-基尼指数（CART-分类树）/index.md
+      - CART 回归树: learning/03-ml/01-核心原理与模型方法/06-决策树/09-CART-回归树/index.md
+      - 剪枝（决策树的正则化）: learning/03-ml/01-核心原理与模型方法/06-决策树/10-剪枝（决策树的正则化）/index.md
+      - 手写不纯度指标（验证公式）: learning/03-ml/01-核心原理与模型方法/06-决策树/11-手写不纯度指标（验证公式）/index.md
+      - 手写 CART 回归树的最优切分点（验证 2.5 的表）: learning/03-ml/01-核心原理与模型方法/06-决策树/12-手写-CART-回归树的最优切分点（验证-2.5-的表）/index.md
+      - 泰坦尼克号生存预测: learning/03-ml/01-核心原理与模型方法/06-决策树/13-泰坦尼克号生存预测/index.md
+      - 线性回归 vs 回归决策树（对比案例）: learning/03-ml/01-核心原理与模型方法/06-决策树/14-线性回归-vs-回归决策树（对比案例）/index.md
+      - 用作业数据手算 ID3（贷款申请）: learning/03-ml/01-核心原理与模型方法/06-决策树/15-用作业数据手算-ID3（贷款申请）/index.md
+    - 集成学习:
+      - 主题目录: learning/03-ml/01-核心原理与模型方法/07-集成学习/index.md
+      - 什么是集成学习: learning/03-ml/01-核心原理与模型方法/07-集成学习/01-什么是集成学习/index.md
+      - 两大流派: learning/03-ml/01-核心原理与模型方法/07-集成学习/02-两大流派/index.md
+      - 四大算法速览: learning/03-ml/01-核心原理与模型方法/07-集成学习/03-四大算法速览/index.md
+      - 为什么"组合"能提升效果（数学直觉）: learning/03-ml/01-核心原理与模型方法/07-集成学习/04-为什么-组合-能提升效果（数学直觉）/index.md
+      - 随机森林（Random Forest）: learning/03-ml/01-核心原理与模型方法/07-集成学习/05-随机森林（Random-Forest）/index.md
+      - AdaBoost（Adaptive Boosting，自适应提升）: learning/03-ml/01-核心原理与模型方法/07-集成学习/06-AdaBoost（Adaptive-Boosting，自适应提升）/index.md
+      - 提升树（Boosting Decision Tree）：拟合残差: learning/03-ml/01-核心原理与模型方法/07-集成学习/07-提升树（Boosting-Decision-Tree）：拟合残差/index.md
+      - 梯度提升树（GBDT）: learning/03-ml/01-核心原理与模型方法/07-集成学习/08-梯度提升树（GBDT）/index.md
+      - XGBoost（Extreme Gradient Boosting）: learning/03-ml/01-核心原理与模型方法/07-集成学习/09-XGBoost（Extreme-Gradient-Boosting）/index.md
+      - 手算 AdaBoost 的权重更新（验证公式）: learning/03-ml/01-核心原理与模型方法/07-集成学习/10-手算-AdaBoost-的权重更新（验证公式）/index.md
+      - 手算 GBDT 的第一棵树（验证 2.4 的表）: learning/03-ml/01-核心原理与模型方法/07-集成学习/11-手算-GBDT-的第一棵树（验证-2.4-的表）/index.md
+      - 随机森林：泰坦尼克号（含交叉验证网格搜索）: learning/03-ml/01-核心原理与模型方法/07-集成学习/12-随机森林：泰坦尼克号（含交叉验证网格搜索）/index.md
+      - GBDT：泰坦尼克号: learning/03-ml/01-核心原理与模型方法/07-集成学习/13-GBDT：泰坦尼克号/index.md
+      - XGBoost：红酒品质多分类（含不平衡与网格搜索）: learning/03-ml/01-核心原理与模型方法/07-集成学习/14-XGBoost：红酒品质多分类（含不平衡与网格搜索）/index.md
+      - 手写 XGBoost 的打分函数与增益（验证推导）: learning/03-ml/01-核心原理与模型方法/07-集成学习/15-手写-XGBoost-的打分函数与增益（验证推导）/index.md
+    - KMeans 聚类:
+      - 主题目录: learning/03-ml/01-核心原理与模型方法/08-KMeans-聚类/index.md
+      - 聚类是什么: learning/03-ml/01-核心原理与模型方法/08-KMeans-聚类/01-聚类是什么/index.md
+      - 应用场景: learning/03-ml/01-核心原理与模型方法/08-KMeans-聚类/02-应用场景/index.md
+      - 聚类算法的分类: learning/03-ml/01-核心原理与模型方法/08-KMeans-聚类/03-聚类算法的分类/index.md
+      - 三种评估指标总览: learning/03-ml/01-核心原理与模型方法/08-KMeans-聚类/04-三种评估指标总览/index.md
+      - KMeans 的优化目标: learning/03-ml/01-核心原理与模型方法/08-KMeans-聚类/05-KMeans-的优化目标/index.md
+      - 算法流程（4 步 + 收敛判据）: learning/03-ml/01-核心原理与模型方法/08-KMeans-聚类/06-算法流程（4-步-+-收敛判据）/index.md
+      - 手算例（$K=2$，10 个二维点）: learning/03-ml/01-核心原理与模型方法/08-KMeans-聚类/07-手算例（-K=2-，10-个二维点）/index.md
+      - SSE 与肘部法: learning/03-ml/01-核心原理与模型方法/08-KMeans-聚类/08-SSE-与肘部法/index.md
+      - 轮廓系数 SC（Silhouette Coefficient）: learning/03-ml/01-核心原理与模型方法/08-KMeans-聚类/09-轮廓系数-SC（Silhouette-Coefficient）/index.md
+      - CH 指数（Calinski-Harabasz Index）: learning/03-ml/01-核心原理与模型方法/08-KMeans-聚类/10-CH-指数（Calinski-Harabasz-Index）/index.md
+      - 三个指标的对比与选用: learning/03-ml/01-核心原理与模型方法/08-KMeans-聚类/11-三个指标的对比与选用/index.md
+      - API 与参数: learning/03-ml/01-核心原理与模型方法/08-KMeans-聚类/12-API-与参数/index.md
+      - 手算一轮 KMeans（验证 2.3 的计算）: learning/03-ml/01-核心原理与模型方法/08-KMeans-聚类/13-手算一轮-KMeans（验证-2.3-的计算）/index.md
+      - SSE + 肘部法 + SC + CH 三指标选 $K$: learning/03-ml/01-核心原理与模型方法/08-KMeans-聚类/14-SSE-+-肘部法-+-SC-+-CH-三指标选--K/index.md
+      - 顾客数据聚类分析（案例）: learning/03-ml/01-核心原理与模型方法/08-KMeans-聚类/15-顾客数据聚类分析（案例）/index.md
+      - 演示"不标准化会造成什么后果": learning/03-ml/01-核心原理与模型方法/08-KMeans-聚类/16-演示-不标准化会造成什么后果/index.md
+  - 评估调优与应用实践:
+    - 方向概览: learning/03-ml/02-评估调优与应用实践/index.md
+    - 特征工程:
+      - 主题目录: learning/03-ml/02-评估调优与应用实践/01-特征工程/index.md
+      - 什么是特征工程: learning/03-ml/02-评估调优与应用实践/01-特征工程/01-什么是特征工程/index.md
+      - 特征工程的五大组成部分: learning/03-ml/02-评估调优与应用实践/01-特征工程/02-特征工程的五大组成部分/index.md
+      - 按数据类型选取处理方法: learning/03-ml/02-评估调优与应用实践/01-特征工程/03-按数据类型选取处理方法/index.md
+      - 特征预处理的四种缩放方式对比: learning/03-ml/02-评估调优与应用实践/01-特征工程/04-特征预处理的四种缩放方式对比/index.md
+      - 归一化（Min-Max Normalization）: learning/03-ml/02-评估调优与应用实践/01-特征工程/05-归一化（Min-Max-Normalization）/index.md
+      - 标准化（Z-Score Standardization）: learning/03-ml/02-评估调优与应用实践/01-特征工程/06-标准化（Z-Score-Standardization）/index.md
+      - 公式效果对比（同一份数据做完再看）: learning/03-ml/02-评估调优与应用实践/01-特征工程/07-公式效果对比（同一份数据做完再看）/index.md
+      - 类别型特征处理: learning/03-ml/02-评估调优与应用实践/01-特征工程/08-类别型特征处理/index.md
+      - 文本特征提取（CountVectorizer 与 TF-IDF）: learning/03-ml/02-评估调优与应用实践/01-特征工程/09-文本特征提取（CountVectorizer-与-TF-IDF）/index.md
+      - 特征组合与多项式特征: learning/03-ml/02-评估调优与应用实践/01-特征工程/10-特征组合与多项式特征/index.md
+      - 特征选择: learning/03-ml/02-评估调优与应用实践/01-特征工程/11-特征选择/index.md
+      - 特征降维: learning/03-ml/02-评估调优与应用实践/01-特征工程/12-特征降维/index.md
+      - 时间序列特征工程（把时序变成二维宽表）: learning/03-ml/02-评估调优与应用实践/01-特征工程/13-时间序列特征工程（把时序变成二维宽表）/index.md
+      - 归一化 vs 标准化：数值对照: learning/03-ml/02-评估调优与应用实践/01-特征工程/14-归一化-vs-标准化：数值对照/index.md
+      - 异常值对 MinMax 的影响（RobustScaler 的动机）: learning/03-ml/02-评估调优与应用实践/01-特征工程/15-异常值对-MinMax-的影响（RobustScaler-的动机）/index.md
+      - 类别特征：one-hot、DictVectorizer 与哑变量陷阱: learning/03-ml/02-评估调优与应用实践/01-特征工程/16-类别特征：one-hot、DictVectorizer-与哑变量陷阱/index.md
+      - 多项式特征 + 正则化：特征组合的正确姿势: learning/03-ml/02-评估调优与应用实践/01-特征工程/17-多项式特征-+-正则化：特征组合的正确姿势/index.md
+      - 特征选择：三种方法实操: learning/03-ml/02-评估调优与应用实践/01-特征工程/18-特征选择：三种方法实操/index.md
+      - 时间序列特征工程（把宽表演示清楚）: learning/03-ml/02-评估调优与应用实践/01-特征工程/19-时间序列特征工程（把宽表演示清楚）/index.md
+    - 模型评估与调优:
+      - 主题目录: learning/03-ml/02-评估调优与应用实践/02-模型评估与调优/index.md
+      - 为什么必须"评估": learning/03-ml/02-评估调优与应用实践/02-模型评估与调优/01-为什么必须-评估/index.md
+      - 评估体系全景: learning/03-ml/02-评估调优与应用实践/02-模型评估与调优/02-评估体系全景/index.md
+      - 数据集划分策略: learning/03-ml/02-评估调优与应用实践/02-模型评估与调优/03-数据集划分策略/index.md
+      - 模型调优的四个方向: learning/03-ml/02-评估调优与应用实践/02-模型评估与调优/04-模型调优的四个方向/index.md
+      - 回归评估指标: learning/03-ml/02-评估调优与应用实践/02-模型评估与调优/05-回归评估指标/index.md
+      - 分类评估指标: learning/03-ml/02-评估调优与应用实践/02-模型评估与调优/06-分类评估指标/index.md
+      - 聚类评估指标（无标签）: learning/03-ml/02-评估调优与应用实践/02-模型评估与调优/07-聚类评估指标（无标签）/index.md
+      - 交叉验证（Cross Validation）: learning/03-ml/02-评估调优与应用实践/02-模型评估与调优/08-交叉验证（Cross-Validation）/index.md
+      - 网格搜索（Grid Search）: learning/03-ml/02-评估调优与应用实践/02-模型评估与调优/09-网格搜索（Grid-Search）/index.md
+      - 过拟合、欠拟合与解决手段: learning/03-ml/02-评估调优与应用实践/02-模型评估与调优/10-过拟合、欠拟合与解决手段/index.md
+      - 类别不平衡的处理: learning/03-ml/02-评估调优与应用实践/02-模型评估与调优/11-类别不平衡的处理/index.md
+      - 回归指标：手算与 API 对照，看清 MAE/RMSE 的差异: learning/03-ml/02-评估调优与应用实践/02-模型评估与调优/12-回归指标：手算与-API-对照，看清-MAE-RMSE-的差异/index.md
+      - 分类评估：一套代码算清所有指标: learning/03-ml/02-评估调优与应用实践/02-模型评估与调优/13-分类评估：一套代码算清所有指标/index.md
+      - 网格搜索：随机森林调参全流程: learning/03-ml/02-评估调优与应用实践/02-模型评估与调优/14-网格搜索：随机森林调参全流程/index.md
+      - 用学习曲线诊断欠拟合 / 过拟合: learning/03-ml/02-评估调优与应用实践/02-模型评估与调优/15-用学习曲线诊断欠拟合---过拟合/index.md
+      - 从"只看准确率"到"看对指标"：不平衡数据演示: learning/03-ml/02-评估调优与应用实践/02-模型评估与调优/16-从-只看准确率-到-看对指标-：不平衡数据演示/index.md
+    - 数据挖掘案例：电力负荷预测:
+      - 主题目录: learning/03-ml/02-评估调优与应用实践/03-数据挖掘案例：电力负荷预测/index.md
+      - 什么是时间序列预测: learning/03-ml/02-评估调优与应用实践/03-数据挖掘案例：电力负荷预测/01-什么是时间序列预测/index.md
+      - 时序预测的四类任务场景: learning/03-ml/02-评估调优与应用实践/03-数据挖掘案例：电力负荷预测/02-时序预测的四类任务场景/index.md
+      - 应用场景: learning/03-ml/02-评估调优与应用实践/03-数据挖掘案例：电力负荷预测/03-应用场景/index.md
+      - 三类算法的选择: learning/03-ml/02-评估调优与应用实践/03-数据挖掘案例：电力负荷预测/04-三类算法的选择/index.md
+      - 需求分析与技术选型: learning/03-ml/02-评估调优与应用实践/03-数据挖掘案例：电力负荷预测/05-需求分析与技术选型/index.md
+      - 项目结构与模块划分: learning/03-ml/02-评估调优与应用实践/03-数据挖掘案例：电力负荷预测/06-项目结构与模块划分/index.md
+      - 数据预处理（utils/common.py）: learning/03-ml/02-评估调优与应用实践/03-数据挖掘案例：电力负荷预测/07-数据预处理（utils-common.py）/index.md
+      - 数据分析（src/train.py → ana_data）: learning/03-ml/02-评估调优与应用实践/03-数据挖掘案例：电力负荷预测/08-数据分析（src-train.py-→-ana_data）/index.md
+      - 特征工程（重点）: learning/03-ml/02-评估调优与应用实践/03-数据挖掘案例：电力负荷预测/09-特征工程（重点）/index.md
+      - 模型训练（src/train.py → model_train）: learning/03-ml/02-评估调优与应用实践/03-数据挖掘案例：电力负荷预测/10-模型训练（src-train.py-→-model_train）/index.md
+      - 模型预测（src/predict.py，重点）: learning/03-ml/02-评估调优与应用实践/03-数据挖掘案例：电力负荷预测/11-模型预测（src-predict.py，重点）/index.md
+      - 项目改进方向（总结）: learning/03-ml/02-评估调优与应用实践/03-数据挖掘案例：电力负荷预测/12-项目改进方向（总结）/index.md
+      - 数据预处理与数据分析（可独立运行）: learning/03-ml/02-评估调优与应用实践/03-数据挖掘案例：电力负荷预测/13-数据预处理与数据分析（可独立运行）/index.md
+      - 特征工程：把时序展开成宽表（可独立运行、含自检）: learning/03-ml/02-评估调优与应用实践/03-数据挖掘案例：电力负荷预测/14-特征工程：把时序展开成宽表（可独立运行、含自检）/index.md
+      - 训练模块（精简可运行版）: learning/03-ml/02-评估调优与应用实践/03-数据挖掘案例：电力负荷预测/15-训练模块（精简可运行版）/index.md
+      - 预测模块：滚动推理 + 评价 + 可视化（可独立运行）: learning/03-ml/02-评估调优与应用实践/03-数据挖掘案例：电力负荷预测/16-预测模块：滚动推理-+-评价-+-可视化（可独立运行）/index.md
+      - 日志工具类（可直接拷贝）: learning/03-ml/02-评估调优与应用实践/03-数据挖掘案例：电力负荷预测/17-日志工具类（可直接拷贝）/index.md
+  - 综合复习与参考:
+    - 领域目录: 03-ml/README.md
+    - ① 基础与特征工程:
+      - 本节目录: 03-ml/01-基础与特征工程/README.md
+      - 1.1 机器学习核心概念与偏差方差分解: 03-ml/01-基础与特征工程/01-机器学习核心概念与偏差方差分解.md
+      - 1.2 机器学习概述与流程: 03-ml/01-基础与特征工程/01-机器学习概述与流程.md
+      - 1.3 特征工程: 03-ml/01-基础与特征工程/09-特征工程.md
+    - ② 经典算法:
+      - 本节目录: 03-ml/02-经典算法/README.md
+      - 2.1 KNN 算法: 03-ml/02-经典算法/02-KNN算法.md
+      - 2.2 线性回归: 03-ml/02-经典算法/03-线性回归.md
+      - 2.3 逻辑回归: 03-ml/02-经典算法/04-逻辑回归.md
+      - 2.4 决策树: 03-ml/02-经典算法/05-决策树.md
+    - ③ 评估与调优:
+      - 本节目录: 03-ml/03-评估与调优/README.md
+      - 3.1 模型评估与调优: 03-ml/03-评估与调优/08-模型评估与调优.md
+    - ④ 集成学习与无监督:
+      - 本节目录: 03-ml/04-集成与无监督/README.md
+      - 4.1 集成学习: 03-ml/04-集成与无监督/06-集成学习.md
+      - 4.2 KMeans 聚类: 03-ml/04-集成与无监督/07-KMeans聚类.md
+    - ⑤ 案例与面试:
+      - 本节目录: 03-ml/06-案例与面试/README.md
+      - 5.1 数据挖掘案例：电力负荷预测: 03-ml/06-案例与面试/10-数据挖掘案例-电力负荷预测.md
+    - 速查与面试:
+      - 本节目录: 03-ml/90-cheatsheet/README.md
+      - S1 速查表 · Cheatsheet: 03-ml/90-cheatsheet/cheatsheet.md
+      - S2 术语表 · Glossary: 03-ml/90-cheatsheet/glossary.md
+      - S3 高频面试题库: 03-ml/90-cheatsheet/interview.md
+      - S4 必读论文清单: 03-ml/90-cheatsheet/papers.md
+- 深度学习:
+  - 梯度原理与网络架构:
+    - 方向概览: learning/04-dl/01-梯度原理与网络架构/index.md
+    - 反向传播与计算图:
+      - 主题目录: learning/04-dl/01-梯度原理与网络架构/01-反向传播与计算图/index.md
+      - 反向传播与计算图：为什么需要它: learning/04-dl/01-梯度原理与网络架构/01-反向传播与计算图/01-反向传播与计算图：为什么需要它/index.md
+      - 标量链式法则: learning/04-dl/01-梯度原理与网络架构/01-反向传播与计算图/02-标量链式法则/index.md
+      - 向量情形：雅可比: learning/04-dl/01-梯度原理与网络架构/01-反向传播与计算图/03-向量情形：雅可比/index.md
+      - forward-mode 与 reverse-mode：乘法方向相反: learning/04-dl/01-梯度原理与网络架构/01-反向传播与计算图/04-forward-mode-与-reverse-mode：乘法方向相反/index.md
+      - 计算图：把前向执行过程记成一张 DAG: learning/04-dl/01-梯度原理与网络架构/01-反向传播与计算图/05-计算图：把前向执行过程记成一张-DAG/index.md
+      - 设计决策：为什么 Tensor 与 Function 分离: learning/04-dl/01-梯度原理与网络架构/01-反向传播与计算图/06-设计决策：为什么-Tensor-与-Function-分离/index.md
+      - 反向传播与计算图：最小可运行示例: learning/04-dl/01-梯度原理与网络架构/01-反向传播与计算图/07-反向传播与计算图：最小可运行示例/index.md
+      - 手推两层 MLP 的梯度: learning/04-dl/01-梯度原理与网络架构/01-反向传播与计算图/08-手推两层-MLP-的梯度/index.md
+      - 从零写一个 autograd（100 行以内）: learning/04-dl/01-梯度原理与网络架构/01-反向传播与计算图/09-从零写一个-autograd（100-行以内）/index.md
+      - 与 PyTorch 对照: learning/04-dl/01-梯度原理与网络架构/01-反向传播与计算图/10-与-PyTorch-对照/index.md
+      - 梯度检验（gradient check）: learning/04-dl/01-梯度原理与网络架构/01-反向传播与计算图/11-梯度检验（gradient-check）/index.md
+    - -神经网络基础:
+      - 主题目录: learning/04-dl/01-梯度原理与网络架构/02-神经网络基础/index.md
+      - 从生物神经元到人工神经元: learning/04-dl/01-梯度原理与网络架构/02-神经网络基础/01-从生物神经元到人工神经元/index.md
+      - 净输入（net input）与活性值（activation）: learning/04-dl/01-梯度原理与网络架构/02-神经网络基础/02-净输入（net-input）与活性值（activation）/index.md
+      - 三种网络结构: learning/04-dl/01-梯度原理与网络架构/02-神经网络基础/03-三种网络结构/index.md
+      - 前馈神经网络（FNN / MLP）的记号: learning/04-dl/01-梯度原理与网络架构/02-神经网络基础/04-前馈神经网络（FNN---MLP）的记号/index.md
+      - '"每一层 = 仿射变换 + 非线性变换"': learning/04-dl/01-梯度原理与网络架构/02-神经网络基础/05-每一层-=-仿射变换-+-非线性变换/index.md
+      - 逐层信息传播：从单个神经元到整网: learning/04-dl/01-梯度原理与网络架构/02-神经网络基础/06-逐层信息传播：从单个神经元到整网/index.md
+      - 手推：一个 2-1-1 网络的完整前向展开: learning/04-dl/01-梯度原理与网络架构/02-神经网络基础/07-手推：一个-2-1-1-网络的完整前向展开/index.md
+      - 通用近似定理（Universal Approximation Theorem）: learning/04-dl/01-梯度原理与网络架构/02-神经网络基础/08-通用近似定理（Universal-Approximation-Theorem）/index.md
+      - 前馈网络 = 特征转换 $\phi(\boldsymbol x)$ + 分类器: learning/04-dl/01-梯度原理与网络架构/02-神经网络基础/09-前馈网络-=-特征转换---phi--boldsymbol-x---+-分类器/index.md
+      - 参数学习：经验风险最小化与结构风险最小化: learning/04-dl/01-梯度原理与网络架构/02-神经网络基础/10-参数学习：经验风险最小化与结构风险最小化/index.md
+      - 常见激活函数一览（教材表 4.3）: learning/04-dl/01-梯度原理与网络架构/02-神经网络基础/11-常见激活函数一览（教材表-4.3）/index.md
+      - -神经网络基础：可运行示例: learning/04-dl/01-梯度原理与网络架构/02-神经网络基础/12-神经网络基础：可运行示例/index.md
+    - -反向传播与梯度下降:
+      - 主题目录: learning/04-dl/01-梯度原理与网络架构/03-反向传播与梯度下降/index.md
+      - -反向传播与梯度下降：核心思想: learning/04-dl/01-梯度原理与网络架构/03-反向传播与梯度下降/01-反向传播与梯度下降：核心思想/index.md
+      - 记号与两条基本公式: learning/04-dl/01-梯度原理与网络架构/03-反向传播与梯度下降/02-记号与两条基本公式/index.md
+      - 链式法则与计算图: learning/04-dl/01-梯度原理与网络架构/03-反向传播与梯度下降/03-链式法则与计算图/index.md
+      - 三个偏导数: learning/04-dl/01-梯度原理与网络架构/03-反向传播与梯度下降/04-三个偏导数/index.md
+      - 参数梯度: learning/04-dl/01-梯度原理与网络架构/03-反向传播与梯度下降/05-参数梯度/index.md
+      - 反向传播算法三步与伪码: learning/04-dl/01-梯度原理与网络架构/03-反向传播与梯度下降/06-反向传播算法三步与伪码/index.md
+      - BGD / SGD / Mini-batch 梯度下降: learning/04-dl/01-梯度原理与网络架构/03-反向传播与梯度下降/07-BGD---SGD---Mini-batch-梯度下降/index.md
+      - 梯度消失与梯度爆炸: learning/04-dl/01-梯度原理与网络架构/03-反向传播与梯度下降/08-梯度消失与梯度爆炸/index.md
+      - 自动梯度计算：三种方式: learning/04-dl/01-梯度原理与网络架构/03-反向传播与梯度下降/09-自动梯度计算：三种方式/index.md
+      - -反向传播与梯度下降：可运行示例: learning/04-dl/01-梯度原理与网络架构/03-反向传播与梯度下降/10-反向传播与梯度下降：可运行示例/index.md
+    - -激活函数与损失函数:
+      - 主题目录: learning/04-dl/01-梯度原理与网络架构/04-激活函数与损失函数/index.md
+      - -激活函数与损失函数：核心思想: learning/04-dl/01-梯度原理与网络架构/04-激活函数与损失函数/01-激活函数与损失函数：核心思想/index.md
+      - Sigmoid 家族：Logistic 与 Tanh 的导数（完整推导）: learning/04-dl/01-梯度原理与网络架构/04-激活函数与损失函数/02-Sigmoid-家族：Logistic-与-Tanh-的导数（完整推导）/index.md
+      - 零中心化（Bias Shift）与 Hard-Sigmoid 近似: learning/04-dl/01-梯度原理与网络架构/04-激活函数与损失函数/03-零中心化（Bias-Shift）与-Hard-Sigmoid-近似/index.md
+      - ReLU 家族: learning/04-dl/01-梯度原理与网络架构/04-激活函数与损失函数/04-ReLU-家族/index.md
+      - Swish 与 GELU：门控型激活函数: learning/04-dl/01-梯度原理与网络架构/04-激活函数与损失函数/05-Swish-与-GELU：门控型激活函数/index.md
+      - Maxout 单元: learning/04-dl/01-梯度原理与网络架构/04-激活函数与损失函数/06-Maxout-单元/index.md
+      - 损失函数：平方、交叉熵、负对数似然、Hinge: learning/04-dl/01-梯度原理与网络架构/04-激活函数与损失函数/07-损失函数：平方、交叉熵、负对数似然、Hinge/index.md
+      - 为什么分类用交叉熵而不用 MSE（重点推导）: learning/04-dl/01-梯度原理与网络架构/04-激活函数与损失函数/08-为什么分类用交叉熵而不用-MSE（重点推导）/index.md
+      - PyTorch 三个损失函数的关系: learning/04-dl/01-梯度原理与网络架构/04-激活函数与损失函数/09-PyTorch-三个损失函数的关系/index.md
+      - -激活函数与损失函数：可运行示例: learning/04-dl/01-梯度原理与网络架构/04-激活函数与损失函数/10-激活函数与损失函数：可运行示例/index.md
+    - -CNN卷积神经网络:
+      - 主题目录: learning/04-dl/01-梯度原理与网络架构/05-CNN卷积神经网络/index.md
+      - 全连接网络处理图像的两个致命问题: learning/04-dl/01-梯度原理与网络架构/05-CNN卷积神经网络/01-全连接网络处理图像的两个致命问题/index.md
+      - 感受野（receptive field）的生物学来源: learning/04-dl/01-梯度原理与网络架构/05-CNN卷积神经网络/02-感受野（receptive-field）的生物学来源/index.md
+      - 三种视角看同一个操作: learning/04-dl/01-梯度原理与网络架构/05-CNN卷积神经网络/03-三种视角看同一个操作/index.md
+      - 一维卷积：延迟累积的直觉: learning/04-dl/01-梯度原理与网络架构/05-CNN卷积神经网络/04-一维卷积：延迟累积的直觉/index.md
+      - 二维卷积与互相关: learning/04-dl/01-梯度原理与网络架构/05-CNN卷积神经网络/05-二维卷积与互相关/index.md
+      - stride、zero padding 与输出尺寸: learning/04-dl/01-梯度原理与网络架构/05-CNN卷积神经网络/06-stride、zero-padding-与输出尺寸/index.md
+      - 卷积的数学性质（与反向传播的关系）: learning/04-dl/01-梯度原理与网络架构/05-CNN卷积神经网络/07-卷积的数学性质（与反向传播的关系）/index.md
+      - 用卷积代替全连接：局部连接 + 权重共享: learning/04-dl/01-梯度原理与网络架构/05-CNN卷积神经网络/08-用卷积代替全连接：局部连接-+-权重共享/index.md
+      - 卷积层的三维结构: learning/04-dl/01-梯度原理与网络架构/05-CNN卷积神经网络/09-卷积层的三维结构/index.md
+      - 汇聚层（pooling layer）: learning/04-dl/01-梯度原理与网络架构/05-CNN卷积神经网络/10-汇聚层（pooling-layer）/index.md
+      - 其他卷积方式: learning/04-dl/01-梯度原理与网络架构/05-CNN卷积神经网络/11-其他卷积方式/index.md
+      - 典型卷积网络演进: learning/04-dl/01-梯度原理与网络架构/05-CNN卷积神经网络/12-典型卷积网络演进/index.md
+      - -CNN卷积神经网络：可运行示例: learning/04-dl/01-梯度原理与网络架构/05-CNN卷积神经网络/13-CNN卷积神经网络：可运行示例/index.md
+    - -RNN与序列模型:
+      - 主题目录: learning/04-dl/01-梯度原理与网络架构/06-RNN与序列模型/index.md
+      - -RNN与序列模型：核心思想: learning/04-dl/01-梯度原理与网络架构/06-RNN与序列模型/01-RNN与序列模型：核心思想/index.md
+      - 简单循环网络（SRN）与按时间展开: learning/04-dl/01-梯度原理与网络架构/06-RNN与序列模型/02-简单循环网络（SRN）与按时间展开/index.md
+      - BPTT：随时间反向传播: learning/04-dl/01-梯度原理与网络架构/06-RNN与序列模型/03-BPTT：随时间反向传播/index.md
+      - 长程依赖问题（Long-Term Dependencies）: learning/04-dl/01-梯度原理与网络架构/06-RNN与序列模型/04-长程依赖问题（Long-Term-Dependencies）/index.md
+      - LSTM：用加法路径替代连乘: learning/04-dl/01-梯度原理与网络架构/06-RNN与序列模型/05-LSTM：用加法路径替代连乘/index.md
+      - GRU：两个门、无独立记忆单元: learning/04-dl/01-梯度原理与网络架构/06-RNN与序列模型/06-GRU：两个门、无独立记忆单元/index.md
+      - 深层循环神经网络: learning/04-dl/01-梯度原理与网络架构/06-RNN与序列模型/07-深层循环神经网络/index.md
+      - -RNN与序列模型：可运行示例: learning/04-dl/01-梯度原理与网络架构/06-RNN与序列模型/08-RNN与序列模型：可运行示例/index.md
+  - 训练优化与框架实践:
+    - 方向概览: learning/04-dl/02-训练优化与框架实践/index.md
+    - -优化器与正则化:
+      - 主题目录: learning/04-dl/02-训练优化与框架实践/01-优化器与正则化/index.md
+      - 高维非凸优化的敌人是鞍点: learning/04-dl/02-训练优化与框架实践/01-优化器与正则化/01-高维非凸优化的敌人是鞍点/index.md
+      - 平坦最小值、"解等价性"与优化的四个抓手: learning/04-dl/02-训练优化与框架实践/01-优化器与正则化/02-平坦最小值、-解等价性-与优化的四个抓手/index.md
+      - 小批量梯度下降、批量大小与线性缩放规则: learning/04-dl/02-训练优化与框架实践/01-优化器与正则化/03-小批量梯度下降、批量大小与线性缩放规则/index.md
+      - 学习率调整：衰减、预热、周期性: learning/04-dl/02-训练优化与框架实践/01-优化器与正则化/04-学习率调整：衰减、预热、周期性/index.md
+      - 自适应学习率：AdaGrad / RMSprop / AdaDelta: learning/04-dl/02-训练优化与框架实践/01-优化器与正则化/05-自适应学习率：AdaGrad---RMSprop---AdaDelta/index.md
+      - 梯度估计修正：动量法与 Nesterov: learning/04-dl/02-训练优化与框架实践/01-优化器与正则化/06-梯度估计修正：动量法与-Nesterov/index.md
+      - Adam：动量 + RMSprop + 偏差修正: learning/04-dl/02-训练优化与框架实践/01-优化器与正则化/07-Adam：动量-+-RMSprop-+-偏差修正/index.md
+      - 统一公式与优化算法汇总: learning/04-dl/02-训练优化与框架实践/01-优化器与正则化/08-统一公式与优化算法汇总/index.md
+      - 参数初始化: learning/04-dl/02-训练优化与框架实践/01-优化器与正则化/09-参数初始化/index.md
+      - 逐层归一化：BN 与 LN: learning/04-dl/02-训练优化与框架实践/01-优化器与正则化/10-逐层归一化：BN-与-LN/index.md
+      - 网络正则化: learning/04-dl/02-训练优化与框架实践/01-优化器与正则化/11-网络正则化/index.md
+      - PyTorch：同一任务上对比四种优化器 + 两个正则化开关: learning/04-dl/02-训练优化与框架实践/01-优化器与正则化/12-PyTorch：同一任务上对比四种优化器-+-两个正则化开关/index.md
+      - numpy 手写 Adam：3 步数值示例: learning/04-dl/02-训练优化与框架实践/01-优化器与正则化/13-numpy-手写-Adam：3-步数值示例/index.md
+    - -深度学习框架实践:
+      - 主题目录: learning/04-dl/02-训练优化与框架实践/02-深度学习框架实践/index.md
+      - 为什么需要框架：把三类重复劳动外包出去: learning/04-dl/02-训练优化与框架实践/02-深度学习框架实践/01-为什么需要框架：把三类重复劳动外包出去/index.md
+      - 动态图 vs 静态图：框架的分水岭: learning/04-dl/02-训练优化与框架实践/02-深度学习框架实践/02-动态图-vs-静态图：框架的分水岭/index.md
+      - PyTorch 核心抽象一览: learning/04-dl/02-训练优化与框架实践/02-深度学习框架实践/03-PyTorch-核心抽象一览/index.md
+      - 手推：自动微分如何走一遍计算图: learning/04-dl/02-训练优化与框架实践/02-深度学习框架实践/04-手推：自动微分如何走一遍计算图/index.md
+      - 从公式到 API：.grad 为什么是累加的: learning/04-dl/02-训练优化与框架实践/02-深度学习框架实践/05-从公式到-API：.grad-为什么是累加的/index.md
+      - backward() 的参数：标量要求与 $J^{\top}v$: learning/04-dl/02-训练优化与框架实践/02-深度学习框架实践/06-backward---的参数：标量要求与--J^--top-v/index.md
+      - 六步训练循环：每一步在数学上做什么: learning/04-dl/02-训练优化与框架实践/02-深度学习框架实践/07-六步训练循环：每一步在数学上做什么/index.md
+      - 张量运算速查（已在本机实跑）: learning/04-dl/02-训练优化与框架实践/02-深度学习框架实践/08-张量运算速查（已在本机实跑）/index.md
+  - 综合复习与参考:
+    - 领域目录: 04-dl/README.md
+    - ① 基础与反向传播:
+      - 本节目录: 04-dl/01-基础与反向传播/README.md
+      - 1.1 反向传播与计算图: 04-dl/01-基础与反向传播/01-反向传播与计算图.md
+      - 1.2 神经网络基础: 04-dl/01-基础与反向传播/01-神经网络基础.md
+      - 1.3 反向传播与梯度下降: 04-dl/01-基础与反向传播/03-反向传播与梯度下降.md
+    - ② 优化与训练:
+      - 本节目录: 04-dl/02-优化与训练/README.md
+      - 2.1 激活函数与损失函数: 04-dl/02-优化与训练/02-激活函数与损失函数.md
+      - 2.2 优化器与正则化: 04-dl/02-优化与训练/04-优化器与正则化.md
+      - 2.3 深度学习框架实践: 04-dl/02-优化与训练/07-深度学习框架实践.md
+    - ③ CNN 与视觉:
+      - 本节目录: 04-dl/03-CNN与视觉/README.md
+      - 3.1 CNN 卷积神经网络: 04-dl/03-CNN与视觉/05-CNN卷积神经网络.md
+    - ④ 序列与注意力:
+      - 本节目录: 04-dl/04-序列与注意力/README.md
+      - 4.1 RNN 与序列模型: 04-dl/04-序列与注意力/06-RNN与序列模型.md
+    - 速查与面试:
+      - 本节目录: 04-dl/90-cheatsheet/README.md
+      - S1 速查表 · Cheatsheet: 04-dl/90-cheatsheet/cheatsheet.md
+      - S2 术语表 · Glossary: 04-dl/90-cheatsheet/glossary.md
+      - S3 高频面试题库: 04-dl/90-cheatsheet/interview.md
+      - S4 必读论文清单: 04-dl/90-cheatsheet/papers.md
+- 自然语言处理:
+  - 文本处理与表示基础:
+    - 方向概览: learning/05-nlp/01-文本处理与表示基础/index.md
+    - NLP 概述与文本预处理:
+      - 主题目录: learning/05-nlp/01-文本处理与表示基础/01-NLP-概述与文本预处理/index.md
+      - NLP 是什么: learning/05-nlp/01-文本处理与表示基础/01-NLP-概述与文本预处理/01-NLP-是什么/index.md
+      - 发展简史：每一次跃迁都是「表示能力」的跃迁: learning/05-nlp/01-文本处理与表示基础/01-NLP-概述与文本预处理/02-发展简史：每一次跃迁都是「表示能力」的跃迁/index.md
+      - 文本预处理的五个环节: learning/05-nlp/01-文本处理与表示基础/01-NLP-概述与文本预处理/03-文本预处理的五个环节/index.md
+      - 预处理的三个「为什么」: learning/05-nlp/01-文本处理与表示基础/01-NLP-概述与文本预处理/04-预处理的三个「为什么」/index.md
+      - 分词：三种模式与各自动机: learning/05-nlp/01-文本处理与表示基础/01-NLP-概述与文本预处理/05-分词：三种模式与各自动机/index.md
+      - 用户自定义词典: learning/05-nlp/01-文本处理与表示基础/01-NLP-概述与文本预处理/06-用户自定义词典/index.md
+      - 词性标注与命名实体识别: learning/05-nlp/01-文本处理与表示基础/01-NLP-概述与文本预处理/07-词性标注与命名实体识别/index.md
+      - one-hot：最朴素的张量表示: learning/05-nlp/01-文本处理与表示基础/01-NLP-概述与文本预处理/08-one-hot：最朴素的张量表示/index.md
+      - 文本特征处理: learning/05-nlp/01-文本处理与表示基础/01-NLP-概述与文本预处理/09-文本特征处理/index.md
+      - 数据增强: learning/05-nlp/01-文本处理与表示基础/01-NLP-概述与文本预处理/10-数据增强/index.md
+      - 三种数据分析方法及其结论: learning/05-nlp/01-文本处理与表示基础/01-NLP-概述与文本预处理/11-三种数据分析方法及其结论/index.md
+      - jieba 分词、词性标注、自定义词典: learning/05-nlp/01-文本处理与表示基础/01-NLP-概述与文本预处理/12-jieba-分词、词性标注、自定义词典/index.md
+      - n-gram 特征与文本长度规范（纯 numpy，无额外依赖）: learning/05-nlp/01-文本处理与表示基础/01-NLP-概述与文本预处理/13-n-gram-特征与文本长度规范（纯-numpy，无额外依赖）/index.md
+      - 完整预处理流水线 + 语料体检: learning/05-nlp/01-文本处理与表示基础/01-NLP-概述与文本预处理/14-完整预处理流水线-+-语料体检/index.md
+      - 词向量层：one-hot 的「可训练」替代品: learning/05-nlp/01-文本处理与表示基础/01-NLP-概述与文本预处理/15-词向量层：one-hot-的「可训练」替代品/index.md
+    - 文本预处理与分词全流程:
+      - 主题目录: learning/05-nlp/01-文本处理与表示基础/02-文本预处理与分词全流程/index.md
+      - 词级分词（word-level tokenization）的三个死穴: learning/05-nlp/01-文本处理与表示基础/02-文本预处理与分词全流程/01-词级分词（word-level-tokenization）的三个死穴/index.md
+      - 一个具体的失败案例: learning/05-nlp/01-文本处理与表示基础/02-文本预处理与分词全流程/02-一个具体的失败案例/index.md
+      - 编码层：四个「长度」概念: learning/05-nlp/01-文本处理与表示基础/02-文本预处理与分词全流程/03-编码层：四个「长度」概念/index.md
+      - 清洗与归一化: learning/05-nlp/01-文本处理与表示基础/02-文本预处理与分词全流程/04-清洗与归一化/index.md
+      - 分词粒度对比: learning/05-nlp/01-文本处理与表示基础/02-文本预处理与分词全流程/05-分词粒度对比/index.md
+      - 为什么主流方案放弃了词级分词: learning/05-nlp/01-文本处理与表示基础/02-文本预处理与分词全流程/06-为什么主流方案放弃了词级分词/index.md
+      - 文本预处理与分词全流程：最小可运行示例: learning/05-nlp/01-文本处理与表示基础/02-文本预处理与分词全流程/07-文本预处理与分词全流程：最小可运行示例/index.md
+      - BPE 完整算法: learning/05-nlp/01-文本处理与表示基础/02-文本预处理与分词全流程/08-BPE-完整算法/index.md
+      - WordPiece：用似然替代频次: learning/05-nlp/01-文本处理与表示基础/02-文本预处理与分词全流程/09-WordPiece：用似然替代频次/index.md
+      - Unigram LM：概率模型 + EM + Viterbi: learning/05-nlp/01-文本处理与表示基础/02-文本预处理与分词全流程/10-Unigram-LM：概率模型-+-EM-+-Viterbi/index.md
+      - SentencePiece 的工程价值: learning/05-nlp/01-文本处理与表示基础/02-文本预处理与分词全流程/11-SentencePiece-的工程价值/index.md
+      - 中文分词: learning/05-nlp/01-文本处理与表示基础/02-文本预处理与分词全流程/12-中文分词/index.md
+      - 词表构建与特殊 token: learning/05-nlp/01-文本处理与表示基础/02-文本预处理与分词全流程/13-词表构建与特殊-token/index.md
+    - 中文分词与子词分词:
+      - 主题目录: learning/05-nlp/01-文本处理与表示基础/03-中文分词与子词分词/index.md
+      - 分词是什么，为什么中文特别难: learning/05-nlp/01-文本处理与表示基础/03-中文分词与子词分词/01-分词是什么，为什么中文特别难/index.md
+      - jieba 的三种模式: learning/05-nlp/01-文本处理与表示基础/03-中文分词与子词分词/02-jieba-的三种模式/index.md
+      - 自定义词典: learning/05-nlp/01-文本处理与表示基础/03-中文分词与子词分词/03-自定义词典/index.md
+      - 分词 = 序列标注: learning/05-nlp/01-文本处理与表示基础/03-中文分词与子词分词/04-分词-=-序列标注/index.md
+      - 从「词」到「子词」: learning/05-nlp/01-文本处理与表示基础/03-中文分词与子词分词/05-从「词」到「子词」/index.md
+      - jieba 的分词原理: learning/05-nlp/01-文本处理与表示基础/03-中文分词与子词分词/06-jieba-的分词原理/index.md
+      - BPE 算法流程: learning/05-nlp/01-文本处理与表示基础/03-中文分词与子词分词/07-BPE-算法流程/index.md
+      - WordPiece 与 BPE 的差异: learning/05-nlp/01-文本处理与表示基础/03-中文分词与子词分词/08-WordPiece-与-BPE-的差异/index.md
+      - Unigram LM 的删减思路: learning/05-nlp/01-文本处理与表示基础/03-中文分词与子词分词/09-Unigram-LM-的删减思路/index.md
+      - 中文场景下的选型建议: learning/05-nlp/01-文本处理与表示基础/03-中文分词与子词分词/10-中文场景下的选型建议/index.md
+      - jieba 三种模式 + 自定义词典: learning/05-nlp/01-文本处理与表示基础/03-中文分词与子词分词/11-jieba-三种模式-+-自定义词典/index.md
+      - 字级 B/M/E/S 标注：把分词变成序列标注: learning/05-nlp/01-文本处理与表示基础/03-中文分词与子词分词/12-字级-B-M-E-S-标注：把分词变成序列标注/index.md
+      - 纯 Python 实现 mini-BPE: learning/05-nlp/01-文本处理与表示基础/03-中文分词与子词分词/13-纯-Python-实现-mini-BPE/index.md
+      - 用 Hugging Face tokenizer 观察子词切分: learning/05-nlp/01-文本处理与表示基础/03-中文分词与子词分词/14-用-Hugging-Face-tokenizer-观察子词切分/index.md
+    - 文本表示：词袋与 TF-IDF:
+      - 主题目录: learning/05-nlp/01-文本处理与表示基础/04-文本表示：词袋与-TF-IDF/index.md
+      - 文本表示要解决什么问题: learning/05-nlp/01-文本处理与表示基础/04-文本表示：词袋与-TF-IDF/01-文本表示要解决什么问题/index.md
+      - one-hot 的两个致命缺点（复习）: learning/05-nlp/01-文本处理与表示基础/04-文本表示：词袋与-TF-IDF/02-one-hot-的两个致命缺点（复习）/index.md
+      - 词袋模型（Bag-of-Words）: learning/05-nlp/01-文本处理与表示基础/04-文本表示：词袋与-TF-IDF/03-词袋模型（Bag-of-Words）/index.md
+      - n-gram 特征: learning/05-nlp/01-文本处理与表示基础/04-文本表示：词袋与-TF-IDF/04-n-gram-特征/index.md
+      - TF-IDF：核心思想: learning/05-nlp/01-文本处理与表示基础/04-文本表示：词袋与-TF-IDF/05-TF-IDF：核心思想/index.md
+      - TF 的三种变体: learning/05-nlp/01-文本处理与表示基础/04-文本表示：词袋与-TF-IDF/06-TF-的三种变体/index.md
+      - IDF 与平滑: learning/05-nlp/01-文本处理与表示基础/04-文本表示：词袋与-TF-IDF/07-IDF-与平滑/index.md
+      - 向量归一化: learning/05-nlp/01-文本处理与表示基础/04-文本表示：词袋与-TF-IDF/08-向量归一化/index.md
+      - TF-IDF 的完整计算示例: learning/05-nlp/01-文本处理与表示基础/04-文本表示：词袋与-TF-IDF/09-TF-IDF-的完整计算示例/index.md
+      - 稀疏矩阵为什么省内存: learning/05-nlp/01-文本处理与表示基础/04-文本表示：词袋与-TF-IDF/10-稀疏矩阵为什么省内存/index.md
+      - sklearn TfidfVectorizer 参数速查: learning/05-nlp/01-文本处理与表示基础/04-文本表示：词袋与-TF-IDF/11-sklearn-TfidfVectorizer-参数速查/index.md
+      - 手写 TF-IDF（含平滑与 L2 归一化）: learning/05-nlp/01-文本处理与表示基础/04-文本表示：词袋与-TF-IDF/12-手写-TF-IDF（含平滑与-L2-归一化）/index.md
+      - 与 sklearn 对照（验证两者的差异）: learning/05-nlp/01-文本处理与表示基础/04-文本表示：词袋与-TF-IDF/13-与-sklearn-对照（验证两者的差异）/index.md
+      - fit_transform 与 transform 的区别（最经典的坑）: learning/05-nlp/01-文本处理与表示基础/04-文本表示：词袋与-TF-IDF/14-fit_transform-与-transform-的区别（最经典的坑）/index.md
+      - 稀疏矩阵与特征裁剪的工程实践: learning/05-nlp/01-文本处理与表示基础/04-文本表示：词袋与-TF-IDF/15-稀疏矩阵与特征裁剪的工程实践/index.md
+    - 词向量：Word2Vec 与 FastText:
+      - 主题目录: learning/05-nlp/01-文本处理与表示基础/05-词向量：Word2Vec-与-FastText/index.md
+      - 从 one-hot 到分布式表示: learning/05-nlp/01-文本处理与表示基础/05-词向量：Word2Vec-与-FastText/01-从-one-hot-到分布式表示/index.md
+      - 分布假设: learning/05-nlp/01-文本处理与表示基础/05-词向量：Word2Vec-与-FastText/02-分布假设/index.md
+      - CBOW 与 Skip-gram: learning/05-nlp/01-文本处理与表示基础/05-词向量：Word2Vec-与-FastText/03-CBOW-与-Skip-gram/index.md
+      - 输出层的两种加速方案: learning/05-nlp/01-文本处理与表示基础/05-词向量：Word2Vec-与-FastText/04-输出层的两种加速方案/index.md
+      - FastText 的两个创新: learning/05-nlp/01-文本处理与表示基础/05-词向量：Word2Vec-与-FastText/05-FastText-的两个创新/index.md
+      - 静态词向量的局限: learning/05-nlp/01-文本处理与表示基础/05-词向量：Word2Vec-与-FastText/06-静态词向量的局限/index.md
+      - CBOW 的前向与维度变化: learning/05-nlp/01-文本处理与表示基础/05-词向量：Word2Vec-与-FastText/07-CBOW-的前向与维度变化/index.md
+      - 负采样的动机与损失: learning/05-nlp/01-文本处理与表示基础/05-词向量：Word2Vec-与-FastText/08-负采样的动机与损失/index.md
+      - 训练技巧与超参数: learning/05-nlp/01-文本处理与表示基础/05-词向量：Word2Vec-与-FastText/09-训练技巧与超参数/index.md
+      - 词向量的评估方法: learning/05-nlp/01-文本处理与表示基础/05-词向量：Word2Vec-与-FastText/10-词向量的评估方法/index.md
+      - 词向量迁移的两种方式: learning/05-nlp/01-文本处理与表示基础/05-词向量：Word2Vec-与-FastText/11-词向量迁移的两种方式/index.md
+      - 用 gensim 训练并在小语料上评估: learning/05-nlp/01-文本处理与表示基础/05-词向量：Word2Vec-与-FastText/12-用-gensim-训练并在小语料上评估/index.md
+      - 纯 numpy 实现负采样损失与梯度（看清数学）: learning/05-nlp/01-文本处理与表示基础/05-词向量：Word2Vec-与-FastText/13-纯-numpy-实现负采样损失与梯度（看清数学）/index.md
+      - FastText：分类 + 词向量 + OOV: learning/05-nlp/01-文本处理与表示基础/05-词向量：Word2Vec-与-FastText/14-FastText：分类-+-词向量-+-OOV/index.md
+      - 把预训练词向量迁移进 PyTorch 模型: learning/05-nlp/01-文本处理与表示基础/05-词向量：Word2Vec-与-FastText/15-把预训练词向量迁移进-PyTorch-模型/index.md
+  - 序列建模与任务实践:
+    - 方向概览: learning/05-nlp/02-序列建模与任务实践/index.md
+    - RNN 与 LSTM 文本建模:
+      - 主题目录: learning/05-nlp/02-序列建模与任务实践/01-RNN-与-LSTM-文本建模/index.md
+      - RNN 是什么: learning/05-nlp/02-序列建模与任务实践/01-RNN-与-LSTM-文本建模/01-RNN-是什么/index.md
+      - 按输入输出结构分类: learning/05-nlp/02-序列建模与任务实践/01-RNN-与-LSTM-文本建模/02-按输入输出结构分类/index.md
+      - 按内部结构分类: learning/05-nlp/02-序列建模与任务实践/01-RNN-与-LSTM-文本建模/03-按内部结构分类/index.md
+      - 传统 RNN 的优缺点: learning/05-nlp/02-序列建模与任务实践/01-RNN-与-LSTM-文本建模/04-传统-RNN-的优缺点/index.md
+      - LSTM 的设计动机: learning/05-nlp/02-序列建模与任务实践/01-RNN-与-LSTM-文本建模/05-LSTM-的设计动机/index.md
+      - LSTM 的四个组成部分: learning/05-nlp/02-序列建模与任务实践/01-RNN-与-LSTM-文本建模/06-LSTM-的四个组成部分/index.md
+      - 完整公式: learning/05-nlp/02-序列建模与任务实践/01-RNN-与-LSTM-文本建模/07-完整公式/index.md
+      - GRU：更精简的版本: learning/05-nlp/02-序列建模与任务实践/01-RNN-与-LSTM-文本建模/08-GRU：更精简的版本/index.md
+      - PyTorch 中的维度约定（最容易出错的地方）: learning/05-nlp/02-序列建模与任务实践/01-RNN-与-LSTM-文本建模/09-PyTorch-中的维度约定（最容易出错的地方）/index.md
+      - 两个必须理解的等价关系: learning/05-nlp/02-序列建模与任务实践/01-RNN-与-LSTM-文本建模/10-两个必须理解的等价关系/index.md
+      - 梯度问题的三种缓解手段: learning/05-nlp/02-序列建模与任务实践/01-RNN-与-LSTM-文本建模/11-梯度问题的三种缓解手段/index.md
+      - 三个模型的维度对照实验: learning/05-nlp/02-序列建模与任务实践/01-RNN-与-LSTM-文本建模/12-三个模型的维度对照实验/index.md
+      - 字符级短文本分类器（RNN / LSTM / GRU 三合一）: learning/05-nlp/02-序列建模与任务实践/01-RNN-与-LSTM-文本建模/13-字符级短文本分类器（RNN---LSTM---GRU-三合一）/index.md
+      - 验证 LSTM 的长依赖能力（门控的直观效果）: learning/05-nlp/02-序列建模与任务实践/01-RNN-与-LSTM-文本建模/14-验证-LSTM-的长依赖能力（门控的直观效果）/index.md
+    - Attention 与 Transformer:
+      - 主题目录: learning/05-nlp/02-序列建模与任务实践/02-Attention-与-Transformer/index.md
+      - 为什么需要 Transformer: learning/05-nlp/02-序列建模与任务实践/02-Attention-与-Transformer/01-为什么需要-Transformer/index.md
+      - 整体架构四大件: learning/05-nlp/02-序列建模与任务实践/02-Attention-与-Transformer/02-整体架构四大件/index.md
+      - 每个子模块的职责: learning/05-nlp/02-序列建模与任务实践/02-Attention-与-Transformer/03-每个子模块的职责/index.md
+      - 掩码（mask）与注意力类型: learning/05-nlp/02-序列建模与任务实践/02-Attention-与-Transformer/04-掩码（mask）与注意力类型/index.md
+      - Scaled Dot-Product Attention 的公式与流程: learning/05-nlp/02-序列建模与任务实践/02-Attention-与-Transformer/05-Scaled-Dot-Product-Attention-的公式与流程/index.md
+      - 为什么要除以 $\sqrt{d_k}$: learning/05-nlp/02-序列建模与任务实践/02-Attention-与-Transformer/06-为什么要除以---sqrt-d_k/index.md
+      - Multi-Head Attention 的计算方式: learning/05-nlp/02-序列建模与任务实践/02-Attention-与-Transformer/07-Multi-Head-Attention-的计算方式/index.md
+      - 位置编码: learning/05-nlp/02-序列建模与任务实践/02-Attention-与-Transformer/08-位置编码/index.md
+      - Embedding 为什么要乘 $\sqrt{d_{model}}$: learning/05-nlp/02-序列建模与任务实践/02-Attention-与-Transformer/09-Embedding-为什么要乘---sqrt-d_-model/index.md
+      - 子层连接结构与 LayerNorm: learning/05-nlp/02-序列建模与任务实践/02-Attention-与-Transformer/10-子层连接结构与-LayerNorm/index.md
+      - 完整数据流: learning/05-nlp/02-序列建模与任务实践/02-Attention-与-Transformer/11-完整数据流/index.md
+      - Attention 与 Multi-Head Attention: learning/05-nlp/02-序列建模与任务实践/02-Attention-与-Transformer/12-Attention-与-Multi-Head-Attention/index.md
+      - 位置编码、前馈层、LayerNorm、子层连接: learning/05-nlp/02-序列建模与任务实践/02-Attention-与-Transformer/13-位置编码、前馈层、LayerNorm、子层连接/index.md
+      - 掩码、Encoder / Decoder 与整体拼装: learning/05-nlp/02-序列建模与任务实践/02-Attention-与-Transformer/14-掩码、Encoder---Decoder-与整体拼装/index.md
+    - BERT 与预训练模型:
+      - 主题目录: learning/05-nlp/02-序列建模与任务实践/03-BERT-与预训练模型/index.md
+      - 迁移学习与预训练模型: learning/05-nlp/02-序列建模与任务实践/03-BERT-与预训练模型/01-迁移学习与预训练模型/index.md
+      - 三条技术路线: learning/05-nlp/02-序列建模与任务实践/03-BERT-与预训练模型/02-三条技术路线/index.md
+      - BERT 的宏观结构: learning/05-nlp/02-序列建模与任务实践/03-BERT-与预训练模型/03-BERT-的宏观结构/index.md
+      - 常见 BERT 变体规格: learning/05-nlp/02-序列建模与任务实践/03-BERT-与预训练模型/04-常见-BERT-变体规格/index.md
+      - BERT 的优缺点: learning/05-nlp/02-序列建模与任务实践/03-BERT-与预训练模型/05-BERT-的优缺点/index.md
+      - 预训练任务一：Masked LM（MLM）: learning/05-nlp/02-序列建模与任务实践/03-BERT-与预训练模型/06-预训练任务一：Masked-LM（MLM）/index.md
+      - 预训练任务二：Next Sentence Prediction（NSP）: learning/05-nlp/02-序列建模与任务实践/03-BERT-与预训练模型/07-预训练任务二：Next-Sentence-Prediction（NSP）/index.md
+      - BERT 处理长文本: learning/05-nlp/02-序列建模与任务实践/03-BERT-与预训练模型/08-BERT-处理长文本/index.md
+      - BERT 家族的主要改进: learning/05-nlp/02-序列建模与任务实践/03-BERT-与预训练模型/09-BERT-家族的主要改进/index.md
+      - ELMo 与 GPT（对比视角）: learning/05-nlp/02-序列建模与任务实践/03-BERT-与预训练模型/10-ELMo-与-GPT（对比视角）/index.md
+      - Transformers 库的三层应用结构: learning/05-nlp/02-序列建模与任务实践/03-BERT-与预训练模型/11-Transformers-库的三层应用结构/index.md
+      - 三种调用方式（Pipeline / AutoModel / 自定义下游模型）: learning/05-nlp/02-序列建模与任务实践/03-BERT-与预训练模型/12-三种调用方式（Pipeline---AutoModel---自定义下游模型）/index.md
+      - 冻结 BERT + 自定义分类头（的核心范式）: learning/05-nlp/02-序列建模与任务实践/03-BERT-与预训练模型/13-冻结-BERT-+-自定义分类头（的核心范式）/index.md
+      - 训练配置与常用超参: learning/05-nlp/02-序列建模与任务实践/03-BERT-与预训练模型/14-训练配置与常用超参/index.md
+    - 文本分类实战:
+      - 主题目录: learning/05-nlp/02-序列建模与任务实践/04-文本分类实战/index.md
+      - 任务形式化: learning/05-nlp/02-序列建模与任务实践/04-文本分类实战/01-任务形式化/index.md
+      - 的三个数据集: learning/05-nlp/02-序列建模与任务实践/04-文本分类实战/02-的三个数据集/index.md
+      - 文本分类的通用流水线: learning/05-nlp/02-序列建模与任务实践/04-文本分类实战/03-文本分类的通用流水线/index.md
+      - 三档基线，从便宜到贵: learning/05-nlp/02-序列建模与任务实践/04-文本分类实战/04-三档基线，从便宜到贵/index.md
+      - 评估指标: learning/05-nlp/02-序列建模与任务实践/04-文本分类实战/05-评估指标/index.md
+      - pad_size 怎么定: learning/05-nlp/02-序列建模与任务实践/04-文本分类实战/06-pad_size-怎么定/index.md
+      - 数据体检：三个必看的图: learning/05-nlp/02-序列建模与任务实践/04-文本分类实战/07-数据体检：三个必看的图/index.md
+      - 预处理的责任边界: learning/05-nlp/02-序列建模与任务实践/04-文本分类实战/08-预处理的责任边界/index.md
+      - 随机森林在文本上的工作方式: learning/05-nlp/02-序列建模与任务实践/04-文本分类实战/09-随机森林在文本上的工作方式/index.md
+      - 从「词袋 + 树」到「Embedding + 网络」: learning/05-nlp/02-序列建模与任务实践/04-文本分类实战/10-从「词袋-+-树」到「Embedding-+-网络」/index.md
+      - 错误分析的标准动作: learning/05-nlp/02-序列建模与任务实践/04-文本分类实战/11-错误分析的标准动作/index.md
+      - 类别不均衡的处理手段: learning/05-nlp/02-序列建模与任务实践/04-文本分类实战/12-类别不均衡的处理手段/index.md
+      - 文本分类实战：可运行示例: learning/05-nlp/02-序列建模与任务实践/04-文本分类实战/13-文本分类实战：可运行示例/index.md
+    - 序列标注与实体识别:
+      - 主题目录: learning/05-nlp/02-序列建模与任务实践/05-序列标注与实体识别/index.md
+      - 什么是序列标注: learning/05-nlp/02-序列建模与任务实践/05-序列标注与实体识别/01-什么是序列标注/index.md
+      - 标签体系：从 BIO 到 BIOES: learning/05-nlp/02-序列建模与任务实践/05-序列标注与实体识别/02-标签体系：从-BIO-到-BIOES/index.md
+      - HMM：生成式序列标注: learning/05-nlp/02-序列建模与任务实践/05-序列标注与实体识别/03-HMM：生成式序列标注/index.md
+      - CRF：判别式序列标注: learning/05-nlp/02-序列建模与任务实践/05-序列标注与实体识别/04-CRF：判别式序列标注/index.md
+      - HMM 的三大问题与对应算法: learning/05-nlp/02-序列建模与任务实践/05-序列标注与实体识别/05-HMM-的三大问题与对应算法/index.md
+      - HMM 的联合概率分解: learning/05-nlp/02-序列建模与任务实践/05-序列标注与实体识别/06-HMM-的联合概率分解/index.md
+      - 维特比算法（Viterbi）: learning/05-nlp/02-序列建模与任务实践/05-序列标注与实体识别/07-维特比算法（Viterbi）/index.md
+      - BiLSTM-CRF 的数据流: learning/05-nlp/02-序列建模与任务实践/05-序列标注与实体识别/08-BiLSTM-CRF-的数据流/index.md
+      - 评测：为什么必须用实体级 F1: learning/05-nlp/02-序列建模与任务实践/05-序列标注与实体识别/09-评测：为什么必须用实体级-F1/index.md
+      - 纯 numpy 的 HMM + 维特比（词性标注风格）: learning/05-nlp/02-序列建模与任务实践/05-序列标注与实体识别/10-纯-numpy-的-HMM-+-维特比（词性标注风格）/index.md
+      - BIO 与 BIOES 互转 + 实体抽取: learning/05-nlp/02-序列建模与任务实践/05-序列标注与实体识别/11-BIO-与-BIOES-互转-+-实体抽取/index.md
+      - 统计法训练 HMM（极大似然估计）: learning/05-nlp/02-序列建模与任务实践/05-序列标注与实体识别/12-统计法训练-HMM（极大似然估计）/index.md
+      - 用 seqeval 做实体级评估: learning/05-nlp/02-序列建模与任务实践/05-序列标注与实体识别/13-用-seqeval-做实体级评估/index.md
+    - 文本相似度与语义匹配:
+      - 主题目录: learning/05-nlp/02-序列建模与任务实践/06-文本相似度与语义匹配/index.md
+      - 任务形态：相似度、匹配、检索: learning/05-nlp/02-序列建模与任务实践/06-文本相似度与语义匹配/01-任务形态：相似度、匹配、检索/index.md
+      - 技术路线的分水岭：交互式 vs 表示式: learning/05-nlp/02-序列建模与任务实践/06-文本相似度与语义匹配/02-技术路线的分水岭：交互式-vs-表示式/index.md
+      - 方法总览：从字面到语义: learning/05-nlp/02-序列建模与任务实践/06-文本相似度与语义匹配/03-方法总览：从字面到语义/index.md
+      - 三种度量与「归一化」的关系: learning/05-nlp/02-序列建模与任务实践/06-文本相似度与语义匹配/04-三种度量与「归一化」的关系/index.md
+      - 经典字面方法: learning/05-nlp/02-序列建模与任务实践/06-文本相似度与语义匹配/05-经典字面方法/index.md
+      - TF-IDF 余弦与 BM25: learning/05-nlp/02-序列建模与任务实践/06-文本相似度与语义匹配/06-TF-IDF-余弦与-BM25/index.md
+      - 词向量平均与平滑逆频率（SIF）: learning/05-nlp/02-序列建模与任务实践/06-文本相似度与语义匹配/07-词向量平均与平滑逆频率（SIF）/index.md
+      - Sentence-BERT（SBERT）: learning/05-nlp/02-序列建模与任务实践/06-文本相似度与语义匹配/08-Sentence-BERT（SBERT）/index.md
+      - CoSENT：中文场景更稳定的排序损失: learning/05-nlp/02-序列建模与任务实践/06-文本相似度与语义匹配/09-CoSENT：中文场景更稳定的排序损失/index.md
+      - SimCSE：用 dropout 造正样本: learning/05-nlp/02-序列建模与任务实践/06-文本相似度与语义匹配/10-SimCSE：用-dropout-造正样本/index.md
+      - 向量检索：为什么要 ANN: learning/05-nlp/02-序列建模与任务实践/06-文本相似度与语义匹配/11-向量检索：为什么要-ANN/index.md
+      - 编辑距离、Jaccard、TF-IDF 余弦（纯 Python / numpy）: learning/05-nlp/02-序列建模与任务实践/06-文本相似度与语义匹配/12-编辑距离、Jaccard、TF-IDF-余弦（纯-Python---numpy）/index.md
+      - 用 sentence-transformers 做双塔语义相似度: learning/05-nlp/02-序列建模与任务实践/06-文本相似度与语义匹配/13-用-sentence-transformers-做双塔语义相似度/index.md
+      - 用 Cross-Encoder 做精排: learning/05-nlp/02-序列建模与任务实践/06-文本相似度与语义匹配/14-用-Cross-Encoder-做精排/index.md
+      - 两阶段检索的最小实现: learning/05-nlp/02-序列建模与任务实践/06-文本相似度与语义匹配/15-两阶段检索的最小实现/index.md
+      - 用 BERT 做句子对分类（贴合的中文句子关系案例）: learning/05-nlp/02-序列建模与任务实践/06-文本相似度与语义匹配/16-用-BERT-做句子对分类（贴合的中文句子关系案例）/index.md
+    - NLP 项目实战：情感分析:
+      - 主题目录: learning/05-nlp/02-序列建模与任务实践/07-NLP-项目实战：情感分析/index.md
+      - 情感分析的任务变体: learning/05-nlp/02-序列建模与任务实践/07-NLP-项目实战：情感分析/01-情感分析的任务变体/index.md
+      - 中文酒店评论语料: learning/05-nlp/02-序列建模与任务实践/07-NLP-项目实战：情感分析/02-中文酒店评论语料/index.md
+      - 标签分布的判断准则: learning/05-nlp/02-序列建模与任务实践/07-NLP-项目实战：情感分析/03-标签分布的判断准则/index.md
+      - 三档模型在情感分析上的对比: learning/05-nlp/02-序列建模与任务实践/07-NLP-项目实战：情感分析/04-三档模型在情感分析上的对比/index.md
+      - 完整项目流水线: learning/05-nlp/02-序列建模与任务实践/07-NLP-项目实战：情感分析/05-完整项目流水线/index.md
+      - 数据体检：三个必看的图（对应第 4 节）: learning/05-nlp/02-序列建模与任务实践/07-NLP-项目实战：情感分析/06-数据体检：三个必看的图（对应第-4-节）/index.md
+      - 情感分析特有的三个语义难点与处理: learning/05-nlp/02-序列建模与任务实践/07-NLP-项目实战：情感分析/07-情感分析特有的三个语义难点与处理/index.md
+      - 数据增强：优先做「极性安全」的增强: learning/05-nlp/02-序列建模与任务实践/07-NLP-项目实战：情感分析/08-数据增强：优先做「极性安全」的增强/index.md
+      - 评估与阈值: learning/05-nlp/02-序列建模与任务实践/07-NLP-项目实战：情感分析/09-评估与阈值/index.md
+      - 领域迁移与标注一致性: learning/05-nlp/02-序列建模与任务实践/07-NLP-项目实战：情感分析/10-领域迁移与标注一致性/index.md
+      - 端到端流水线（自包含，内联样本）: learning/05-nlp/02-序列建模与任务实践/07-NLP-项目实战：情感分析/11-端到端流水线（自包含，内联样本）/index.md
+      - 否定感知的预处理与专项特征: learning/05-nlp/02-序列建模与任务实践/07-NLP-项目实战：情感分析/12-否定感知的预处理与专项特征/index.md
+      - BERT 微调（第 3 档，替代方案）: learning/05-nlp/02-序列建模与任务实践/07-NLP-项目实战：情感分析/13-BERT-微调（第-3-档，替代方案）/index.md
+      - 情感分类服务封装（Flask，含阈值与置信度）: learning/05-nlp/02-序列建模与任务实践/07-NLP-项目实战：情感分析/14-情感分类服务封装（Flask，含阈值与置信度）/index.md
+    - NLP 项目实战：医疗文本分类:
+      - 主题目录: learning/05-nlp/02-序列建模与任务实践/08-NLP-项目实战：医疗文本分类/index.md
+      - 业务场景与为什么值得做: learning/05-nlp/02-序列建模与任务实践/08-NLP-项目实战：医疗文本分类/01-业务场景与为什么值得做/index.md
+      - 数据集：13 类标签体系: learning/05-nlp/02-序列建模与任务实践/08-NLP-项目实战：医疗文本分类/02-数据集：13-类标签体系/index.md
+      - 直观的困难点: learning/05-nlp/02-序列建模与任务实践/08-NLP-项目实战：医疗文本分类/03-直观的困难点/index.md
+      - 领域预处理四步流水线: learning/05-nlp/02-序列建模与任务实践/08-NLP-项目实战：医疗文本分类/04-领域预处理四步流水线/index.md
+      - 三档模型与超参: learning/05-nlp/02-序列建模与任务实践/08-NLP-项目实战：医疗文本分类/05-三档模型与超参/index.md
+      - 训练与预测的关键实现: learning/05-nlp/02-序列建模与任务实践/08-NLP-项目实战：医疗文本分类/06-训练与预测的关键实现/index.md
+      - 评估：四大指标与多分类平均方式: learning/05-nlp/02-序列建模与任务实践/08-NLP-项目实战：医疗文本分类/07-评估：四大指标与多分类平均方式/index.md
+      - 三档模型的预期性能对比: learning/05-nlp/02-序列建模与任务实践/08-NLP-项目实战：医疗文本分类/08-三档模型的预期性能对比/index.md
+      - 延伸：模型压缩三件套: learning/05-nlp/02-序列建模与任务实践/08-NLP-项目实战：医疗文本分类/09-延伸：模型压缩三件套/index.md
+      - 领域预处理流水线（自包含）: learning/05-nlp/02-序列建模与任务实践/08-NLP-项目实战：医疗文本分类/10-领域预处理流水线（自包含）/index.md
+      - 三档模型端到端对比（自包含小样本）: learning/05-nlp/02-序列建模与任务实践/08-NLP-项目实战：医疗文本分类/11-三档模型端到端对比（自包含小样本）/index.md
+      - BERT 微调与推理（含保存/加载）: learning/05-nlp/02-序列建模与任务实践/08-NLP-项目实战：医疗文本分类/12-BERT-微调与推理（含保存-加载）/index.md
+      - 服务封装（Flask，含标签映射与耗时统计）: learning/05-nlp/02-序列建模与任务实践/08-NLP-项目实战：医疗文本分类/13-服务封装（Flask，含标签映射与耗时统计）/index.md
+  - 综合复习与参考:
+    - 领域目录: 05-nlp/README.md
+    - ① 预处理与文本表示:
+      - 本节目录: 05-nlp/01-预处理与表示/README.md
+      - 1.1 NLP 概述与文本预处理: 05-nlp/01-预处理与表示/01-NLP概述与文本预处理.md
+      - 1.2 文本预处理与分词全流程: 05-nlp/01-预处理与表示/01-文本预处理与分词全流程.md
+      - 1.3 中文分词与子词分词: 05-nlp/01-预处理与表示/02-中文分词与子词分词.md
+      - 1.4 文本表示：词袋与 TF-IDF: 05-nlp/01-预处理与表示/03-文本表示-词袋与TFIDF.md
+      - 1.5 词向量：Word2Vec 与 FastText: 05-nlp/01-预处理与表示/04-词向量-Word2Vec与FastText.md
+    - ② 序列建模与 Transformer:
+      - 本节目录: 05-nlp/02-序列建模与Transformer/README.md
+      - 2.1 RNN 与 LSTM 文本建模: 05-nlp/02-序列建模与Transformer/07-RNN与LSTM文本建模.md
+      - 2.2 Attention 与 Transformer: 05-nlp/02-序列建模与Transformer/08-Attention与Transformer.md
+      - 2.3 BERT 与预训练模型: 05-nlp/02-序列建模与Transformer/09-BERT与预训练模型.md
+    - ③ 任务与信息抽取:
+      - 本节目录: 05-nlp/03-任务与信息抽取/README.md
+      - 3.1 文本分类实战: 05-nlp/03-任务与信息抽取/05-文本分类实战.md
+      - 3.2 序列标注与实体识别: 05-nlp/03-任务与信息抽取/06-序列标注与实体识别.md
+      - 3.3 文本相似度与语义匹配: 05-nlp/03-任务与信息抽取/10-文本相似度与语义匹配.md
+      - 3.4 NLP 项目实战：情感分析: 05-nlp/03-任务与信息抽取/11-NLP项目实战-情感分析.md
+      - 3.5 NLP 项目实战：医疗文本分类: 05-nlp/03-任务与信息抽取/12-NLP项目实战-医疗文本分类.md
+    - 速查与面试:
+      - 本节目录: 05-nlp/90-cheatsheet/README.md
+      - S1 速查表 · Cheatsheet: 05-nlp/90-cheatsheet/cheatsheet.md
+      - S2 术语表 · Glossary: 05-nlp/90-cheatsheet/glossary.md
+      - S3 高频面试题库: 05-nlp/90-cheatsheet/interview.md
+      - S4 必读论文清单: 05-nlp/90-cheatsheet/papers.md
+- 大语言模型:
+  - 模型原理与训练对齐:
+    - 方向概览: learning/06-llm/01-模型原理与训练对齐/index.md
+    - Attention 机制详解:
+      - 主题目录: learning/06-llm/01-模型原理与训练对齐/01-Attention-机制详解/index.md
+      - RNN 的两个瓶颈: learning/06-llm/01-模型原理与训练对齐/01-Attention-机制详解/01-RNN-的两个瓶颈/index.md
+      - 注意力是一种「可学习的软寻址」: learning/06-llm/01-模型原理与训练对齐/01-Attention-机制详解/02-注意力是一种「可学习的软寻址」/index.md
+      - 三种序列层的复杂度对比: learning/06-llm/01-模型原理与训练对齐/01-Attention-机制详解/03-三种序列层的复杂度对比/index.md
+      - Q/K/V 与多头拆分的形状流转: learning/06-llm/01-模型原理与训练对齐/01-Attention-机制详解/04-Q-K-V-与多头拆分的形状流转/index.md
+      - Attention 机制详解：最小可运行示例: learning/06-llm/01-模型原理与训练对齐/01-Attention-机制详解/05-Attention-机制详解：最小可运行示例/index.md
+      - 为什么必须除以 $\sqrt{d_k}$: learning/06-llm/01-模型原理与训练对齐/01-Attention-机制详解/06-为什么必须除以---sqrt-d_k/index.md
+      - Q/K/V 的语义与来源: learning/06-llm/01-模型原理与训练对齐/01-Attention-机制详解/07-Q-K-V-的语义与来源/index.md
+      - Multi-Head Attention: learning/06-llm/01-模型原理与训练对齐/01-Attention-机制详解/08-Multi-Head-Attention/index.md
+      - 掩码：padding mask 与 causal mask: learning/06-llm/01-模型原理与训练对齐/01-Attention-机制详解/09-掩码：padding-mask-与-causal-mask/index.md
+      - 复杂度分析: learning/06-llm/01-模型原理与训练对齐/01-Attention-机制详解/10-复杂度分析/index.md
+      - KV Cache: learning/06-llm/01-模型原理与训练对齐/01-Attention-机制详解/11-KV-Cache/index.md
+      - 现代变体: learning/06-llm/01-模型原理与训练对齐/01-Attention-机制详解/12-现代变体/index.md
+      - PyTorch 对照实现: learning/06-llm/01-模型原理与训练对齐/01-Attention-机制详解/13-PyTorch-对照实现/index.md
+    - -大模型基础与演进:
+      - 主题目录: learning/06-llm/01-模型原理与训练对齐/02-大模型基础与演进/index.md
+      - 什么是语言模型: learning/06-llm/01-模型原理与训练对齐/02-大模型基础与演进/01-什么是语言模型/index.md
+      - 语言模型技术的四个阶段: learning/06-llm/01-模型原理与训练对齐/02-大模型基础与演进/02-语言模型技术的四个阶段/index.md
+      - 语言模型评估指标总览: learning/06-llm/01-模型原理与训练对齐/02-大模型基础与演进/03-语言模型评估指标总览/index.md
+      - N-gram：为什么要引入马尔可夫假设: learning/06-llm/01-模型原理与训练对齐/02-大模型基础与演进/04-N-gram：为什么要引入马尔可夫假设/index.md
+      - 神经网络语言模型：从计数到向量: learning/06-llm/01-模型原理与训练对齐/02-大模型基础与演进/05-神经网络语言模型：从计数到向量/index.md
+      - 预训练 + 微调：知识复用的两阶段范式: learning/06-llm/01-模型原理与训练对齐/02-大模型基础与演进/06-预训练-+-微调：知识复用的两阶段范式/index.md
+      - 对齐训练：SFT → 奖励模型 → RLHF: learning/06-llm/01-模型原理与训练对齐/02-大模型基础与演进/07-对齐训练：SFT-→-奖励模型-→-RLHF/index.md
+      - BLEU / ROUGE / PPL 的计算要点: learning/06-llm/01-模型原理与训练对齐/02-大模型基础与演进/08-BLEU---ROUGE---PPL-的计算要点/index.md
+      - 用 nltk 计算 BLEU（含累计 BLEU）: learning/06-llm/01-模型原理与训练对齐/02-大模型基础与演进/09-用-nltk-计算-BLEU（含累计-BLEU）/index.md
+      - 手算 PPL，理解公式: learning/06-llm/01-模型原理与训练对齐/02-大模型基础与演进/10-手算-PPL，理解公式/index.md
+      - 用 rouge 计算 ROUGE（并注意兼容性）: learning/06-llm/01-模型原理与训练对齐/02-大模型基础与演进/11-用-rouge-计算-ROUGE（并注意兼容性）/index.md
+    - -Transformer与注意力机制:
+      - 主题目录: learning/06-llm/01-模型原理与训练对齐/03-Transformer与注意力机制/index.md
+      - 从原始 Transformer 到三类 LLM: learning/06-llm/01-模型原理与训练对齐/03-Transformer与注意力机制/01-从原始-Transformer-到三类-LLM/index.md
+      - 三类架构的预训练目标对比: learning/06-llm/01-模型原理与训练对齐/03-Transformer与注意力机制/02-三类架构的预训练目标对比/index.md
+      - 大模型时代为什么统一到 Decoder-only: learning/06-llm/01-模型原理与训练对齐/03-Transformer与注意力机制/03-大模型时代为什么统一到-Decoder-only/index.md
+      - GPT 系列的演进（架构与训练目标）: learning/06-llm/01-模型原理与训练对齐/03-Transformer与注意力机制/04-GPT-系列的演进（架构与训练目标）/index.md
+      - Zero-shot / One-shot / Few-shot 的区别: learning/06-llm/01-模型原理与训练对齐/03-Transformer与注意力机制/05-Zero-shot---One-shot---Few-shot-的区别/index.md
+      - Transformer 的整体结构: learning/06-llm/01-模型原理与训练对齐/03-Transformer与注意力机制/06-Transformer-的整体结构/index.md
+      - BERT 的两个预训练任务: learning/06-llm/01-模型原理与训练对齐/03-Transformer与注意力机制/07-BERT-的两个预训练任务/index.md
+      - 缩放点积注意力与张量形状: learning/06-llm/01-模型原理与训练对齐/03-Transformer与注意力机制/08-缩放点积注意力与张量形状/index.md
+      - GPT 的训练目标与似然函数: learning/06-llm/01-模型原理与训练对齐/03-Transformer与注意力机制/09-GPT-的训练目标与似然函数/index.md
+      - 位置编码：从绝对到 RoPE: learning/06-llm/01-模型原理与训练对齐/03-Transformer与注意力机制/10-位置编码：从绝对到-RoPE/index.md
+      - 归一化与激活函数的演进: learning/06-llm/01-模型原理与训练对齐/03-Transformer与注意力机制/11-归一化与激活函数的演进/index.md
+      - 注意力的稀疏化与 KV Cache: learning/06-llm/01-模型原理与训练对齐/03-Transformer与注意力机制/12-注意力的稀疏化与-KV-Cache/index.md
+      - T5 的架构与训练: learning/06-llm/01-模型原理与训练对齐/03-Transformer与注意力机制/13-T5-的架构与训练/index.md
+      - 用 NumPy 从零实现缩放点积注意力与多头注意力: learning/06-llm/01-模型原理与训练对齐/03-Transformer与注意力机制/14-用-NumPy-从零实现缩放点积注意力与多头注意力/index.md
+    - -主流大模型对比:
+      - 主题目录: learning/06-llm/01-模型原理与训练对齐/04-主流大模型对比/index.md
+      - 为什么开源模型「看起来都一样」: learning/06-llm/01-模型原理与训练对齐/04-主流大模型对比/01-为什么开源模型「看起来都一样」/index.md
+      - 主流开源模型配置对比: learning/06-llm/01-模型原理与训练对齐/04-主流大模型对比/02-主流开源模型配置对比/index.md
+      - 显存需求与量化（以 ChatGLM-6B 为例）: learning/06-llm/01-模型原理与训练对齐/04-主流大模型对比/03-显存需求与量化（以-ChatGLM-6B-为例）/index.md
+      - 各模型的架构改动点: learning/06-llm/01-模型原理与训练对齐/04-主流大模型对比/04-各模型的架构改动点/index.md
+      - ChatGLM 的 GLM 训练目标: learning/06-llm/01-模型原理与训练对齐/04-主流大模型对比/05-ChatGLM-的-GLM-训练目标/index.md
+      - ChatGLM / LLaMA / BLOOM 的迭代版本: learning/06-llm/01-模型原理与训练对齐/04-主流大模型对比/06-ChatGLM---LLaMA---BLOOM-的迭代版本/index.md
+      - DeepSeek 系列与关键技术: learning/06-llm/01-模型原理与训练对齐/04-主流大模型对比/07-DeepSeek-系列与关键技术/index.md
+      - MLA：把 KV cache 压到 1/10 量级: learning/06-llm/01-模型原理与训练对齐/04-主流大模型对比/08-MLA：把-KV-cache-压到-1-10-量级/index.md
+      - DeepSeekMoE：细粒度专家分割 + 共享专家隔离: learning/06-llm/01-模型原理与训练对齐/04-主流大模型对比/09-DeepSeekMoE：细粒度专家分割-+-共享专家隔离/index.md
+      - 多阶段学习率调度器（以 DeepSeek LLM 为例）: learning/06-llm/01-模型原理与训练对齐/04-主流大模型对比/10-多阶段学习率调度器（以-DeepSeek-LLM-为例）/index.md
+      - 词表与分词：中文效率的隐形瓶颈: learning/06-llm/01-模型原理与训练对齐/04-主流大模型对比/11-词表与分词：中文效率的隐形瓶颈/index.md
+      - 采样参数如何影响输出: learning/06-llm/01-模型原理与训练对齐/04-主流大模型对比/12-采样参数如何影响输出/index.md
+      - 用 OpenAI 兼容接口调用 DeepSeek: learning/06-llm/01-模型原理与训练对齐/04-主流大模型对比/13-用-OpenAI-兼容接口调用-DeepSeek/index.md
+    - 微调基础与决策:
+      - 主题目录: learning/06-llm/01-模型原理与训练对齐/05-微调基础与决策/index.md
+      - 三种改造手段的定位: learning/06-llm/01-模型原理与训练对齐/05-微调基础与决策/01-三种改造手段的定位/index.md
+      - 决策表（按需求类型）: learning/06-llm/01-模型原理与训练对齐/05-微调基础与决策/02-决策表（按需求类型）/index.md
+      - 决策树: learning/06-llm/01-模型原理与训练对齐/05-微调基础与决策/03-决策树/index.md
+      - 三种训练范式的对比: learning/06-llm/01-模型原理与训练对齐/05-微调基础与决策/04-三种训练范式的对比/index.md
+      - 什么情况下不该微调: learning/06-llm/01-模型原理与训练对齐/05-微调基础与决策/05-什么情况下不该微调/index.md
+      - 数据量与效果的粗略经验关系: learning/06-llm/01-模型原理与训练对齐/05-微调基础与决策/06-数据量与效果的粗略经验关系/index.md
+      - 常见误区表: learning/06-llm/01-模型原理与训练对齐/05-微调基础与决策/07-常见误区表/index.md
+      - 微调在数学上是什么: learning/06-llm/01-模型原理与训练对齐/05-微调基础与决策/08-微调在数学上是什么/index.md
+      - 三种范式的参数量与更新空间: learning/06-llm/01-模型原理与训练对齐/05-微调基础与决策/09-三种范式的参数量与更新空间/index.md
+      - 为什么"少参数"也能逼近"全参": learning/06-llm/01-模型原理与训练对齐/05-微调基础与决策/10-为什么-少参数-也能逼近-全参/index.md
+      - 遗忘是怎么发生的: learning/06-llm/01-模型原理与训练对齐/05-微调基础与决策/11-遗忘是怎么发生的/index.md
+      - 成本模型：什么时候微调是划算的: learning/06-llm/01-模型原理与训练对齐/05-微调基础与决策/12-成本模型：什么时候微调是划算的/index.md
+      - 微调基础与决策：可运行示例: learning/06-llm/01-模型原理与训练对齐/05-微调基础与决策/13-微调基础与决策：可运行示例/index.md
+    - 全参微调与显存账本:
+      - 主题目录: learning/06-llm/01-模型原理与训练对齐/06-全参微调与显存账本/index.md
+      - 显存的五个组成部分: learning/06-llm/01-模型原理与训练对齐/06-全参微调与显存账本/01-显存的五个组成部分/index.md
+      - 精度与每参数字节: learning/06-llm/01-模型原理与训练对齐/06-全参微调与显存账本/02-精度与每参数字节/index.md
+      - 优化器的状态开销: learning/06-llm/01-模型原理与训练对齐/06-全参微调与显存账本/03-优化器的状态开销/index.md
+      - 并行策略对比表: learning/06-llm/01-模型原理与训练对齐/06-全参微调与显存账本/04-并行策略对比表/index.md
+      - 记号约定: learning/06-llm/01-模型原理与训练对齐/06-全参微调与显存账本/05-记号约定/index.md
+      - 模型状态：每参数 16 字节的来历: learning/06-llm/01-模型原理与训练对齐/06-全参微调与显存账本/06-模型状态：每参数-16-字节的来历/index.md
+      - 激活值：真正会爆炸的一项: learning/06-llm/01-模型原理与训练对齐/06-全参微调与显存账本/07-激活值：真正会爆炸的一项/index.md
+      - gradient checkpointing 的收益与代价: learning/06-llm/01-模型原理与训练对齐/06-全参微调与显存账本/08-gradient-checkpointing-的收益与代价/index.md
+      - ZeRO 三段分片：显存公式: learning/06-llm/01-模型原理与训练对齐/06-全参微调与显存账本/09-ZeRO-三段分片：显存公式/index.md
+      - 通信量：分片不是免费的: learning/06-llm/01-模型原理与训练对齐/06-全参微调与显存账本/10-通信量：分片不是免费的/index.md
+      - 其他省显存手段的关系: learning/06-llm/01-模型原理与训练对齐/06-全参微调与显存账本/11-其他省显存手段的关系/index.md
+      - 全参微调与显存账本：可运行示例: learning/06-llm/01-模型原理与训练对齐/06-全参微调与显存账本/12-全参微调与显存账本：可运行示例/index.md
+    - LoRA 原理与工程实践:
+      - 主题目录: learning/06-llm/01-模型原理与训练对齐/07-LoRA-原理与工程实践/index.md
+      - LoRA 在 PEFT 家族里的位置: learning/06-llm/01-模型原理与训练对齐/07-LoRA-原理与工程实践/01-LoRA-在-PEFT-家族里的位置/index.md
+      - 超参速查表: learning/06-llm/01-模型原理与训练对齐/07-LoRA-原理与工程实践/02-超参速查表/index.md
+      - 合并与不合并：部署方式的取舍: learning/06-llm/01-模型原理与训练对齐/07-LoRA-原理与工程实践/03-合并与不合并：部署方式的取舍/index.md
+      - 常见应用形态: learning/06-llm/01-模型原理与训练对齐/07-LoRA-原理与工程实践/04-常见应用形态/index.md
+      - 核心公式与参数量推导: learning/06-llm/01-模型原理与训练对齐/07-LoRA-原理与工程实践/05-核心公式与参数量推导/index.md
+      - 初始化：为什么 $B$ 必须为零: learning/06-llm/01-模型原理与训练对齐/07-LoRA-原理与工程实践/06-初始化：为什么--B--必须为零/index.md
+      - 梯度推导: learning/06-llm/01-模型原理与训练对齐/07-LoRA-原理与工程实践/07-梯度推导/index.md
+      - 低秩假设的直觉: learning/06-llm/01-模型原理与训练对齐/07-LoRA-原理与工程实践/08-低秩假设的直觉/index.md
+      - 该加在哪些层：原论文的消融: learning/06-llm/01-模型原理与训练对齐/07-LoRA-原理与工程实践/09-该加在哪些层：原论文的消融/index.md
+      - 合并的数学等价性与精度问题: learning/06-llm/01-模型原理与训练对齐/07-LoRA-原理与工程实践/10-合并的数学等价性与精度问题/index.md
+      - 相关的后续改进: learning/06-llm/01-模型原理与训练对齐/07-LoRA-原理与工程实践/11-相关的后续改进/index.md
+      - LoRA 原理与工程实践：可运行示例: learning/06-llm/01-模型原理与训练对齐/07-LoRA-原理与工程实践/12-LoRA-原理与工程实践：可运行示例/index.md
+    - QLoRA 与量化微调:
+      - 主题目录: learning/06-llm/01-模型原理与训练对齐/08-QLoRA-与量化微调/index.md
+      - QLoRA 的三件套: learning/06-llm/01-模型原理与训练对齐/08-QLoRA-与量化微调/01-QLoRA-的三件套/index.md
+      - 量化位宽与显存/效果的取舍: learning/06-llm/01-模型原理与训练对齐/08-QLoRA-与量化微调/02-量化位宽与显存-效果的取舍/index.md
+      - 三种训练配置的显存账本对照（7B）: learning/06-llm/01-模型原理与训练对齐/08-QLoRA-与量化微调/03-三种训练配置的显存账本对照（7B）/index.md
+      - QLoRA 与训练后量化（PTQ）的区别: learning/06-llm/01-模型原理与训练对齐/08-QLoRA-与量化微调/04-QLoRA-与训练后量化（PTQ）的区别/index.md
+      - 量化的基本形式：仿射量化: learning/06-llm/01-模型原理与训练对齐/08-QLoRA-与量化微调/05-量化的基本形式：仿射量化/index.md
+      - NF4：为什么按正态分位数分桶: learning/06-llm/01-模型原理与训练对齐/08-QLoRA-与量化微调/06-NF4：为什么按正态分位数分桶/index.md
+      - 分块量化与常量开销（推导）: learning/06-llm/01-模型原理与训练对齐/08-QLoRA-与量化微调/07-分块量化与常量开销（推导）/index.md
+      - 双重量化：再省 0.37 bit/参数（推导）: learning/06-llm/01-模型原理与训练对齐/08-QLoRA-与量化微调/08-双重量化：再省-0.37-bit-参数（推导）/index.md
+      - 分页优化器: learning/06-llm/01-模型原理与训练对齐/08-QLoRA-与量化微调/09-分页优化器/index.md
+      - 为什么"量化基座 + LoRA"还能保住效果: learning/06-llm/01-模型原理与训练对齐/08-QLoRA-与量化微调/10-为什么-量化基座-+-LoRA-还能保住效果/index.md
+      - 训练时的显存换算细节: learning/06-llm/01-模型原理与训练对齐/08-QLoRA-与量化微调/11-训练时的显存换算细节/index.md
+      - 合并限制: learning/06-llm/01-模型原理与训练对齐/08-QLoRA-与量化微调/12-合并限制/index.md
+      - QLoRA 与量化微调：可运行示例: learning/06-llm/01-模型原理与训练对齐/08-QLoRA-与量化微调/13-QLoRA-与量化微调：可运行示例/index.md
+    - SFT 训练循环与框架:
+      - 主题目录: learning/06-llm/01-模型原理与训练对齐/09-SFT-训练循环与框架/index.md
+      - SFT 在训练流水线中的位置: learning/06-llm/01-模型原理与训练对齐/09-SFT-训练循环与框架/01-SFT-在训练流水线中的位置/index.md
+      - 数据格式的三种常见组织方式: learning/06-llm/01-模型原理与训练对齐/09-SFT-训练循环与框架/02-数据格式的三种常见组织方式/index.md
+      - 关键超参表: learning/06-llm/01-模型原理与训练对齐/09-SFT-训练循环与框架/03-关键超参表/index.md
+      - 训练框架的取舍: learning/06-llm/01-模型原理与训练对齐/09-SFT-训练循环与框架/04-训练框架的取舍/index.md
+      - 完整数据流: learning/06-llm/01-模型原理与训练对齐/09-SFT-训练循环与框架/05-完整数据流/index.md
+      - 损失掩码：为什么只对回答算 loss: learning/06-llm/01-模型原理与训练对齐/09-SFT-训练循环与框架/06-损失掩码：为什么只对回答算-loss/index.md
+      - chat template：为什么不能手工拼字符串: learning/06-llm/01-模型原理与训练对齐/09-SFT-训练循环与框架/07-chat-template：为什么不能手工拼字符串/index.md
+      - 掩码的两种实现路径: learning/06-llm/01-模型原理与训练对齐/09-SFT-训练循环与框架/08-掩码的两种实现路径/index.md
+      - padding 侧、position_ids 与生成: learning/06-llm/01-模型原理与训练对齐/09-SFT-训练循环与框架/09-padding-侧、position_ids-与生成/index.md
+      - 序列打包（packing）: learning/06-llm/01-模型原理与训练对齐/09-SFT-训练循环与框架/10-序列打包（packing）/index.md
+      - 有效 batch、学习率与 warmup: learning/06-llm/01-模型原理与训练对齐/09-SFT-训练循环与框架/11-有效-batch、学习率与-warmup/index.md
+      - 灾难性遗忘与数据配比: learning/06-llm/01-模型原理与训练对齐/09-SFT-训练循环与框架/12-灾难性遗忘与数据配比/index.md
+      - 训练监控：loss 曲线怎么读: learning/06-llm/01-模型原理与训练对齐/09-SFT-训练循环与框架/13-训练监控：loss-曲线怎么读/index.md
+      - SFT 训练循环与框架：可运行示例: learning/06-llm/01-模型原理与训练对齐/09-SFT-训练循环与框架/14-SFT-训练循环与框架：可运行示例/index.md
+    - -指令数据构造与清洗:
+      - 主题目录: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/index.md
+      - 为什么要把分类改写成完形填空: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/01-为什么要把分类改写成完形填空/index.md
+      - 项目级数据结构总览: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/02-项目级数据结构总览/index.md
+      - 核心名词对照: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/03-核心名词对照/index.md
+      - PET 的完整流程: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/04-PET-的完整流程/index.md
+      - 硬模板（Pattern）机制: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/05-硬模板（Pattern）机制/index.md
+      - Verbalizer 机制: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/06-Verbalizer-机制/index.md
+      - 训练：只在 MASK 位置算损失: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/07-训练：只在-MASK-位置算损失/index.md
+      - 多模板集成与蒸馏: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/08-多模板集成与蒸馏/index.md
+      - 为什么少样本下有效: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/09-为什么少样本下有效/index.md
+      - 硬模板 vs 软模板: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/10-硬模板-vs-软模板/index.md
+      - 为什么直接训 embedding 不够：prompt encoder 的作用: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/11-为什么直接训-embedding-不够：prompt-encoder-的作用/index.md
+      - P-Tuning 项目里的数据处理差异: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/12-P-Tuning-项目里的数据处理差异/index.md
+      - Self-Instruct：让模型自己造指令: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/13-Self-Instruct：让模型自己造指令/index.md
+      - 从文档生成: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/14-从文档生成/index.md
+      - 从人工标注生成: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/15-从人工标注生成/index.md
+      - 三种构造方式的取舍: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/16-三种构造方式的取舍/index.md
+      - 精确去重: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/17-精确去重/index.md
+      - 语义去重: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/18-语义去重/index.md
+      - 长度过滤: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/19-长度过滤/index.md
+      - 格式校验: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/20-格式校验/index.md
+      - 标签平衡: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/21-标签平衡/index.md
+      - 模板泄漏检测: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/22-模板泄漏检测/index.md
+      - 一份可直接跑的清洗脚本骨架: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/23-一份可直接跑的清洗脚本骨架/index.md
+      - 数据质量 vs 数据数量: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/24-数据质量-vs-数据数量/index.md
+      - 常见坑表: learning/06-llm/01-模型原理与训练对齐/10-指令数据构造与清洗/25-常见坑表/index.md
+    - -微调效果评估与灾难性遗忘:
+      - 主题目录: learning/06-llm/01-模型原理与训练对齐/11-微调效果评估与灾难性遗忘/index.md
+      - 为什么「微调评估」比「模型评估」更容易翻车: learning/06-llm/01-模型原理与训练对齐/11-微调效果评估与灾难性遗忘/01-为什么「微调评估」比「模型评估」更容易翻车/index.md
+      - 四个评估维度: learning/06-llm/01-模型原理与训练对齐/11-微调效果评估与灾难性遗忘/02-四个评估维度/index.md
+      - 基线：必须是「未微调 + 好提示词」: learning/06-llm/01-模型原理与训练对齐/11-微调效果评估与灾难性遗忘/03-基线：必须是「未微调-+-好提示词」/index.md
+      - 灾难性遗忘（catastrophic forgetting）: learning/06-llm/01-模型原理与训练对齐/11-微调效果评估与灾难性遗忘/04-灾难性遗忘（catastrophic-forgetting）/index.md
+      - 灾难性遗忘与「学不会」的区别: learning/06-llm/01-模型原理与训练对齐/11-微调效果评估与灾难性遗忘/05-灾难性遗忘与「学不会」的区别/index.md
+      - 度量方式: learning/06-llm/01-模型原理与训练对齐/11-微调效果评估与灾难性遗忘/06-度量方式/index.md
+      - 过拟合的识别信号: learning/06-llm/01-模型原理与训练对齐/11-微调效果评估与灾难性遗忘/07-过拟合的识别信号/index.md
+      - 缓解手段对比: learning/06-llm/01-模型原理与训练对齐/11-微调效果评估与灾难性遗忘/08-缓解手段对比/index.md
+      - 实验设计模板: learning/06-llm/01-模型原理与训练对齐/11-微调效果评估与灾难性遗忘/09-实验设计模板/index.md
+      - 最容易做错的五件事: learning/06-llm/01-模型原理与训练对齐/11-微调效果评估与灾难性遗忘/10-最容易做错的五件事/index.md
+      - 评估脚本骨架: learning/06-llm/01-模型原理与训练对齐/11-微调效果评估与灾难性遗忘/11-评估脚本骨架/index.md
+    - -微调面试专题:
+      - 主题目录: learning/06-llm/01-模型原理与训练对齐/12-微调面试专题/index.md
+      - Q1. 微调到底在做什么？它和预训练、RAG、提示词工程分别解决什么问题？: learning/06-llm/01-模型原理与训练对齐/12-微调面试专题/01-Q1.-微调到底在做什么？它和预训练、RAG、提示词工程分别解决什么问题？/index.md
+      - Q2. 什么时候必须全参微调，什么时候 LoRA 就够了？: learning/06-llm/01-模型原理与训练对齐/12-微调面试专题/02-Q2.-什么时候必须全参微调，什么时候-LoRA-就够了？/index.md
+      - Q3. 一个业务需求来了，你怎么判断该不该微调？: learning/06-llm/01-模型原理与训练对齐/12-微调面试专题/03-Q3.-一个业务需求来了，你怎么判断该不该微调？/index.md
+      - Q4. 低秩假设（low-rank hypothesis）为什么成立？LoRA 为什么有效？: learning/06-llm/01-模型原理与训练对齐/12-微调面试专题/04-Q4.-低秩假设（low-rank-hypothesis）为什么成立？LoRA-为什么有效？/index.md
+      - Q5. LoRA 的 alpha 和 r 该怎么调？: learning/06-llm/01-模型原理与训练对齐/12-微调面试专题/05-Q5.-LoRA-的-alpha-和-r-该怎么调？/index.md
+      - Q6. QLoRA 和 LoRA 的区别是什么？什么时候必须用 QLoRA？: learning/06-llm/01-模型原理与训练对齐/12-微调面试专题/06-Q6.-QLoRA-和-LoRA-的区别是什么？什么时候必须用-QLoRA？/index.md
+      - Q7. 损失掩码（loss mask）为什么必须做？不做会怎样？: learning/06-llm/01-模型原理与训练对齐/12-微调面试专题/07-Q7.-损失掩码（loss-mask）为什么必须做？不做会怎样？/index.md
+      - Q8. LoRA 的 target_modules 怎么选？只加 qv 够吗？: learning/06-llm/01-模型原理与训练对齐/12-微调面试专题/08-Q8.-LoRA-的-target_modules-怎么选？只加-qv-够吗？/index.md
+      - Q9. 微调一般需要多少数据？质量与数量如何取舍？: learning/06-llm/01-模型原理与训练对齐/12-微调面试专题/09-Q9.-微调一般需要多少数据？质量与数量如何取舍？/index.md
+      - Q10. 数据集是怎么划分的？什么样的划分会泄漏？: learning/06-llm/01-模型原理与训练对齐/12-微调面试专题/10-Q10.-数据集是怎么划分的？什么样的划分会泄漏？/index.md
+      - Q11. 灾难性遗忘是什么？SFT 之后通用能力掉了很多怎么办？: learning/06-llm/01-模型原理与训练对齐/12-微调面试专题/11-Q11.-灾难性遗忘是什么？SFT-之后通用能力掉了很多怎么办？/index.md
+      - Q12. 数据清洗你会做哪几件事？: learning/06-llm/01-模型原理与训练对齐/12-微调面试专题/12-Q12.-数据清洗你会做哪几件事？/index.md
+      - Q13. 微调 7B 模型的显存怎么算？给个账本。: learning/06-llm/01-模型原理与训练对齐/12-微调面试专题/13-Q13.-微调-7B-模型的显存怎么算？给个账本。/index.md
+      - Q14. 训练 OOM 了，排查顺序是什么？: learning/06-llm/01-模型原理与训练对齐/12-微调面试专题/14-Q14.-训练-OOM-了，排查顺序是什么？/index.md
+      - Q15. 多轮对话数据怎么构造和训练？: learning/06-llm/01-模型原理与训练对齐/12-微调面试专题/15-Q15.-多轮对话数据怎么构造和训练？/index.md
+      - Q16. 训练过程中你盯哪些指标？loss 不降怎么办？: learning/06-llm/01-模型原理与训练对齐/12-微调面试专题/16-Q16.-训练过程中你盯哪些指标？loss-不降怎么办？/index.md
+      - Q17. 如何判断是数据问题还是超参问题？: learning/06-llm/01-模型原理与训练对齐/12-微调面试专题/17-Q17.-如何判断是数据问题还是超参问题？/index.md
+      - Q18. 微调的评估指标应该怎么设计？: learning/06-llm/01-模型原理与训练对齐/12-微调面试专题/18-Q18.-微调的评估指标应该怎么设计？/index.md
+      - Q19. SFT 之后模型反而变差了，怎么排查？: learning/06-llm/01-模型原理与训练对齐/12-微调面试专题/19-Q19.-SFT-之后模型反而变差了，怎么排查？/index.md
+      - Q20. 线上效果怎么验证？离线指标和线上表现不一致怎么办？: learning/06-llm/01-模型原理与训练对齐/12-微调面试专题/20-Q20.-线上效果怎么验证？离线指标和线上表现不一致怎么办？/index.md
+      - 微调速查表: learning/06-llm/01-模型原理与训练对齐/12-微调面试专题/21-微调速查表/index.md
+    - -对齐概览与RLHF:
+      - 主题目录: learning/06-llm/01-模型原理与训练对齐/13-对齐概览与RLHF/index.md
+      - 预训练目标与人类偏好为什么不是一回事: learning/06-llm/01-模型原理与训练对齐/13-对齐概览与RLHF/01-预训练目标与人类偏好为什么不是一回事/index.md
+      - 后训练三阶段全景: learning/06-llm/01-模型原理与训练对齐/13-对齐概览与RLHF/02-后训练三阶段全景/index.md
+      - RLHF 的四个模型: learning/06-llm/01-模型原理与训练对齐/13-对齐概览与RLHF/03-RLHF-的四个模型/index.md
+      - On-Policy 与 Off-Policy 两条路线: learning/06-llm/01-模型原理与训练对齐/13-对齐概览与RLHF/04-On-Policy-与-Off-Policy-两条路线/index.md
+      - 从策略梯度定理到 REINFORCE: learning/06-llm/01-模型原理与训练对齐/13-对齐概览与RLHF/05-从策略梯度定理到-REINFORCE/index.md
+      - 基线与优势函数：降方差且不引入偏差: learning/06-llm/01-模型原理与训练对齐/13-对齐概览与RLHF/06-基线与优势函数：降方差且不引入偏差/index.md
+      - PPO 目标：从重要性采样到裁剪: learning/06-llm/01-模型原理与训练对齐/13-对齐概览与RLHF/07-PPO-目标：从重要性采样到裁剪/index.md
+      - Actor loss 的完整形式与 RLHF 特有的奖励设计: learning/06-llm/01-模型原理与训练对齐/13-对齐概览与RLHF/08-Actor-loss-的完整形式与-RLHF-特有的奖励设计/index.md
+      - GAE 的递推与「从后往前」计算: learning/06-llm/01-模型原理与训练对齐/13-对齐概览与RLHF/09-GAE-的递推与「从后往前」计算/index.md
+      - Critic loss 的推导: learning/06-llm/01-模型原理与训练对齐/13-对齐概览与RLHF/10-Critic-loss-的推导/index.md
+      - KL 惩罚为什么必要（reward hacking 的一阶解释）: learning/06-llm/01-模型原理与训练对齐/13-对齐概览与RLHF/11-KL-惩罚为什么必要（reward-hacking-的一阶解释）/index.md
+      - 对齐税：能力与对齐的权衡: learning/06-llm/01-模型原理与训练对齐/13-对齐概览与RLHF/12-对齐税：能力与对齐的权衡/index.md
+      - 训练流程图与每一步的输入输出: learning/06-llm/01-模型原理与训练对齐/13-对齐概览与RLHF/13-训练流程图与每一步的输入输出/index.md
+      - 显存账本（自己推导的估算）: learning/06-llm/01-模型原理与训练对齐/13-对齐概览与RLHF/14-显存账本（自己推导的估算）/index.md
+      - -对齐概览与RLHF：可运行示例: learning/06-llm/01-模型原理与训练对齐/13-对齐概览与RLHF/15-对齐概览与RLHF：可运行示例/index.md
+    - -奖励模型与偏好数据:
+      - 主题目录: learning/06-llm/01-模型原理与训练对齐/14-奖励模型与偏好数据/index.md
+      - 为什么需要一个「奖励模型」而不是直接让人来打分: learning/06-llm/01-模型原理与训练对齐/14-奖励模型与偏好数据/01-为什么需要一个「奖励模型」而不是直接让人来打分/index.md
+      - 偏好数据的三个来源: learning/06-llm/01-模型原理与训练对齐/14-奖励模型与偏好数据/02-偏好数据的三个来源/index.md
+      - 奖励模型的架构与训练配置: learning/06-llm/01-模型原理与训练对齐/14-奖励模型与偏好数据/03-奖励模型的架构与训练配置/index.md
+      - 标注质量：指南、一致性与分歧处理: learning/06-llm/01-模型原理与训练对齐/14-奖励模型与偏好数据/04-标注质量：指南、一致性与分歧处理/index.md
+      - 奖励模型评估: learning/06-llm/01-模型原理与训练对齐/14-奖励模型与偏好数据/05-奖励模型评估/index.md
+      - Bradley-Terry 模型与偏好概率: learning/06-llm/01-模型原理与训练对齐/14-奖励模型与偏好数据/06-Bradley-Terry-模型与偏好概率/index.md
+      - 负对数似然与排序损失: learning/06-llm/01-模型原理与训练对齐/14-奖励模型与偏好数据/07-负对数似然与排序损失/index.md
+      - 梯度的手工推导: learning/06-llm/01-模型原理与训练对齐/14-奖励模型与偏好数据/08-梯度的手工推导/index.md
+      - Elo 视角：另一种理解偏好数据的方式: learning/06-llm/01-模型原理与训练对齐/14-奖励模型与偏好数据/09-Elo-视角：另一种理解偏好数据的方式/index.md
+      - 从「成对偏好」到「可训练的标量」：三个必须注意的尺度问题: learning/06-llm/01-模型原理与训练对齐/14-奖励模型与偏好数据/10-从「成对偏好」到「可训练的标量」：三个必须注意的尺度问题/index.md
+      - Reward Hacking：完整的因果链: learning/06-llm/01-模型原理与训练对齐/14-奖励模型与偏好数据/11-Reward-Hacking：完整的因果链/index.md
+      - 一个容易忽略的放大效应：为什么「平均分更高」不等于「更适合 RL」: learning/06-llm/01-模型原理与训练对齐/14-奖励模型与偏好数据/12-一个容易忽略的放大效应：为什么「平均分更高」不等于「更适合-RL」/index.md
+      - -奖励模型与偏好数据：可运行示例: learning/06-llm/01-模型原理与训练对齐/14-奖励模型与偏好数据/13-奖励模型与偏好数据：可运行示例/index.md
+    - -DPO与免强化学习对齐:
+      - 主题目录: learning/06-llm/01-模型原理与训练对齐/15-DPO与免强化学习对齐/index.md
+      - 从「训一个奖励模型」到「奖励就藏在策略里」: learning/06-llm/01-模型原理与训练对齐/15-DPO与免强化学习对齐/01-从「训一个奖励模型」到「奖励就藏在策略里」/index.md
+      - 一张表看懂 DPO 与 RLHF 的差别: learning/06-llm/01-模型原理与训练对齐/15-DPO与免强化学习对齐/02-一张表看懂-DPO-与-RLHF-的差别/index.md
+      - DPO 的损失长什么样: learning/06-llm/01-模型原理与训练对齐/15-DPO与免强化学习对齐/03-DPO-的损失长什么样/index.md
+      - DPO 家族一览: learning/06-llm/01-模型原理与训练对齐/15-DPO与免强化学习对齐/04-DPO-家族一览/index.md
+      - $\beta$ 该取多少: learning/06-llm/01-模型原理与训练对齐/15-DPO与免强化学习对齐/05-beta--该取多少/index.md
+      - 出发：带 KL 约束的 RLHF 目标: learning/06-llm/01-模型原理与训练对齐/15-DPO与免强化学习对齐/06-出发：带-KL-约束的-RLHF-目标/index.md
+      - 关键一步：写出最优策略的闭式解: learning/06-llm/01-模型原理与训练对齐/15-DPO与免强化学习对齐/07-关键一步：写出最优策略的闭式解/index.md
+      - 反解隐式奖励（implicit reward）: learning/06-llm/01-模型原理与训练对齐/15-DPO与免强化学习对齐/08-反解隐式奖励（implicit-reward）/index.md
+      - 代回 Bradley-Terry 似然：配分函数为什么消失: learning/06-llm/01-模型原理与训练对齐/15-DPO与免强化学习对齐/09-代回-Bradley-Terry-似然：配分函数为什么消失/index.md
+      - DPO 损失的另一种读法：一个带动态权重的加权分类损失: learning/06-llm/01-模型原理与训练对齐/15-DPO与免强化学习对齐/10-DPO-损失的另一种读法：一个带动态权重的加权分类损失/index.md
+      - 梯度推导: learning/06-llm/01-模型原理与训练对齐/15-DPO与免强化学习对齐/11-梯度推导/index.md
+      - DPO 的失效模式与 $\beta$ 的关系（自己推导）: learning/06-llm/01-模型原理与训练对齐/15-DPO与免强化学习对齐/12-DPO-的失效模式与---beta--的关系（自己推导）/index.md
+      - 与 RLHF 目标的一致性：DPO 也最大化了同一个目标: learning/06-llm/01-模型原理与训练对齐/15-DPO与免强化学习对齐/13-与-RLHF-目标的一致性：DPO-也最大化了同一个目标/index.md
+      - 为什么 DPO 是 Off-Policy 且这为什么重要: learning/06-llm/01-模型原理与训练对齐/15-DPO与免强化学习对齐/14-为什么-DPO-是-Off-Policy-且这为什么重要/index.md
+      - -DPO与免强化学习对齐：可运行示例: learning/06-llm/01-模型原理与训练对齐/15-DPO与免强化学习对齐/15-DPO与免强化学习对齐：可运行示例/index.md
+    - -GRPO与推理模型后训练:
+      - 主题目录: learning/06-llm/01-模型原理与训练对齐/16-GRPO与推理模型后训练/index.md
+      - 为什么去掉了 Critic: learning/06-llm/01-模型原理与训练对齐/16-GRPO与推理模型后训练/01-为什么去掉了-Critic/index.md
+      - 组内归一化：优势怎么算: learning/06-llm/01-模型原理与训练对齐/16-GRPO与推理模型后训练/02-组内归一化：优势怎么算/index.md
+      - GRPO 的目标函数: learning/06-llm/01-模型原理与训练对齐/16-GRPO与推理模型后训练/03-GRPO-的目标函数/index.md
+      - 规则奖励与可验证奖励: learning/06-llm/01-模型原理与训练对齐/16-GRPO与推理模型后训练/04-规则奖励与可验证奖励/index.md
+      - 推理模型的后训练流水线（以 DeepSeek-R1 类路线为例）: learning/06-llm/01-模型原理与训练对齐/16-GRPO与推理模型后训练/05-推理模型的后训练流水线（以-DeepSeek-R1-类路线为例）/index.md
+      - 长链思维（long CoT）与长度控制: learning/06-llm/01-模型原理与训练对齐/16-GRPO与推理模型后训练/06-长链思维（long-CoT）与长度控制/index.md
+      - 蒸馏：把对齐能力搬到小模型: learning/06-llm/01-模型原理与训练对齐/16-GRPO与推理模型后训练/07-蒸馏：把对齐能力搬到小模型/index.md
+      - 从 PPO 到 GRPO 的中间站：ReMax: learning/06-llm/01-模型原理与训练对齐/16-GRPO与推理模型后训练/08-从-PPO-到-GRPO-的中间站：ReMax/index.md
+      - 从策略梯度到「组内均值作为基线」: learning/06-llm/01-模型原理与训练对齐/16-GRPO与推理模型后训练/09-从策略梯度到「组内均值作为基线」/index.md
+      - 为什么要除以标准差（以及一个必须注意的偏差）: learning/06-llm/01-模型原理与训练对齐/16-GRPO与推理模型后训练/10-为什么要除以标准差（以及一个必须注意的偏差）/index.md
+      - GRPO 目标的推导：从 PPO 目标改写: learning/06-llm/01-模型原理与训练对齐/16-GRPO与推理模型后训练/11-GRPO-目标的推导：从-PPO-目标改写/index.md
+      - KL 的无偏非负估计量（k3 估计）: learning/06-llm/01-模型原理与训练对齐/16-GRPO与推理模型后训练/12-KL-的无偏非负估计量（k3-估计）/index.md
+      - 省显存多少：把账算清楚: learning/06-llm/01-模型原理与训练对齐/16-GRPO与推理模型后训练/13-省显存多少：把账算清楚/index.md
+      - 与 ReMax、RLOO 的关系: learning/06-llm/01-模型原理与训练对齐/16-GRPO与推理模型后训练/14-与-ReMax、RLOO-的关系/index.md
+      - 推理导向 RL 中的奖励设计（以规则奖励为例）: learning/06-llm/01-模型原理与训练对齐/16-GRPO与推理模型后训练/15-推理导向-RL-中的奖励设计（以规则奖励为例）/index.md
+      - 长度爆炸的推导：为什么会失控: learning/06-llm/01-模型原理与训练对齐/16-GRPO与推理模型后训练/16-长度爆炸的推导：为什么会失控/index.md
+      - 蒸馏的数学形式: learning/06-llm/01-模型原理与训练对齐/16-GRPO与推理模型后训练/17-蒸馏的数学形式/index.md
+      - -GRPO与推理模型后训练：可运行示例: learning/06-llm/01-模型原理与训练对齐/16-GRPO与推理模型后训练/18-GRPO与推理模型后训练：可运行示例/index.md
+  - 应用开发与评估部署:
+    - 方向概览: learning/06-llm/02-应用开发与评估部署/index.md
+    - -本地部署与Ollama:
+      - 主题目录: learning/06-llm/02-应用开发与评估部署/01-本地部署与Ollama/index.md
+      - 为什么需要 Ollama: learning/06-llm/02-应用开发与评估部署/01-本地部署与Ollama/01-为什么需要-Ollama/index.md
+      - 四种调用方式一览: learning/06-llm/02-应用开发与评估部署/01-本地部署与Ollama/02-四种调用方式一览/index.md
+      - 硬件门槛（给出的经验值）: learning/06-llm/02-应用开发与评估部署/01-本地部署与Ollama/03-硬件门槛（给出的经验值）/index.md
+      - Ollama 与 llama.cpp / GGUF 的关系: learning/06-llm/02-应用开发与评估部署/01-本地部署与Ollama/04-Ollama-与-llama.cpp---GGUF-的关系/index.md
+      - 为什么必须改模型存储路径: learning/06-llm/02-应用开发与评估部署/01-本地部署与Ollama/05-为什么必须改模型存储路径/index.md
+      - REST API 的两个核心端点: learning/06-llm/02-应用开发与评估部署/01-本地部署与Ollama/06-REST-API-的两个核心端点/index.md
+      - Modelfile：把 Prompt 与参数固化成一个新模型: learning/06-llm/02-应用开发与评估部署/01-本地部署与Ollama/07-Modelfile：把-Prompt-与参数固化成一个新模型/index.md
+      - 量化为什么能省显存: learning/06-llm/02-应用开发与评估部署/01-本地部署与Ollama/08-量化为什么能省显存/index.md
+      - 安装与环境配置（命令清单）: learning/06-llm/02-应用开发与评估部署/01-本地部署与Ollama/09-安装与环境配置（命令清单）/index.md
+      - 四种调用方式（同一个问题）: learning/06-llm/02-应用开发与评估部署/01-本地部署与Ollama/10-四种调用方式（同一个问题）/index.md
+    - -提示词工程:
+      - 主题目录: learning/06-llm/02-应用开发与评估部署/02-提示词工程/index.md
+      - 什么是提示工程: learning/06-llm/02-应用开发与评估部署/02-提示词工程/01-什么是提示工程/index.md
+      - 两大原则（本笔记的主线）: learning/06-llm/02-应用开发与评估部署/02-提示词工程/02-两大原则（本笔记的主线）/index.md
+      - 提示工程的四大应用方向: learning/06-llm/02-应用开发与评估部署/02-提示词工程/03-提示工程的四大应用方向/index.md
+      - 金融项目：三个任务与 Prompt 设计要点: learning/06-llm/02-应用开发与评估部署/02-提示词工程/04-金融项目：三个任务与-Prompt-设计要点/index.md
+      - 清晰指令的四种构造技巧: learning/06-llm/02-应用开发与评估部署/02-提示词工程/05-清晰指令的四种构造技巧/index.md
+      - 让模型思考：两种可靠手法: learning/06-llm/02-应用开发与评估部署/02-提示词工程/06-让模型思考：两种可靠手法/index.md
+      - 迭代优化：把 prompt 当成「要调参的模型」: learning/06-llm/02-应用开发与评估部署/02-提示词工程/07-迭代优化：把-prompt-当成「要调参的模型」/index.md
+      - 三大任务的可复用 Prompt 骨架: learning/06-llm/02-应用开发与评估部署/02-提示词工程/08-三大任务的可复用-Prompt-骨架/index.md
+      - 为什么 few-shot 能显著改善输出格式: learning/06-llm/02-应用开发与评估部署/02-提示词工程/09-为什么-few-shot-能显著改善输出格式/index.md
+      - 金融文本分类（few-shot + 严格输出词表）: learning/06-llm/02-应用开发与评估部署/02-提示词工程/10-金融文本分类（few-shot-+-严格输出词表）/index.md
+    - -大模型API与调用实践:
+      - 主题目录: learning/06-llm/02-应用开发与评估部署/03-大模型API与调用实践/index.md
+      - 大模型 API 调用的请求结构: learning/06-llm/02-应用开发与评估部署/03-大模型API与调用实践/01-大模型-API-调用的请求结构/index.md
+      - 采样参数速查表: learning/06-llm/02-应用开发与评估部署/03-大模型API与调用实践/02-采样参数速查表/index.md
+      - NLP 的四种范式: learning/06-llm/02-应用开发与评估部署/03-大模型API与调用实践/03-NLP-的四种范式/index.md
+      - 为什么需要在两种路径间选择: learning/06-llm/02-应用开发与评估部署/03-大模型API与调用实践/04-为什么需要在两种路径间选择/index.md
+      - Soft Prompt 的信息流: learning/06-llm/02-应用开发与评估部署/03-大模型API与调用实践/05-Soft-Prompt-的信息流/index.md
+      - Prompt Tuning / P-Tuning v1 / P-Tuning v2: learning/06-llm/02-应用开发与评估部署/03-大模型API与调用实践/06-Prompt-Tuning---P-Tuning-v1---P-Tuning-v2/index.md
+      - 参数演示 + 流式输出: learning/06-llm/02-应用开发与评估部署/03-大模型API与调用实践/07-参数演示-+-流式输出/index.md
+    - -向量数据库与Milvus:
+      - 主题目录: learning/06-llm/02-应用开发与评估部署/04-向量数据库与Milvus/index.md
+      - 从非结构化数据到向量: learning/06-llm/02-应用开发与评估部署/04-向量数据库与Milvus/01-从非结构化数据到向量/index.md
+      - Milvus 与关系型数据库的概念映射: learning/06-llm/02-应用开发与评估部署/04-向量数据库与Milvus/02-Milvus-与关系型数据库的概念映射/index.md
+      - 部署形态: learning/06-llm/02-应用开发与评估部署/04-向量数据库与Milvus/03-部署形态/index.md
+      - Field Schema 与 Collection Schema 的可配置项: learning/06-llm/02-应用开发与评估部署/04-向量数据库与Milvus/04-Field-Schema-与-Collection-Schema-的可配置项/index.md
+      - 相似度度量怎么选: learning/06-llm/02-应用开发与评估部署/04-向量数据库与Milvus/05-相似度度量怎么选/index.md
+      - 索引类型对比: learning/06-llm/02-应用开发与评估部署/04-向量数据库与Milvus/06-索引类型对比/index.md
+      - nlist / nprobe / 图参数：精度与速度的旋钮: learning/06-llm/02-应用开发与评估部署/04-向量数据库与Milvus/07-nlist---nprobe---图参数：精度与速度的旋钮/index.md
+      - 标量过滤与混合搜索: learning/06-llm/02-应用开发与评估部署/04-向量数据库与Milvus/08-标量过滤与混合搜索/index.md
+      - RAG 项目中的向量存储设计（BGE-M3 + 双向量）: learning/06-llm/02-应用开发与评估部署/04-向量数据库与Milvus/09-RAG-项目中的向量存储设计（BGE-M3-+-双向量）/index.md
+      - Redis 在系统中的角色: learning/06-llm/02-应用开发与评估部署/04-向量数据库与Milvus/10-Redis-在系统中的角色/index.md
+      - Milvus 完整闭环（建集合 → 建索引 → 插入 → 检索 → 过滤 → 删除）: learning/06-llm/02-应用开发与评估部署/04-向量数据库与Milvus/11-Milvus-完整闭环（建集合-→-建索引-→-插入-→-检索-→-过滤-→-删除）/index.md
+    - -LangChain基础:
+      - 主题目录: learning/06-llm/02-应用开发与评估部署/05-LangChain基础/index.md
+      - LangChain 是什么: learning/06-llm/02-应用开发与评估部署/05-LangChain基础/01-LangChain-是什么/index.md
+      - 六大组件总览: learning/06-llm/02-应用开发与评估部署/05-LangChain基础/02-六大组件总览/index.md
+      - 三类模型的输入输出: learning/06-llm/02-应用开发与评估部署/05-LangChain基础/03-三类模型的输入输出/index.md
+      - Models：三类模型的用法差异: learning/06-llm/02-应用开发与评估部署/05-LangChain基础/04-Models：三类模型的用法差异/index.md
+      - Prompts：把提示模板化: learning/06-llm/02-应用开发与评估部署/05-LangChain基础/05-Prompts：把提示模板化/index.md
+      - Chains：把组件串起来: learning/06-llm/02-应用开发与评估部署/05-LangChain基础/06-Chains：把组件串起来/index.md
+      - Memory：大模型没有记忆，需要显式回传: learning/06-llm/02-应用开发与评估部署/05-LangChain基础/07-Memory：大模型没有记忆，需要显式回传/index.md
+      - Agents：让模型调用外部工具: learning/06-llm/02-应用开发与评估部署/05-LangChain基础/08-Agents：让模型调用外部工具/index.md
+      - 最小 RAG 链（检索 + 生成）: learning/06-llm/02-应用开发与评估部署/05-LangChain基础/09-最小-RAG-链（检索-+-生成）/index.md
+      - 带记忆的多轮对话（新版写法）: learning/06-llm/02-应用开发与评估部署/05-LangChain基础/10-带记忆的多轮对话（新版写法）/index.md
+    - -RAG系统构建:
+      - 主题目录: learning/06-llm/02-应用开发与评估部署/06-RAG系统构建/index.md
+      - 为什么需要 RAG: learning/06-llm/02-应用开发与评估部署/06-RAG系统构建/01-为什么需要-RAG/index.md
+      - RAG 的四步主流程: learning/06-llm/02-应用开发与评估部署/06-RAG系统构建/02-RAG-的四步主流程/index.md
+      - 关键配置项一览（来自 config.ini）: learning/06-llm/02-应用开发与评估部署/06-RAG系统构建/03-关键配置项一览（来自-config.ini）/index.md
+      - 文档解析：多格式 + 分层切分: learning/06-llm/02-应用开发与评估部署/06-RAG系统构建/04-文档解析：多格式-+-分层切分/index.md
+      - Prompt 模板设计：一个类管所有模板: learning/06-llm/02-应用开发与评估部署/06-RAG系统构建/05-Prompt-模板设计：一个类管所有模板/index.md
+      - 检索策略选择：让 LLM 做「路由」而不是「回答」: learning/06-llm/02-应用开发与评估部署/06-RAG系统构建/06-检索策略选择：让-LLM-做「路由」而不是「回答」/index.md
+      - 四种检索策略的实现要点: learning/06-llm/02-应用开发与评估部署/06-RAG系统构建/07-四种检索策略的实现要点/index.md
+      - Query 改写：RAG 的第一步: learning/06-llm/02-应用开发与评估部署/06-RAG系统构建/08-Query-改写：RAG-的第一步/index.md
+      - 混合检索与重排序: learning/06-llm/02-应用开发与评估部署/06-RAG系统构建/09-混合检索与重排序/index.md
+      - 物流行业 RAG 项目：最小可运行版: learning/06-llm/02-应用开发与评估部署/06-RAG系统构建/10-物流行业-RAG-项目：最小可运行版/index.md
+      - -RAG系统构建：可运行示例: learning/06-llm/02-应用开发与评估部署/06-RAG系统构建/11-RAG系统构建：可运行示例/index.md
+    - -RAG评估与优化:
+      - 主题目录: learning/06-llm/02-应用开发与评估部署/07-RAG评估与优化/index.md
+      - 为什么必须先评估: learning/06-llm/02-应用开发与评估部署/07-RAG评估与优化/01-为什么必须先评估/index.md
+      - RAGAS 是什么: learning/06-llm/02-应用开发与评估部署/07-RAG评估与优化/02-RAGAS-是什么/index.md
+      - 评估数据集字段: learning/06-llm/02-应用开发与评估部署/07-RAG评估与优化/03-评估数据集字段/index.md
+      - 四个核心指标：作用与计算: learning/06-llm/02-应用开发与评估部署/07-RAG评估与优化/04-四个核心指标：作用与计算/index.md
+      - 四个指标的判读：定位问题出在哪一侧: learning/06-llm/02-应用开发与评估部署/07-RAG评估与优化/05-四个指标的判读：定位问题出在哪一侧/index.md
+      - 用 RAGAS 跑评估：代码结构: learning/06-llm/02-应用开发与评估部署/07-RAG评估与优化/06-用-RAGAS-跑评估：代码结构/index.md
+      - -RAG评估与优化：可运行示例: learning/06-llm/02-应用开发与评估部署/07-RAG评估与优化/07-RAG评估与优化：可运行示例/index.md
+    - -大模型面试题库:
+      - 主题目录: learning/06-llm/02-应用开发与评估部署/08-大模型面试题库/index.md
+      - 考点地图: learning/06-llm/02-应用开发与评估部署/08-大模型面试题库/01-考点地图/index.md
+      - 三种答题模板: learning/06-llm/02-应用开发与评估部署/08-大模型面试题库/02-三种答题模板/index.md
+      - 用公式记住的三个核心定义: learning/06-llm/02-应用开发与评估部署/08-大模型面试题库/03-用公式记住的三个核心定义/index.md
+      - 高频对比题的「一句话本质区别」: learning/06-llm/02-应用开发与评估部署/08-大模型面试题库/04-高频对比题的「一句话本质区别」/index.md
+      - 三个最容易答漏的工程点: learning/06-llm/02-应用开发与评估部署/08-大模型面试题库/05-三个最容易答漏的工程点/index.md
+      - Function Call 完整两轮调用（可运行骨架）: learning/06-llm/02-应用开发与评估部署/08-大模型面试题库/06-Function-Call-完整两轮调用（可运行骨架）/index.md
+  - 综合复习与参考:
+    - 领域目录: 06-llm/README.md
+    - ① 架构与预训练:
+      - 本节目录: 06-llm/01-架构与预训练/README.md
+      - 1.1 Attention 机制详解: 06-llm/01-架构与预训练/01-Attention机制详解.md
+      - 1.2 大模型基础与演进: 06-llm/01-架构与预训练/01-大模型基础与演进.md
+      - 1.3 Transformer 与注意力机制: 06-llm/01-架构与预训练/02-Transformer与注意力机制.md
+      - 1.4 主流大模型对比: 06-llm/01-架构与预训练/03-主流大模型对比.md
+    - ② 微调与对齐:
+      - 本节目录: 06-llm/02-微调与对齐/README.md
+      - 2.1 微调基础与决策: 06-llm/02-微调与对齐/01-微调基础与决策.md
+      - 2.2 全参微调与显存账本: 06-llm/02-微调与对齐/02-全参微调与显存账本.md
+      - 2.3 LoRA 原理与工程实践: 06-llm/02-微调与对齐/03-LoRA原理与工程实践.md
+      - 2.4 QLoRA 与量化微调: 06-llm/02-微调与对齐/04-QLoRA与量化微调.md
+      - 2.5 SFT 训练循环与框架: 06-llm/02-微调与对齐/05-SFT训练循环与框架.md
+      - 2.6 指令数据构造与清洗: 06-llm/02-微调与对齐/06-指令数据构造与清洗.md
+      - 2.7 微调效果评估与灾难性遗忘: 06-llm/02-微调与对齐/07-微调效果评估与灾难性遗忘.md
+      - 2.8 微调面试专题: 06-llm/02-微调与对齐/08-微调面试专题.md
+    - ③ 对齐与后训练:
+      - 本节目录: 06-llm/03-对齐与后训练/README.md
+      - 3.1 对齐概览与 RLHF: 06-llm/03-对齐与后训练/01-对齐概览与RLHF.md
+      - 3.2 奖励模型与偏好数据: 06-llm/03-对齐与后训练/02-奖励模型与偏好数据.md
+      - 3.3 DPO 与免强化学习对齐: 06-llm/03-对齐与后训练/03-DPO与免强化学习对齐.md
+      - 3.4 GRPO 与推理模型后训练: 06-llm/03-对齐与后训练/04-GRPO与推理模型后训练.md
+    - ④ 推理与部署:
+      - 本节目录: 06-llm/05-推理与部署/README.md
+      - 4.1 本地部署与 Ollama: 06-llm/05-推理与部署/06-本地部署与Ollama.md
+    - ⑤ 提示工程:
+      - 本节目录: 06-llm/06-提示工程/README.md
+      - 5.1 提示词工程: 06-llm/06-提示工程/04-提示词工程.md
+      - 5.2 大模型 API 与调用实践: 06-llm/06-提示工程/05-大模型API与调用实践.md
+    - ⑥ 检索增强 RAG:
+      - 本节目录: 06-llm/07-检索增强RAG/README.md
+      - 6.1 向量数据库与 Milvus: 06-llm/07-检索增强RAG/07-向量数据库与Milvus.md
+      - 6.2 LangChain 基础: 06-llm/07-检索增强RAG/08-LangChain基础.md
+      - 6.3 RAG 系统构建: 06-llm/07-检索增强RAG/09-RAG系统构建.md
+      - 6.4 RAG 评估与优化: 06-llm/07-检索增强RAG/10-RAG评估与优化.md
+    - ⑦ 面试专题:
+      - 本节目录: 06-llm/09-面试专题/README.md
+      - 7.1 大模型面试题库: 06-llm/09-面试专题/12-大模型面试题库.md
+    - 速查与面试:
+      - 本节目录: 06-llm/90-cheatsheet/README.md
+      - S1 速查表 · Cheatsheet: 06-llm/90-cheatsheet/cheatsheet.md
+      - S2 术语表 · Glossary: 06-llm/90-cheatsheet/glossary.md
+      - S3 高频面试题库: 06-llm/90-cheatsheet/interview.md
+      - S4 必读论文清单: 06-llm/90-cheatsheet/papers.md
+- AI Agent:
+  - 智能体原理与能力构建:
+    - 方向概览: learning/07-agent/01-智能体原理与能力构建/index.md
+    - -Agent基础范式与ReAct循环:
+      - 主题目录: learning/07-agent/01-智能体原理与能力构建/01-Agent基础范式与ReAct循环/index.md
+      - 什么是 AI Agent: learning/07-agent/01-智能体原理与能力构建/01-Agent基础范式与ReAct循环/01-什么是-AI-Agent/index.md
+      - Agent 的三种主要类别: learning/07-agent/01-智能体原理与能力构建/01-Agent基础范式与ReAct循环/02-Agent-的三种主要类别/index.md
+      - Agent 的能力公式: learning/07-agent/01-智能体原理与能力构建/01-Agent基础范式与ReAct循环/03-Agent-的能力公式/index.md
+      - Agent 的工作流程五要素: learning/07-agent/01-智能体原理与能力构建/01-Agent基础范式与ReAct循环/04-Agent-的工作流程五要素/index.md
+      - 完整例子：用 Agent 处理退货请求: learning/07-agent/01-智能体原理与能力构建/01-Agent基础范式与ReAct循环/05-完整例子：用-Agent-处理退货请求/index.md
+      - 当前基于大模型的 Agent 呈现形式对比: learning/07-agent/01-智能体原理与能力构建/01-Agent基础范式与ReAct循环/06-当前基于大模型的-Agent-呈现形式对比/index.md
+      - Agent 与传统软件的区别: learning/07-agent/01-智能体原理与能力构建/01-Agent基础范式与ReAct循环/07-Agent-与传统软件的区别/index.md
+      - 常见实现工具与框架: learning/07-agent/01-智能体原理与能力构建/01-Agent基础范式与ReAct循环/08-常见实现工具与框架/index.md
+      - 应用场景: learning/07-agent/01-智能体原理与能力构建/01-Agent基础范式与ReAct循环/09-应用场景/index.md
+      - 感知—决策—行动闭环: learning/07-agent/01-智能体原理与能力构建/01-Agent基础范式与ReAct循环/10-感知—决策—行动闭环/index.md
+      - ReAct：把「想」和「做」交替进行: learning/07-agent/01-智能体原理与能力构建/01-Agent基础范式与ReAct循环/11-ReAct：把「想」和「做」交替进行/index.md
+      - ReAct 循环的伪代码（对照五要素）: learning/07-agent/01-智能体原理与能力构建/01-Agent基础范式与ReAct循环/12-ReAct-循环的伪代码（对照五要素）/index.md
+      - 从对话机器人到 Agent：医疗问诊机器人的位置: learning/07-agent/01-智能体原理与能力构建/01-Agent基础范式与ReAct循环/13-从对话机器人到-Agent：医疗问诊机器人的位置/index.md
+      - 终止条件设计: learning/07-agent/01-智能体原理与能力构建/01-Agent基础范式与ReAct循环/14-终止条件设计/index.md
+      - 零依赖的最小 Agent 循环（可真实运行）: learning/07-agent/01-智能体原理与能力构建/01-Agent基础范式与ReAct循环/15-零依赖的最小-Agent-循环（可真实运行）/index.md
+      - 换成真实模型的骨架（智谱 ChatGLM）: learning/07-agent/01-智能体原理与能力构建/01-Agent基础范式与ReAct循环/16-换成真实模型的骨架（智谱-ChatGLM）/index.md
+    - 从零实现一个最小 Agent:
+      - 主题目录: learning/07-agent/01-智能体原理与能力构建/02-从零实现一个最小-Agent/index.md
+      - 从零实现一个最小 Agent：为什么需要它: learning/07-agent/01-智能体原理与能力构建/02-从零实现一个最小-Agent/01-从零实现一个最小-Agent：为什么需要它/index.md
+      - 从零实现一个最小 Agent：核心思想: learning/07-agent/01-智能体原理与能力构建/02-从零实现一个最小-Agent/02-从零实现一个最小-Agent：核心思想/index.md
+      - 从零实现一个最小 Agent：最小可运行示例: learning/07-agent/01-智能体原理与能力构建/02-从零实现一个最小-Agent/03-从零实现一个最小-Agent：最小可运行示例/index.md
+      - 循环的四个组成部分: learning/07-agent/01-智能体原理与能力构建/02-从零实现一个最小-Agent/04-循环的四个组成部分/index.md
+      - 从零实现一个最小 Agent：完整实现: learning/07-agent/01-智能体原理与能力构建/02-从零实现一个最小-Agent/05-从零实现一个最小-Agent：完整实现/index.md
+      - 关键设计取舍: learning/07-agent/01-智能体原理与能力构建/02-从零实现一个最小-Agent/06-关键设计取舍/index.md
+      - 结构化输出的两种做法: learning/07-agent/01-智能体原理与能力构建/02-从零实现一个最小-Agent/07-结构化输出的两种做法/index.md
+      - 工程要点: learning/07-agent/01-智能体原理与能力构建/02-从零实现一个最小-Agent/08-工程要点/index.md
+      - 接到真实的 OpenAI 兼容 API: learning/07-agent/01-智能体原理与能力构建/02-从零实现一个最小-Agent/09-接到真实的-OpenAI-兼容-API/index.md
+      - 用假模型跑通全流程: learning/07-agent/01-智能体原理与能力构建/02-从零实现一个最小-Agent/10-用假模型跑通全流程/index.md
+      - 一条完整的运行轨迹: learning/07-agent/01-智能体原理与能力构建/02-从零实现一个最小-Agent/11-一条完整的运行轨迹/index.md
+    - -Function-Calling与工具调用:
+      - 主题目录: learning/07-agent/01-智能体原理与能力构建/03-Function-Calling与工具调用/index.md
+      - 什么是 Function Calling: learning/07-agent/01-智能体原理与能力构建/03-Function-Calling与工具调用/01-什么是-Function-Calling/index.md
+      - 它解决大模型的三个问题: learning/07-agent/01-智能体原理与能力构建/03-Function-Calling与工具调用/02-它解决大模型的三个问题/index.md
+      - 两种调用模式对比: learning/07-agent/01-智能体原理与能力构建/03-Function-Calling与工具调用/03-两种调用模式对比/index.md
+      - 支持的模型与开发环境: learning/07-agent/01-智能体原理与能力构建/03-Function-Calling与工具调用/04-支持的模型与开发环境/index.md
+      - 六个标准步骤: learning/07-agent/01-智能体原理与能力构建/03-Function-Calling与工具调用/05-六个标准步骤/index.md
+      - 消息状态机: learning/07-agent/01-智能体原理与能力构建/03-Function-Calling与工具调用/06-消息状态机/index.md
+      - tool schema 的字段含义: learning/07-agent/01-智能体原理与能力构建/03-Function-Calling与工具调用/07-tool-schema-的字段含义/index.md
+      - 参数解析与分发: learning/07-agent/01-智能体原理与能力构建/03-Function-Calling与工具调用/08-参数解析与分发/index.md
+      - 多函数与「链式调用」: learning/07-agent/01-智能体原理与能力构建/03-Function-Calling与工具调用/09-多函数与「链式调用」/index.md
+      - 数据库查询类工具：schema 即提示词: learning/07-agent/01-智能体原理与能力构建/03-Function-Calling与工具调用/10-数据库查询类工具：schema-即提示词/index.md
+      - 示例的三处实现缺陷（修正建议）: learning/07-agent/01-智能体原理与能力构建/03-Function-Calling与工具调用/11-示例的三处实现缺陷（修正建议）/index.md
+      - 单函数：天气查询（weather_zhipu.py）: learning/07-agent/01-智能体原理与能力构建/03-Function-Calling与工具调用/12-单函数：天气查询（weather_zhipu.py）/index.md
+      - 多函数：航班号 + 票价（airplane 三文件结构）: learning/07-agent/01-智能体原理与能力构建/03-Function-Calling与工具调用/13-多函数：航班号-+-票价（airplane-三文件结构）/index.md
+      - 数据库查询工具：ask_database（sql 示例）: learning/07-agent/01-智能体原理与能力构建/03-Function-Calling与工具调用/14-数据库查询工具：ask_database（sql-示例）/index.md
+    - -Agent的规划与任务分解:
+      - 主题目录: learning/07-agent/01-智能体原理与能力构建/04-Agent的规划与任务分解/index.md
+      - 为什么 Agent 需要规划: learning/07-agent/01-智能体原理与能力构建/04-Agent的规划与任务分解/01-为什么-Agent-需要规划/index.md
+      - 规划的四个动作: learning/07-agent/01-智能体原理与能力构建/04-Agent的规划与任务分解/02-规划的四个动作/index.md
+      - 三层粒度：目标 → 子目标 → 动作: learning/07-agent/01-智能体原理与能力构建/04-Agent的规划与任务分解/03-三层粒度：目标-→-子目标-→-动作/index.md
+      - 规划在的四种形态: learning/07-agent/01-智能体原理与能力构建/04-Agent的规划与任务分解/04-规划在的四种形态/index.md
+      - 检索级规划：四种查询策略: learning/07-agent/01-智能体原理与能力构建/04-Agent的规划与任务分解/05-检索级规划：四种查询策略/index.md
+      - 隐式规划 vs 显式规划: learning/07-agent/01-智能体原理与能力构建/04-Agent的规划与任务分解/06-隐式规划-vs-显式规划/index.md
+      - 子查询分解的执行细节（来自 rag_system.py）: learning/07-agent/01-智能体原理与能力构建/04-Agent的规划与任务分解/07-子查询分解的执行细节（来自-rag_system.py）/index.md
+      - HyDE：用「假答案」检索: learning/07-agent/01-智能体原理与能力构建/04-Agent的规划与任务分解/08-HyDE：用「假答案」检索/index.md
+      - 回溯式提问：把「难检索的问题」变成「好检索的问题」: learning/07-agent/01-智能体原理与能力构建/04-Agent的规划与任务分解/09-回溯式提问：把「难检索的问题」变成「好检索的问题」/index.md
+      - 依赖图：什么时候可以并行: learning/07-agent/01-智能体原理与能力构建/04-Agent的规划与任务分解/10-依赖图：什么时候可以并行/index.md
+      - 反思与完善（Reflection）: learning/07-agent/01-智能体原理与能力构建/04-Agent的规划与任务分解/11-反思与完善（Reflection）/index.md
+      - 规划失效的典型模式: learning/07-agent/01-智能体原理与能力构建/04-Agent的规划与任务分解/12-规划失效的典型模式/index.md
+      - 任务分解器：分解 → 检索 → 去重 → 裁剪: learning/07-agent/01-智能体原理与能力构建/04-Agent的规划与任务分解/13-任务分解器：分解-→-检索-→-去重-→-裁剪/index.md
+      - Plan-and-Execute 骨架：先出计划，再逐步执行: learning/07-agent/01-智能体原理与能力构建/04-Agent的规划与任务分解/14-Plan-and-Execute-骨架：先出计划，再逐步执行/index.md
+      - 策略选择器（对应 strategy_selector.py）: learning/07-agent/01-智能体原理与能力构建/04-Agent的规划与任务分解/15-策略选择器（对应-strategy_selector.py）/index.md
+    - -LangChain与工具编排:
+      - 主题目录: learning/07-agent/01-智能体原理与能力构建/05-LangChain与工具编排/index.md
+      - LangChain 是什么: learning/07-agent/01-智能体原理与能力构建/05-LangChain与工具编排/01-LangChain-是什么/index.md
+      - 六大组件: learning/07-agent/01-智能体原理与能力构建/05-LangChain与工具编排/02-六大组件/index.md
+      - 三类模型的输入输出: learning/07-agent/01-智能体原理与能力构建/05-LangChain与工具编排/03-三类模型的输入输出/index.md
+      - Agents 组件里的四个概念: learning/07-agent/01-智能体原理与能力构建/05-LangChain与工具编排/04-Agents-组件里的四个概念/index.md
+      - Agent 类型（AgentType）: learning/07-agent/01-智能体原理与能力构建/05-LangChain与工具编排/05-Agent-类型（AgentType）/index.md
+      - LangChain 内置工具一览: learning/07-agent/01-智能体原理与能力构建/05-LangChain与工具编排/06-LangChain-内置工具一览/index.md
+      - AgentExecutor 的循环: learning/07-agent/01-智能体原理与能力构建/05-LangChain与工具编排/07-AgentExecutor-的循环/index.md
+      - Chain 的两种基本形态: learning/07-agent/01-智能体原理与能力构建/05-LangChain与工具编排/08-Chain-的两种基本形态/index.md
+      - 自定义工具：从 llm-math 到 @tool: learning/07-agent/01-智能体原理与能力构建/05-LangChain与工具编排/09-自定义工具：从-llm-math-到-@tool/index.md
+      - 多 Agent 编排：CrewAI 的五件套: learning/07-agent/01-智能体原理与能力构建/05-LangChain与工具编排/10-多-Agent-编排：CrewAI-的五件套/index.md
+      - Process：顺序执行与委派: learning/07-agent/01-智能体原理与能力构建/05-LangChain与工具编排/11-Process：顺序执行与委派/index.md
+      - 用 Agent 解方程（agents_apply.py）: learning/07-agent/01-智能体原理与能力构建/05-LangChain与工具编排/12-用-Agent-解方程（agents_apply.py）/index.md
+      - 自定义工具 + Agent（推荐写法）: learning/07-agent/01-智能体原理与能力构建/05-LangChain与工具编排/13-自定义工具-+-Agent（推荐写法）/index.md
+      - 用 CrewAI 编排三 Agent 流水线（Chapter 10 项目）: learning/07-agent/01-智能体原理与能力构建/05-LangChain与工具编排/14-用-CrewAI-编排三-Agent-流水线（Chapter-10-项目）/index.md
+    - -Agent的记忆与知识管理:
+      - 主题目录: learning/07-agent/01-智能体原理与能力构建/06-Agent的记忆与知识管理/index.md
+      - 为什么 Agent 需要记忆: learning/07-agent/01-智能体原理与能力构建/06-Agent的记忆与知识管理/01-为什么-Agent-需要记忆/index.md
+      - 记忆的分类: learning/07-agent/01-智能体原理与能力构建/06-Agent的记忆与知识管理/02-记忆的分类/index.md
+      - 的四种记忆载体: learning/07-agent/01-智能体原理与能力构建/06-Agent的记忆与知识管理/03-的四种记忆载体/index.md
+      - 记忆的三个基本操作: learning/07-agent/01-智能体原理与能力构建/06-Agent的记忆与知识管理/04-记忆的三个基本操作/index.md
+      - 会话记忆：ChatMessageHistory: learning/07-agent/01-智能体原理与能力构建/06-Agent的记忆与知识管理/05-会话记忆：ChatMessageHistory/index.md
+      - 长期记忆：消息序列化: learning/07-agent/01-智能体原理与能力构建/06-Agent的记忆与知识管理/06-长期记忆：消息序列化/index.md
+      - ConversationChain：自动回传历史: learning/07-agent/01-智能体原理与能力构建/06-Agent的记忆与知识管理/07-ConversationChain：自动回传历史/index.md
+      - 历史拼接与窗口截断（GPT2 医疗问诊机器人）: learning/07-agent/01-智能体原理与能力构建/06-Agent的记忆与知识管理/08-历史拼接与窗口截断（GPT2-医疗问诊机器人）/index.md
+      - 状态记忆与历史记忆的分离（大宗商品价格监控项目）: learning/07-agent/01-智能体原理与能力构建/06-Agent的记忆与知识管理/09-状态记忆与历史记忆的分离（大宗商品价格监控项目）/index.md
+      - 外部知识记忆：向量库 + 父块压缩: learning/07-agent/01-智能体原理与能力构建/06-Agent的记忆与知识管理/10-外部知识记忆：向量库-+-父块压缩/index.md
+      - 上下文预算管理: learning/07-agent/01-智能体原理与能力构建/06-Agent的记忆与知识管理/11-上下文预算管理/index.md
+      - 会话记忆的序列化与恢复: learning/07-agent/01-智能体原理与能力构建/06-Agent的记忆与知识管理/12-会话记忆的序列化与恢复/index.md
+    - -RAG作为Agent的知识获取手段:
+      - 主题目录: learning/07-agent/01-智能体原理与能力构建/07-RAG作为Agent的知识获取手段/index.md
+      - 为什么 Agent 需要 RAG: learning/07-agent/01-智能体原理与能力构建/07-RAG作为Agent的知识获取手段/01-为什么-Agent-需要-RAG/index.md
+      - RAG 三段式: learning/07-agent/01-智能体原理与能力构建/07-RAG作为Agent的知识获取手段/02-RAG-三段式/index.md
+      - RAG 的模块协作: learning/07-agent/01-智能体原理与能力构建/07-RAG作为Agent的知识获取手段/03-RAG-的模块协作/index.md
+      - LangChain Indexes 四件套: learning/07-agent/01-智能体原理与能力构建/07-RAG作为Agent的知识获取手段/04-LangChain-Indexes-四件套/index.md
+      - 支持的文件类型与加载器（RAG 的实现）: learning/07-agent/01-智能体原理与能力构建/07-RAG作为Agent的知识获取手段/05-支持的文件类型与加载器（RAG-的实现）/index.md
+      - 分层切分：父块与子块: learning/07-agent/01-智能体原理与能力构建/07-RAG作为Agent的知识获取手段/06-分层切分：父块与子块/index.md
+      - Milvus 集合设计: learning/07-agent/01-智能体原理与能力构建/07-RAG作为Agent的知识获取手段/07-Milvus-集合设计/index.md
+      - 混合检索：稠密 + 稀疏: learning/07-agent/01-智能体原理与能力构建/07-RAG作为Agent的知识获取手段/08-混合检索：稠密-+-稀疏/index.md
+      - 重排（Rerank）: learning/07-agent/01-智能体原理与能力构建/07-RAG作为Agent的知识获取手段/09-重排（Rerank）/index.md
+      - 查询意图识别：不是所有问题都该检索: learning/07-agent/01-智能体原理与能力构建/07-RAG作为Agent的知识获取手段/10-查询意图识别：不是所有问题都该检索/index.md
+      - RAG Prompt 的设计要点: learning/07-agent/01-智能体原理与能力构建/07-RAG作为Agent的知识获取手段/11-RAG-Prompt-的设计要点/index.md
+      - 把 RAG 包装成 Agent 工具: learning/07-agent/01-智能体原理与能力构建/07-RAG作为Agent的知识获取手段/12-把-RAG-包装成-Agent-工具/index.md
+      - 最小 RAG：切分 → 假向量 → 余弦召回 → 拼 prompt: learning/07-agent/01-智能体原理与能力构建/07-RAG作为Agent的知识获取手段/13-最小-RAG：切分-→-假向量-→-余弦召回-→-拼-prompt/index.md
+      - Milvus 混合检索与重排（vector_store.py）: learning/07-agent/01-智能体原理与能力构建/07-RAG作为Agent的知识获取手段/14-Milvus-混合检索与重排（vector_store.py）/index.md
+      - 用 LangChain 快速验证（Chroma + FAISS）: learning/07-agent/01-智能体原理与能力构建/07-RAG作为Agent的知识获取手段/15-用-LangChain-快速验证（Chroma-+-FAISS）/index.md
+  - 工程可靠性与评测实践:
+    - 方向概览: learning/07-agent/02-工程可靠性与评测实践/index.md
+    - -Agent工程化与可靠性设计:
+      - 主题目录: learning/07-agent/02-工程可靠性与评测实践/01-Agent工程化与可靠性设计/index.md
+      - 从 Demo 到生产：六类风险: learning/07-agent/02-工程可靠性与评测实践/01-Agent工程化与可靠性设计/01-从-Demo-到生产：六类风险/index.md
+      - 工程化的六个关注点: learning/07-agent/02-工程可靠性与评测实践/01-Agent工程化与可靠性设计/02-工程化的六个关注点/index.md
+      - 大宗商品监控项目里的工程要素清单: learning/07-agent/02-工程可靠性与评测实践/01-Agent工程化与可靠性设计/03-大宗商品监控项目里的工程要素清单/index.md
+      - 数据源可靠性：多级降级: learning/07-agent/02-工程可靠性与评测实践/01-Agent工程化与可靠性设计/04-数据源可靠性：多级降级/index.md
+      - 配置外置与默认值兜底: learning/07-agent/02-工程可靠性与评测实践/01-Agent工程化与可靠性设计/05-配置外置与默认值兜底/index.md
+      - 状态持久化与幂等: learning/07-agent/02-工程可靠性与评测实践/01-Agent工程化与可靠性设计/06-状态持久化与幂等/index.md
+      - 通知限流与降噪: learning/07-agent/02-工程可靠性与评测实践/01-Agent工程化与可靠性设计/07-通知限流与降噪/index.md
+      - 工具错误的三种处理姿势: learning/07-agent/02-工程可靠性与评测实践/01-Agent工程化与可靠性设计/08-工具错误的三种处理姿势/index.md
+      - 凭证、权限与最小暴露: learning/07-agent/02-工程可靠性与评测实践/01-Agent工程化与可靠性设计/09-凭证、权限与最小暴露/index.md
+      - 可观测性: learning/07-agent/02-工程可靠性与评测实践/01-Agent工程化与可靠性设计/10-可观测性/index.md
+      - 模型侧的可靠性（训练与推理）: learning/07-agent/02-工程可靠性与评测实践/01-Agent工程化与可靠性设计/11-模型侧的可靠性（训练与推理）/index.md
+      - 成本与延迟控制: learning/07-agent/02-工程可靠性与评测实践/01-Agent工程化与可靠性设计/12-成本与延迟控制/index.md
+      - 人机协同与降级出口: learning/07-agent/02-工程可靠性与评测实践/01-Agent工程化与可靠性设计/13-人机协同与降级出口/index.md
+      - 多源降级 + 校验 + 退避重试的价格抓取器: learning/07-agent/02-工程可靠性与评测实践/01-Agent工程化与可靠性设计/14-多源降级-+-校验-+-退避重试的价格抓取器/index.md
+      - 工具包装器：超时、重试、错误转 Observation: learning/07-agent/02-工程可靠性与评测实践/01-Agent工程化与可靠性设计/15-工具包装器：超时、重试、错误转-Observation/index.md
+    - -为什么Agent评测比LLM评测难:
+      - 主题目录: learning/07-agent/02-工程可靠性与评测实践/02-为什么Agent评测比LLM评测难/index.md
+      - 本质差异：从「一次输出」到「一个策略的轨迹分布」: learning/07-agent/02-工程可靠性与评测实践/02-为什么Agent评测比LLM评测难/01-本质差异：从「一次输出」到「一个策略的轨迹分布」/index.md
+      - 评测的三个层次: learning/07-agent/02-工程可靠性与评测实践/02-为什么Agent评测比LLM评测难/02-评测的三个层次/index.md
+      - 为什么「最终答案对了」不足以说明 Agent 好: learning/07-agent/02-工程可靠性与评测实践/02-为什么Agent评测比LLM评测难/03-为什么「最终答案对了」不足以说明-Agent-好/index.md
+      - 三类最常见的评测失效: learning/07-agent/02-工程可靠性与评测实践/02-为什么Agent评测比LLM评测难/04-三类最常见的评测失效/index.md
+      - 评测对象的形式化：从答案到轨迹: learning/07-agent/02-工程可靠性与评测实践/02-为什么Agent评测比LLM评测难/05-评测对象的形式化：从答案到轨迹/index.md
+      - 环境不确定性的四个来源: learning/07-agent/02-工程可靠性与评测实践/02-为什么Agent评测比LLM评测难/06-环境不确定性的四个来源/index.md
+      - 结果层与过程层的联合判定：四象限: learning/07-agent/02-工程可靠性与评测实践/02-为什么Agent评测比LLM评测难/07-结果层与过程层的联合判定：四象限/index.md
+      - 成功率为什么会被高估：三种计算口径: learning/07-agent/02-工程可靠性与评测实践/02-为什么Agent评测比LLM评测难/08-成功率为什么会被高估：三种计算口径/index.md
+      - 评测失效的数学直觉：Goodhart 定律: learning/07-agent/02-工程可靠性与评测实践/02-为什么Agent评测比LLM评测难/09-评测失效的数学直觉：Goodhart-定律/index.md
+      - 示例一：轨迹评分器——结果相同、过程不同: learning/07-agent/02-工程可靠性与评测实践/02-为什么Agent评测比LLM评测难/10-示例一：轨迹评分器——结果相同、过程不同/index.md
+      - 示例二：环境不确定性 → pass@k 与 pass^k 的分叉: learning/07-agent/02-工程可靠性与评测实践/02-为什么Agent评测比LLM评测难/11-示例二：环境不确定性-→-pass@k-与-pass^k-的分叉/index.md
+      - 从示例到工程: learning/07-agent/02-工程可靠性与评测实践/02-为什么Agent评测比LLM评测难/12-从示例到工程/index.md
+    - -评测指标设计:
+      - 主题目录: learning/07-agent/02-工程可靠性与评测实践/03-评测指标设计/index.md
+      - 指标分类表: learning/07-agent/02-工程可靠性与评测实践/03-评测指标设计/01-指标分类表/index.md
+      - 指标设计的四条原则: learning/07-agent/02-工程可靠性与评测实践/03-评测指标设计/02-指标设计的四条原则/index.md
+      - 什么是部分完成度，以及怎么打分: learning/07-agent/02-工程可靠性与评测实践/03-评测指标设计/03-什么是部分完成度，以及怎么打分/index.md
+      - 成功率怎么算才不失真: learning/07-agent/02-工程可靠性与评测实践/03-评测指标设计/04-成功率怎么算才不失真/index.md
+      - 指标的归因链：从「变差了」到「哪里坏了」: learning/07-agent/02-工程可靠性与评测实践/03-评测指标设计/05-指标的归因链：从「变差了」到「哪里坏了」/index.md
+      - 为什么延迟必须报 P95 而不是均值: learning/07-agent/02-工程可靠性与评测实践/03-评测指标设计/06-为什么延迟必须报-P95-而不是均值/index.md
+      - 成本指标：单任务成本与每次成功成本: learning/07-agent/02-工程可靠性与评测实践/03-评测指标设计/07-成本指标：单任务成本与每次成功成本/index.md
+      - 完整指标表：指标 → 数据来源 → 计算方式 → 典型陷阱: learning/07-agent/02-工程可靠性与评测实践/03-评测指标设计/08-完整指标表：指标-→-数据来源-→-计算方式-→-典型陷阱/index.md
+      - 一个完整的指标计算模块: learning/07-agent/02-工程可靠性与评测实践/03-评测指标设计/09-一个完整的指标计算模块/index.md
+    - -评测方法-单元测试与LLM即裁判:
+      - 主题目录: learning/07-agent/02-工程可靠性与评测实践/04-评测方法-单元测试与LLM即裁判/index.md
+      - 单元测试式评测：把能力拆成可断言用例: learning/07-agent/02-工程可靠性与评测实践/04-评测方法-单元测试与LLM即裁判/01-单元测试式评测：把能力拆成可断言用例/index.md
+      - 确定性判题 vs 模糊判题的适用边界: learning/07-agent/02-工程可靠性与评测实践/04-评测方法-单元测试与LLM即裁判/02-确定性判题-vs-模糊判题的适用边界/index.md
+      - LLM-as-a-Judge 完整设计: learning/07-agent/02-工程可靠性与评测实践/04-评测方法-单元测试与LLM即裁判/03-LLM-as-a-Judge-完整设计/index.md
+      - Judge 可靠性验证：Cohen's Kappa: learning/07-agent/02-工程可靠性与评测实践/04-评测方法-单元测试与LLM即裁判/04-Judge-可靠性验证：Cohen's-Kappa/index.md
+      - 用已知答案的对照集校准 Judge: learning/07-agent/02-工程可靠性与评测实践/04-评测方法-单元测试与LLM即裁判/05-用已知答案的对照集校准-Judge/index.md
+      - 显著性检验一：McNemar 检验: learning/07-agent/02-工程可靠性与评测实践/04-评测方法-单元测试与LLM即裁判/06-显著性检验一：McNemar-检验/index.md
+      - 显著性检验二：配对 Bootstrap 置信区间: learning/07-agent/02-工程可靠性与评测实践/04-评测方法-单元测试与LLM即裁判/07-显著性检验二：配对-Bootstrap-置信区间/index.md
+      - 完整评测流程: learning/07-agent/02-工程可靠性与评测实践/04-评测方法-单元测试与LLM即裁判/08-完整评测流程/index.md
+      - 示例一：单元测试式评测 harness: learning/07-agent/02-工程可靠性与评测实践/04-评测方法-单元测试与LLM即裁判/09-示例一：单元测试式评测-harness/index.md
+      - 示例二：Kappa、McNemar 与配对 Bootstrap: learning/07-agent/02-工程可靠性与评测实践/04-评测方法-单元测试与LLM即裁判/10-示例二：Kappa、McNemar-与配对-Bootstrap/index.md
+    - -评测基准全景:
+      - 主题目录: learning/07-agent/02-工程可靠性与评测实践/05-评测基准全景/index.md
+      - 通用 Agent 基准对比表: learning/07-agent/02-工程可靠性与评测实践/05-评测基准全景/01-通用-Agent-基准对比表/index.md
+      - 逐个基准的考察能力与局限: learning/07-agent/02-工程可靠性与评测实践/05-评测基准全景/02-逐个基准的考察能力与局限/index.md
+      - 四类 Agent 的能力边界: learning/07-agent/02-工程可靠性与评测实践/05-评测基准全景/03-四类-Agent-的能力边界/index.md
+      - benchmark 分数的四层前提: learning/07-agent/02-工程可靠性与评测实践/05-评测基准全景/04-benchmark-分数的四层前提/index.md
+      - 环境差异的具体清单: learning/07-agent/02-工程可靠性与评测实践/05-评测基准全景/05-环境差异的具体清单/index.md
+      - 成本被忽略：一个具体的经济性计算: learning/07-agent/02-工程可靠性与评测实践/05-评测基准全景/06-成本被忽略：一个具体的经济性计算/index.md
+      - 如何为自己的项目选基准或自建评测集: learning/07-agent/02-工程可靠性与评测实践/05-评测基准全景/07-如何为自己的项目选基准或自建评测集/index.md
+      - 基准腐烂（benchmark rot）: learning/07-agent/02-工程可靠性与评测实践/05-评测基准全景/08-基准腐烂（benchmark-rot）/index.md
+      - 自建评测集健全性检查 + 分数可比性诊断: learning/07-agent/02-工程可靠性与评测实践/05-评测基准全景/09-自建评测集健全性检查-+-分数可比性诊断/index.md
+    - -RAG与多轮对话评测:
+      - 主题目录: learning/07-agent/02-工程可靠性与评测实践/06-RAG与多轮对话评测/index.md
+      - RAG 评测四要素: learning/07-agent/02-工程可靠性与评测实践/06-RAG与多轮对话评测/01-RAG-评测四要素/index.md
+      - 检索侧指标：定义与公式: learning/07-agent/02-工程可靠性与评测实践/06-RAG与多轮对话评测/02-检索侧指标：定义与公式/index.md
+      - 生成侧指标: learning/07-agent/02-工程可靠性与评测实践/06-RAG与多轮对话评测/03-生成侧指标/index.md
+      - 多轮对话评测维度: learning/07-agent/02-工程可靠性与评测实践/06-RAG与多轮对话评测/04-多轮对话评测维度/index.md
+      - 检索失败的归因链: learning/07-agent/02-工程可靠性与评测实践/06-RAG与多轮对话评测/05-检索失败的归因链/index.md
+      - 多轮对话为什么必须整轨判分: learning/07-agent/02-工程可靠性与评测实践/06-RAG与多轮对话评测/06-多轮对话为什么必须整轨判分/index.md
+      - 与 Agent 评测的衔接：把 RAG 当成一个动作: learning/07-agent/02-工程可靠性与评测实践/06-RAG与多轮对话评测/07-与-Agent-评测的衔接：把-RAG-当成一个动作/index.md
+      - 完整评测流程: learning/07-agent/02-工程可靠性与评测实践/06-RAG与多轮对话评测/08-完整评测流程/index.md
+      - 示例一：检索侧指标计算器: learning/07-agent/02-工程可靠性与评测实践/06-RAG与多轮对话评测/09-示例一：检索侧指标计算器/index.md
+      - 示例二：忠实度近似与多轮对话整轨判分: learning/07-agent/02-工程可靠性与评测实践/06-RAG与多轮对话评测/10-示例二：忠实度近似与多轮对话整轨判分/index.md
+    - -项目复盘-AgentEvalLab:
+      - 主题目录: learning/07-agent/02-工程可靠性与评测实践/07-项目复盘-AgentEvalLab/index.md
+      - 它是什么: learning/07-agent/02-工程可靠性与评测实践/07-项目复盘-AgentEvalLab/01-它是什么/index.md
+      - 三个必须分开的概念: learning/07-agent/02-工程可靠性与评测实践/07-项目复盘-AgentEvalLab/02-三个必须分开的概念/index.md
+      - 在 Agent 工程链里的位置: learning/07-agent/02-工程可靠性与评测实践/07-项目复盘-AgentEvalLab/03-在-Agent-工程链里的位置/index.md
+      - 它替代的是什么: learning/07-agent/02-工程可靠性与评测实践/07-项目复盘-AgentEvalLab/04-它替代的是什么/index.md
+      - 六段流水线: learning/07-agent/02-工程可靠性与评测实践/07-项目复盘-AgentEvalLab/05-六段流水线/index.md
+      - 目录职责: learning/07-agent/02-工程可靠性与评测实践/07-项目复盘-AgentEvalLab/06-目录职责/index.md
+      - 两种输入，一套统计: learning/07-agent/02-工程可靠性与评测实践/07-项目复盘-AgentEvalLab/07-两种输入，一套统计/index.md
+      - 取舍表: learning/07-agent/02-工程可靠性与评测实践/07-项目复盘-AgentEvalLab/08-取舍表/index.md
+      - 取舍背后的统一原则: learning/07-agent/02-工程可靠性与评测实践/07-项目复盘-AgentEvalLab/09-取舍背后的统一原则/index.md
+      - Schema 层：把错误定位到 JSON 路径: learning/07-agent/02-工程可靠性与评测实践/07-项目复盘-AgentEvalLab/10-Schema-层：把错误定位到-JSON-路径/index.md
+      - 评测层：违规的追加顺序就是归因优先级: learning/07-agent/02-工程可靠性与评测实践/07-项目复盘-AgentEvalLab/11-评测层：违规的追加顺序就是归因优先级/index.md
+      - 统计层：McNemar 与聚类 Bootstrap: learning/07-agent/02-工程可靠性与评测实践/07-项目复盘-AgentEvalLab/12-统计层：McNemar-与聚类-Bootstrap/index.md
+      - 编排层：四道一致性闸门: learning/07-agent/02-工程可靠性与评测实践/07-项目复盘-AgentEvalLab/13-编排层：四道一致性闸门/index.md
+      - CLI 层：退出码即契约: learning/07-agent/02-工程可靠性与评测实践/07-项目复盘-AgentEvalLab/14-CLI-层：退出码即契约/index.md
+      - 一条轨迹的完整判定走查: learning/07-agent/02-工程可靠性与评测实践/07-项目复盘-AgentEvalLab/15-一条轨迹的完整判定走查/index.md
+      - 保证与不保证: learning/07-agent/02-工程可靠性与评测实践/07-项目复盘-AgentEvalLab/16-保证与不保证/index.md
+      - 三个明确的"不做": learning/07-agent/02-工程可靠性与评测实践/07-项目复盘-AgentEvalLab/17-三个明确的-不做/index.md
+      - 小样本的诚实: learning/07-agent/02-工程可靠性与评测实践/07-项目复盘-AgentEvalLab/18-小样本的诚实/index.md
+      - 一份真实的实验卡: learning/07-agent/02-工程可靠性与评测实践/07-项目复盘-AgentEvalLab/19-一份真实的实验卡/index.md
+    - -用Manifest保证评测可复现:
+      - 主题目录: learning/07-agent/02-工程可靠性与评测实践/08-用Manifest保证评测可复现/index.md
+      - 一次典型的"提升 9 个点": learning/07-agent/02-工程可靠性与评测实践/08-用Manifest保证评测可复现/01-一次典型的-提升-9-个点/index.md
+      - 八类漂移来源: learning/07-agent/02-工程可靠性与评测实践/08-用Manifest保证评测可复现/02-八类漂移来源/index.md
+      - 为什么 temperature=0 不够: learning/07-agent/02-工程可靠性与评测实践/08-用Manifest保证评测可复现/03-为什么-temperature=0-不够/index.md
+      - Manifest 不覆盖的那一格：采样参数: learning/07-agent/02-工程可靠性与评测实践/08-用Manifest保证评测可复现/04-Manifest-不覆盖的那一格：采样参数/index.md
+      - 字段表: learning/07-agent/02-工程可靠性与评测实践/08-用Manifest保证评测可复现/05-字段表/index.md
+      - 一份完整且可复算的示例: learning/07-agent/02-工程可靠性与评测实践/08-用Manifest保证评测可复现/06-一份完整且可复算的示例/index.md
+      - 关键字段的设计理由: learning/07-agent/02-工程可靠性与评测实践/08-用Manifest保证评测可复现/07-关键字段的设计理由/index.md
+      - 示例输入里的轨迹记录: learning/07-agent/02-工程可靠性与评测实践/08-用Manifest保证评测可复现/08-示例输入里的轨迹记录/index.md
+      - 核心原则：先规范化，再哈希: learning/07-agent/02-工程可靠性与评测实践/08-用Manifest保证评测可复现/09-核心原则：先规范化，再哈希/index.md
+      - 仓库公开示例的口径: learning/07-agent/02-工程可靠性与评测实践/08-用Manifest保证评测可复现/10-仓库公开示例的口径/index.md
+      - 可运行实现: learning/07-agent/02-工程可靠性与评测实践/08-用Manifest保证评测可复现/11-可运行实现/index.md
+      - 两种口径的差别，以及该选哪个: learning/07-agent/02-工程可靠性与评测实践/08-用Manifest保证评测可复现/12-两种口径的差别，以及该选哪个/index.md
+      - 哈希的三个易错点: learning/07-agent/02-工程可靠性与评测实践/08-用Manifest保证评测可复现/13-哈希的三个易错点/index.md
+      - 一次"科学观测"的三要素: learning/07-agent/02-工程可靠性与评测实践/08-用Manifest保证评测可复现/14-一次-科学观测-的三要素/index.md
+      - 幂等键的三重作用: learning/07-agent/02-工程可靠性与评测实践/08-用Manifest保证评测可复现/15-幂等键的三重作用/index.md
+      - 导入路径会重算并强制校验: learning/07-agent/02-工程可靠性与评测实践/08-用Manifest保证评测可复现/16-导入路径会重算并强制校验/index.md
+      - 落到工程：把幂等键用起来: learning/07-agent/02-工程可靠性与评测实践/08-用Manifest保证评测可复现/17-落到工程：把幂等键用起来/index.md
+    - -失败归因与显著性检验实战:
+      - 主题目录: learning/07-agent/02-工程可靠性与评测实践/09-失败归因与显著性检验实战/index.md
+      - 标签表: learning/07-agent/02-工程可靠性与评测实践/09-失败归因与显著性检验实战/01-标签表/index.md
+      - 判定顺序 = 归因优先级: learning/07-agent/02-工程可靠性与评测实践/09-失败归因与显著性检验实战/02-判定顺序-=-归因优先级/index.md
+      - 三组容易混淆的标签: learning/07-agent/02-工程可靠性与评测实践/09-失败归因与显著性检验实战/03-三组容易混淆的标签/index.md
+      - 一条轨迹能同时命中几个标签: learning/07-agent/02-工程可靠性与评测实践/09-失败归因与显著性检验实战/04-一条轨迹能同时命中几个标签/index.md
+      - 三种"看起来成功": learning/07-agent/02-工程可靠性与评测实践/09-失败归因与显著性检验实战/05-三种-看起来成功/index.md
+      - 证据信任链: learning/07-agent/02-工程可靠性与评测实践/09-失败归因与显著性检验实战/06-证据信任链/index.md
+      - 五种伪造与对应的拦截点: learning/07-agent/02-工程可靠性与评测实践/09-失败归因与显著性检验实战/07-五种伪造与对应的拦截点/index.md
+      - 为什么字符串匹配不够: learning/07-agent/02-工程可靠性与评测实践/09-失败归因与显著性检验实战/08-为什么字符串匹配不够/index.md
+      - 同 code 合并，不同 code 追加: learning/07-agent/02-工程可靠性与评测实践/09-失败归因与显著性检验实战/09-同-code-合并，不同-code-追加/index.md
+      - 汇总计数为什么不能相加: learning/07-agent/02-工程可靠性与评测实践/09-失败归因与显著性检验实战/10-汇总计数为什么不能相加/index.md
+      - primaryFailure 的兼容策略: learning/07-agent/02-工程可靠性与评测实践/09-失败归因与显著性检验实战/11-primaryFailure-的兼容策略/index.md
+      - 归因表怎么用: learning/07-agent/02-工程可靠性与评测实践/09-失败归因与显著性检验实战/12-归因表怎么用/index.md
+      - 2×2 配对表: learning/07-agent/02-工程可靠性与评测实践/09-失败归因与显著性检验实战/13-2×2-配对表/index.md
+      - exact p-value 的定义: learning/07-agent/02-工程可靠性与评测实践/09-失败归因与显著性检验实战/14-exact-p-value-的定义/index.md
+      - 代码实现: learning/07-agent/02-工程可靠性与评测实践/09-失败归因与显著性检验实战/15-代码实现/index.md
+      - 一张 p-value 速查表: learning/07-agent/02-工程可靠性与评测实践/09-失败归因与显著性检验实战/16-一张-p-value-速查表/index.md
+      - 显著性需要多少不一致样本: learning/07-agent/02-工程可靠性与评测实践/09-失败归因与显著性检验实战/17-显著性需要多少不一致样本/index.md
+      - 为什么 i.i.d. Bootstrap 在这里是错的: learning/07-agent/02-工程可靠性与评测实践/09-失败归因与显著性检验实战/18-为什么-i.i.d.-Bootstrap-在这里是错的/index.md
+      - 算法: learning/07-agent/02-工程可靠性与评测实践/09-失败归因与显著性检验实战/19-算法/index.md
+      - 代码实现: learning/07-agent/02-工程可靠性与评测实践/09-失败归因与显著性检验实战/20-代码实现/index.md
+      - 两种场景、三个结论: learning/07-agent/02-工程可靠性与评测实践/09-失败归因与显著性检验实战/21-两种场景、三个结论/index.md
+      - 解读示例：A 版本 62%、B 版本 71%，提升显著吗？: learning/07-agent/02-工程可靠性与评测实践/09-失败归因与显著性检验实战/22-解读示例：A-版本-62-、B-版本-71-，提升显著吗？/index.md
+    - -给一个真实Agent补评测:
+      - 主题目录: learning/07-agent/02-工程可靠性与评测实践/10-给一个真实Agent补评测/index.md
+      - 为什么拿它当样本: learning/07-agent/02-工程可靠性与评测实践/10-给一个真实Agent补评测/01-为什么拿它当样本/index.md
+      - 五段链路: learning/07-agent/02-工程可靠性与评测实践/10-给一个真实Agent补评测/02-五段链路/index.md
+      - 每段的失效面: learning/07-agent/02-工程可靠性与评测实践/10-给一个真实Agent补评测/03-每段的失效面/index.md
+      - 设计原则: learning/07-agent/02-工程可靠性与评测实践/10-给一个真实Agent补评测/04-设计原则/index.md
+      - 完整用例设计表: learning/07-agent/02-工程可靠性与评测实践/10-给一个真实Agent补评测/05-完整用例设计表/index.md
+      - 覆盖矩阵: learning/07-agent/02-工程可靠性与评测实践/10-给一个真实Agent补评测/06-覆盖矩阵/index.md
+      - 三层判据，逐层否决: learning/07-agent/02-工程可靠性与评测实践/10-给一个真实Agent补评测/07-三层判据，逐层否决/index.md
+      - 证据 claim 命名规范: learning/07-agent/02-工程可靠性与评测实践/10-给一个真实Agent补评测/08-证据-claim-命名规范/index.md
+      - 一条任务的判据与轨迹: learning/07-agent/02-工程可靠性与评测实践/10-给一个真实Agent补评测/09-一条任务的判据与轨迹/index.md
+      - 指标表: learning/07-agent/02-工程可靠性与评测实践/10-给一个真实Agent补评测/10-指标表/index.md
+      - 统计方法与预算门槛: learning/07-agent/02-工程可靠性与评测实践/10-给一个真实Agent补评测/11-统计方法与预算门槛/index.md
+      - 判定核心: learning/07-agent/02-工程可靠性与评测实践/10-给一个真实Agent补评测/12-判定核心/index.md
+      - 统计、门槛与 CLI: learning/07-agent/02-工程可靠性与评测实践/10-给一个真实Agent补评测/13-统计、门槛与-CLI/index.md
+      - 跑一次基线: learning/07-agent/02-工程可靠性与评测实践/10-给一个真实Agent补评测/14-跑一次基线/index.md
+      - 四道闸门: learning/07-agent/02-工程可靠性与评测实践/10-给一个真实Agent补评测/15-四道闸门/index.md
+    - -大宗商品价格监控Agent项目复盘:
+      - 主题目录: learning/07-agent/02-工程可靠性与评测实践/11-大宗商品价格监控Agent项目复盘/index.md
+      - 项目概览: learning/07-agent/02-工程可靠性与评测实践/11-大宗商品价格监控Agent项目复盘/01-项目概览/index.md
+      - 文件职责: learning/07-agent/02-工程可靠性与评测实践/11-大宗商品价格监控Agent项目复盘/02-文件职责/index.md
+      - 它算不算 Agent？: learning/07-agent/02-工程可靠性与评测实践/11-大宗商品价格监控Agent项目复盘/03-它算不算-Agent？/index.md
+      - 状态机的三个状态: learning/07-agent/02-工程可靠性与评测实践/11-大宗商品价格监控Agent项目复盘/04-状态机的三个状态/index.md
+      - 主循环 monitor_commodity(): learning/07-agent/02-工程可靠性与评测实践/11-大宗商品价格监控Agent项目复盘/05-主循环-monitor_commodity--/index.md
+      - 感知层：三级数据源降级: learning/07-agent/02-工程可靠性与评测实践/11-大宗商品价格监控Agent项目复盘/06-感知层：三级数据源降级/index.md
+      - 决策层：阈值 + 涨跌幅: learning/07-agent/02-工程可靠性与评测实践/11-大宗商品价格监控Agent项目复盘/07-决策层：阈值-+-涨跌幅/index.md
+      - 行动层：推送与落盘: learning/07-agent/02-工程可靠性与评测实践/11-大宗商品价格监控Agent项目复盘/08-行动层：推送与落盘/index.md
+      - 记忆层：状态与历史分离: learning/07-agent/02-工程可靠性与评测实践/11-大宗商品价格监控Agent项目复盘/09-记忆层：状态与历史分离/index.md
+      - 呈现层：Flask + Chart.js 面板: learning/07-agent/02-工程可靠性与评测实践/11-大宗商品价格监控Agent项目复盘/10-呈现层：Flask-+-Chart.js-面板/index.md
+      - 日报层: learning/07-agent/02-工程可靠性与评测实践/11-大宗商品价格监控Agent项目复盘/11-日报层/index.md
+      - 数据流全景: learning/07-agent/02-工程可靠性与评测实践/11-大宗商品价格监控Agent项目复盘/12-数据流全景/index.md
+      - 离线复刻：注入假价格源跑通全部四层: learning/07-agent/02-工程可靠性与评测实践/11-大宗商品价格监控Agent项目复盘/13-离线复刻：注入假价格源跑通全部四层/index.md
+      - 升级为 LLM Agent：把决策层换成模型: learning/07-agent/02-工程可靠性与评测实践/11-大宗商品价格监控Agent项目复盘/14-升级为-LLM-Agent：把决策层换成模型/index.md
+  - 综合复习与参考:
+    - 领域目录: 07-agent/README.md
+    - ① 基础范式:
+      - 本节目录: 07-agent/01-基础范式/README.md
+      - 1.1 Agent 基础范式与 ReAct 循环: 07-agent/01-基础范式/01-Agent基础范式与ReAct循环.md
+      - 1.2 从零实现一个最小 Agent: 07-agent/01-基础范式/01-从零实现一个最小Agent.md
+    - ② 工具调用与规划:
+      - 本节目录: 07-agent/02-工具与规划/README.md
+      - 2.1 Function-Calling 与工具调用: 07-agent/02-工具与规划/02-Function-Calling与工具调用.md
+      - 2.2 Agent 的规划与任务分解: 07-agent/02-工具与规划/04-Agent的规划与任务分解.md
+    - ③ 记忆与多智能体:
+      - 本节目录: 07-agent/03-记忆与多智能体/README.md
+      - 3.1 LangChain 与工具编排: 07-agent/03-记忆与多智能体/03-LangChain与工具编排.md
+      - 3.2 Agent 的记忆与知识管理: 07-agent/03-记忆与多智能体/05-Agent的记忆与知识管理.md
+      - 3.3 RAG 作为 Agent 的知识获取手段: 07-agent/03-记忆与多智能体/06-RAG作为Agent的知识获取手段.md
+    - ④ 评估与工程化:
+      - 本节目录: 07-agent/04-评估与工程化/README.md
+      - 4.1 Agent 工程化与可靠性设计: 07-agent/04-评估与工程化/07-Agent工程化与可靠性设计.md
+    - ⑤ Agent 评测:
+      - 本节目录: 07-agent/05-评测/README.md
+      - 5.1 为什么 Agent 评测比 LLM 评测难: 07-agent/05-评测/01-为什么Agent评测比LLM评测难.md
+      - 5.2 评测指标设计: 07-agent/05-评测/02-评测指标设计.md
+      - 5.3 评测方法-单元测试与 LLM 即裁判: 07-agent/05-评测/03-评测方法-单元测试与LLM即裁判.md
+      - 5.4 评测基准全景: 07-agent/05-评测/04-评测基准全景.md
+      - 5.5 RAG 与多轮对话评测: 07-agent/05-评测/05-RAG与多轮对话评测.md
+    - ⑥ 评测实战:
+      - 本节目录: 07-agent/06-评测实战/README.md
+      - 6.1 项目复盘-AgentEvalLab: 07-agent/06-评测实战/01-项目复盘-AgentEvalLab.md
+      - 6.2 用 Manifest 保证评测可复现: 07-agent/06-评测实战/02-用Manifest保证评测可复现.md
+      - 6.3 失败归因与显著性检验实战: 07-agent/06-评测实战/03-失败归因与显著性检验实战.md
+      - 6.4 给一个真实 Agent 补评测: 07-agent/06-评测实战/04-给一个真实Agent补评测.md
+    - ⑦ 前沿与面试:
+      - 本节目录: 07-agent/07-前沿与面试/README.md
+      - 7.1 大宗商品价格监控 Agent 项目复盘: 07-agent/07-前沿与面试/08-大宗商品价格监控Agent项目复盘.md
+    - 速查与面试:
+      - 本节目录: 07-agent/90-cheatsheet/README.md
+      - S1 速查表 · Cheatsheet: 07-agent/90-cheatsheet/cheatsheet.md
+      - S2 术语表 · Glossary: 07-agent/90-cheatsheet/glossary.md
+      - S3 高频面试题库: 07-agent/90-cheatsheet/interview.md
+      - S4 必读论文清单: 07-agent/90-cheatsheet/papers.md
+- 项目实战:
+  - 需求设计与系统架构:
+    - 方向概览: learning/08-project/01-需求设计与系统架构/index.md
+    - 项目实战笔记 01：法律咨询 RAG 问答系统:
+      - 主题目录: learning/08-project/01-需求设计与系统架构/01-项目实战笔记-01：法律咨询-RAG-问答系统/index.md
+      - 业务痛点: learning/08-project/01-需求设计与系统架构/01-项目实战笔记-01：法律咨询-RAG-问答系统/01-业务痛点/index.md
+      - 两种解法与选择: learning/08-project/01-需求设计与系统架构/01-项目实战笔记-01：法律咨询-RAG-问答系统/02-两种解法与选择/index.md
+      - 关键业务指标: learning/08-project/01-需求设计与系统架构/01-项目实战笔记-01：法律咨询-RAG-问答系统/03-关键业务指标/index.md
+      - 离线索引管线: learning/08-project/01-需求设计与系统架构/01-项目实战笔记-01：法律咨询-RAG-问答系统/04-离线索引管线/index.md
+      - 检索时的"小块检索、大块喂给 LLM": learning/08-project/01-需求设计与系统架构/01-项目实战笔记-01：法律咨询-RAG-问答系统/05-检索时的-小块检索、大块喂给-LLM/index.md
+      - 分层切分：给子块装上"回溯指针": learning/08-project/01-需求设计与系统架构/01-项目实战笔记-01：法律咨询-RAG-问答系统/06-分层切分：给子块装上-回溯指针/index.md
+      - Milvus Schema 与双索引: learning/08-project/01-需求设计与系统架构/01-项目实战笔记-01：法律咨询-RAG-问答系统/07-Milvus-Schema-与双索引/index.md
+      - 混合检索 + 重排序: learning/08-project/01-需求设计与系统架构/01-项目实战笔记-01：法律咨询-RAG-问答系统/08-混合检索-+-重排序/index.md
+      - 查询分类：便宜的分流器: learning/08-project/01-需求设计与系统架构/01-项目实战笔记-01：法律咨询-RAG-问答系统/09-查询分类：便宜的分流器/index.md
+      - LLM 驱动的检索策略选择: learning/08-project/01-需求设计与系统架构/01-项目实战笔记-01：法律咨询-RAG-问答系统/10-LLM-驱动的检索策略选择/index.md
+      - 双通道融合 + 流式输出: learning/08-project/01-需求设计与系统架构/01-项目实战笔记-01：法律咨询-RAG-问答系统/11-双通道融合-+-流式输出/index.md
+      - 用 RAGAS 量化评估: learning/08-project/01-需求设计与系统架构/01-项目实战笔记-01：法律咨询-RAG-问答系统/12-用-RAGAS-量化评估/index.md
+    - 项目实战笔记 05：企业内部制度问答助手:
+      - 主题目录: learning/08-project/01-需求设计与系统架构/02-项目实战笔记-05：企业内部制度问答助手/index.md
+      - 项目实战笔记 05：企业内部制度问答助手：背景: learning/08-project/01-需求设计与系统架构/02-项目实战笔记-05：企业内部制度问答助手/01-项目实战笔记-05：企业内部制度问答助手：背景/index.md
+      - 业务问题示例: learning/08-project/01-需求设计与系统架构/02-项目实战笔记-05：企业内部制度问答助手/02-业务问题示例/index.md
+      - 离线建库: learning/08-project/01-需求设计与系统架构/02-项目实战笔记-05：企业内部制度问答助手/03-离线建库/index.md
+      - 在线问答: learning/08-project/01-需求设计与系统架构/02-项目实战笔记-05：企业内部制度问答助手/04-在线问答/index.md
+      - Streamlit 多轮版本: learning/08-project/01-需求设计与系统架构/02-项目实战笔记-05：企业内部制度问答助手/05-Streamlit-多轮版本/index.md
+      - 建库：二十行走完四步: learning/08-project/01-需求设计与系统架构/02-项目实战笔记-05：企业内部制度问答助手/06-建库：二十行走完四步/index.md
+      - 问答：最小 RAG 链路: learning/08-project/01-需求设计与系统架构/02-项目实战笔记-05：企业内部制度问答助手/07-问答：最小-RAG-链路/index.md
+      - Streamlit 界面：50 行做出多轮问答: learning/08-project/01-需求设计与系统架构/02-项目实战笔记-05：企业内部制度问答助手/08-Streamlit-界面：50-行做出多轮问答/index.md
+    - 项目实战笔记 02：法律咨询问答机器人:
+      - 主题目录: learning/08-project/01-需求设计与系统架构/03-项目实战笔记-02：法律咨询问答机器人/index.md
+      - 项目实战笔记 02：法律咨询问答机器人：背景: learning/08-project/01-需求设计与系统架构/03-项目实战笔记-02：法律咨询问答机器人/01-项目实战笔记-02：法律咨询问答机器人：背景/index.md
+      - 数据形态: learning/08-project/01-需求设计与系统架构/03-项目实战笔记-02：法律咨询问答机器人/02-数据形态/index.md
+      - 数据流: learning/08-project/01-需求设计与系统架构/03-项目实战笔记-02：法律咨询问答机器人/03-数据流/index.md
+      - 模型结构: learning/08-project/01-需求设计与系统架构/03-项目实战笔记-02：法律咨询问答机器人/04-模型结构/index.md
+      - 数据处理：把对话压成一条 token 序列: learning/08-project/01-需求设计与系统架构/03-项目实战笔记-02：法律咨询问答机器人/05-数据处理：把对话压成一条-token-序列/index.md
+      - Dataset 与变长 batch 填充: learning/08-project/01-需求设计与系统架构/03-项目实战笔记-02：法律咨询问答机器人/06-Dataset-与变长-batch-填充/index.md
+      - 训练循环：手写但完整: learning/08-project/01-需求设计与系统架构/03-项目实战笔记-02：法律咨询问答机器人/07-训练循环：手写但完整/index.md
+      - 准确率统计：对齐 shift 与忽略 pad: learning/08-project/01-需求设计与系统架构/03-项目实战笔记-02：法律咨询问答机器人/08-准确率统计：对齐-shift-与忽略-pad/index.md
+      - 推理：多轮上下文 + 重复惩罚 + top-k: learning/08-project/01-需求设计与系统架构/03-项目实战笔记-02：法律咨询问答机器人/09-推理：多轮上下文-+-重复惩罚-+-top-k/index.md
+      - Flask 服务化: learning/08-project/01-需求设计与系统架构/03-项目实战笔记-02：法律咨询问答机器人/10-Flask-服务化/index.md
+    - 项目实战笔记 03：企业客服聊天机器人:
+      - 主题目录: learning/08-project/01-需求设计与系统架构/04-项目实战笔记-03：企业客服聊天机器人/index.md
+      - 业务目标: learning/08-project/01-需求设计与系统架构/04-项目实战笔记-03：企业客服聊天机器人/01-业务目标/index.md
+      - 与"检索式问答"的本质区别: learning/08-project/01-需求设计与系统架构/04-项目实战笔记-03：企业客服聊天机器人/02-与-检索式问答-的本质区别/index.md
+      - 对话示例: learning/08-project/01-需求设计与系统架构/04-项目实战笔记-03：企业客服聊天机器人/03-对话示例/index.md
+      - 训练侧数据流: learning/08-project/01-需求设计与系统架构/04-项目实战笔记-03：企业客服聊天机器人/04-训练侧数据流/index.md
+      - 推理侧数据流: learning/08-project/01-需求设计与系统架构/04-项目实战笔记-03：企业客服聊天机器人/05-推理侧数据流/index.md
+      - 服务化结构: learning/08-project/01-需求设计与系统架构/04-项目实战笔记-03：企业客服聊天机器人/06-服务化结构/index.md
+      - 多轮上下文拼接：对话格式设计的核心: learning/08-project/01-需求设计与系统架构/04-项目实战笔记-03：企业客服聊天机器人/07-多轮上下文拼接：对话格式设计的核心/index.md
+      - 解码：四步过滤出下一个 token: learning/08-project/01-需求设计与系统架构/04-项目实战笔记-03：企业客服聊天机器人/08-解码：四步过滤出下一个-token/index.md
+      - 参数配置：一份集中管理的实验档案: learning/08-project/01-需求设计与系统架构/04-项目实战笔记-03：企业客服聊天机器人/09-参数配置：一份集中管理的实验档案/index.md
+      - 模型加载：训练/推理共用的一套分支: learning/08-project/01-需求设计与系统架构/04-项目实战笔记-03：企业客服聊天机器人/10-模型加载：训练-推理共用的一套分支/index.md
+      - 训练与验证的 checkpoint 策略: learning/08-project/01-需求设计与系统架构/04-项目实战笔记-03：企业客服聊天机器人/11-训练与验证的-checkpoint-策略/index.md
+      - Flask 服务：注意重资源只加载一次: learning/08-project/01-需求设计与系统架构/04-项目实战笔记-03：企业客服聊天机器人/12-Flask-服务：注意重资源只加载一次/index.md
+    - 项目实战笔记 06：电商评论分类（BERT+PET 与 BERT+P-Tuning）:
+      - 主题目录: learning/08-project/01-需求设计与系统架构/05-项目实战笔记-06：电商评论分类（BERT+PET-与-BERT+P-Tuning）/index.md
+      - 业务场景: learning/08-project/01-需求设计与系统架构/05-项目实战笔记-06：电商评论分类（BERT+PET-与-BERT+P-Tuning）/01-业务场景/index.md
+      - 真正的难点：样本极少: learning/08-project/01-需求设计与系统架构/05-项目实战笔记-06：电商评论分类（BERT+PET-与-BERT+P-Tuning）/02-真正的难点：样本极少/index.md
+      - 两条路线: learning/08-project/01-需求设计与系统架构/05-项目实战笔记-06：电商评论分类（BERT+PET-与-BERT+P-Tuning）/03-两条路线/index.md
+      - PET 数据流（硬模板）: learning/08-project/01-需求设计与系统架构/05-项目实战笔记-06：电商评论分类（BERT+PET-与-BERT+P-Tuning）/04-PET-数据流（硬模板）/index.md
+      - PET 训练与评估流: learning/08-project/01-需求设计与系统架构/05-项目实战笔记-06：电商评论分类（BERT+PET-与-BERT+P-Tuning）/05-PET-训练与评估流/index.md
+      - P-Tuning 数据流（软模板）: learning/08-project/01-需求设计与系统架构/05-项目实战笔记-06：电商评论分类（BERT+PET-与-BERT+P-Tuning）/06-P-Tuning-数据流（软模板）/index.md
+      - 一句话对比: learning/08-project/01-需求设计与系统架构/05-项目实战笔记-06：电商评论分类（BERT+PET-与-BERT+P-Tuning）/07-一句话对比/index.md
+      - PET：把自然语言模板解析成可填充的数据结构: learning/08-project/01-需求设计与系统架构/05-项目实战笔记-06：电商评论分类（BERT+PET-与-BERT+P-Tuning）/08-PET：把自然语言模板解析成可填充的数据结构/index.md
+      - Verbalizer：标签词映射与反查: learning/08-project/01-需求设计与系统架构/05-项目实战笔记-06：电商评论分类（BERT+PET-与-BERT+P-Tuning）/09-Verbalizer：标签词映射与反查/index.md
+      - PET 的 MLM 损失：变长子标签的处理: learning/08-project/01-需求设计与系统架构/05-项目实战笔记-06：电商评论分类（BERT+PET-与-BERT+P-Tuning）/10-PET-的-MLM-损失：变长子标签的处理/index.md
+      - 从 logits 取出预测：索引展平: learning/08-project/01-需求设计与系统架构/05-项目实战笔记-06：电商评论分类（BERT+PET-与-BERT+P-Tuning）/11-从-logits-取出预测：索引展平/index.md
+      - P-Tuning：把软模板插进输入序列: learning/08-project/01-需求设计与系统架构/05-项目实战笔记-06：电商评论分类（BERT+PET-与-BERT+P-Tuning）/12-P-Tuning：把软模板插进输入序列/index.md
+      - 训练循环与评估: learning/08-project/01-需求设计与系统架构/05-项目实战笔记-06：电商评论分类（BERT+PET-与-BERT+P-Tuning）/13-训练循环与评估/index.md
+      - 训练结果: learning/08-project/01-需求设计与系统架构/05-项目实战笔记-06：电商评论分类（BERT+PET-与-BERT+P-Tuning）/14-训练结果/index.md
+    - 项目实战笔记 07：监管公告分类与信息抽取:
+      - 主题目录: learning/08-project/01-需求设计与系统架构/06-项目实战笔记-07：监管公告分类与信息抽取/index.md
+      - 业务背景: learning/08-project/01-需求设计与系统架构/06-项目实战笔记-07：监管公告分类与信息抽取/01-业务背景/index.md
+      - 三个任务: learning/08-project/01-需求设计与系统架构/06-项目实战笔记-07：监管公告分类与信息抽取/02-三个任务/index.md
+      - 方法选择: learning/08-project/01-需求设计与系统架构/06-项目实战笔记-07：监管公告分类与信息抽取/03-方法选择/index.md
+      - In-context Learning 的核心结构: learning/08-project/01-需求设计与系统架构/06-项目实战笔记-07：监管公告分类与信息抽取/04-In-context-Learning-的核心结构/index.md
+      - 三个任务的 Prompt 对比: learning/08-project/01-需求设计与系统架构/06-项目实战笔记-07：监管公告分类与信息抽取/05-三个任务的-Prompt-对比/index.md
+      - 抽取任务的后处理流程: learning/08-project/01-需求设计与系统架构/06-项目实战笔记-07：监管公告分类与信息抽取/06-抽取任务的后处理流程/index.md
+      - 任务一：监管公告分类: learning/08-project/01-需求设计与系统架构/06-项目实战笔记-07：监管公告分类与信息抽取/07-任务一：监管公告分类/index.md
+      - 任务二：监管信息抽取: learning/08-project/01-需求设计与系统架构/06-项目实战笔记-07：监管公告分类与信息抽取/08-任务二：监管信息抽取/index.md
+      - 任务三：监管文本匹配: learning/08-project/01-需求设计与系统架构/06-项目实战笔记-07：监管公告分类与信息抽取/09-任务三：监管文本匹配/index.md
+      - 三个任务的共性提炼: learning/08-project/01-需求设计与系统架构/06-项目实战笔记-07：监管公告分类与信息抽取/10-三个任务的共性提炼/index.md
+    - 项目实战笔记 08：新闻文本分类三方案对比（随机森林 / FastText / BERT）:
+      - 主题目录: learning/08-project/01-需求设计与系统架构/07-项目实战笔记-08：新闻文本分类三方案对比（随机森林---FastText---BERT）/index.md
+      - 业务场景: learning/08-project/01-需求设计与系统架构/07-项目实战笔记-08：新闻文本分类三方案对比（随机森林---FastText---BERT）/01-业务场景/index.md
+      - 数据集与关键统计: learning/08-project/01-需求设计与系统架构/07-项目实战笔记-08：新闻文本分类三方案对比（随机森林---FastText---BERT）/02-数据集与关键统计/index.md
+      - 四条路线的对比目标: learning/08-project/01-需求设计与系统架构/07-项目实战笔记-08：新闻文本分类三方案对比（随机森林---FastText---BERT）/03-四条路线的对比目标/index.md
+      - 一份文本，三种格式: learning/08-project/01-需求设计与系统架构/07-项目实战笔记-08：新闻文本分类三方案对比（随机森林---FastText---BERT）/04-一份文本，三种格式/index.md
+      - BERT 训练与部署链路: learning/08-project/01-需求设计与系统架构/07-项目实战笔记-08：新闻文本分类三方案对比（随机森林---FastText---BERT）/05-BERT-训练与部署链路/index.md
+      - 数据预处理：三条支线的关键代码: learning/08-project/01-需求设计与系统架构/07-项目实战笔记-08：新闻文本分类三方案对比（随机森林---FastText---BERT）/06-数据预处理：三条支线的关键代码/index.md
+      - 随机森林：最小的可用基线: learning/08-project/01-需求设计与系统架构/07-项目实战笔记-08：新闻文本分类三方案对比（随机森林---FastText---BERT）/07-随机森林：最小的可用基线/index.md
+      - FastText：两条命令完成训练与调参: learning/08-project/01-需求设计与系统架构/07-项目实战笔记-08：新闻文本分类三方案对比（随机森林---FastText---BERT）/08-FastText：两条命令完成训练与调参/index.md
+      - FastText 服务化：5ms 的意义: learning/08-project/01-需求设计与系统架构/07-项目实战笔记-08：新闻文本分类三方案对比（随机森林---FastText---BERT）/09-FastText-服务化：5ms-的意义/index.md
+      - BERT：模型定义只有两行有效代码: learning/08-project/01-需求设计与系统架构/07-项目实战笔记-08：新闻文本分类三方案对比（随机森林---FastText---BERT）/10-BERT：模型定义只有两行有效代码/index.md
+      - 训练循环：分层权重衰减 + 按验证损失保存: learning/08-project/01-需求设计与系统架构/07-项目实战笔记-08：新闻文本分类三方案对比（随机森林---FastText---BERT）/11-训练循环：分层权重衰减-+-按验证损失保存/index.md
+      - 测试结果该怎么读: learning/08-project/01-需求设计与系统架构/07-项目实战笔记-08：新闻文本分类三方案对比（随机森林---FastText---BERT）/12-测试结果该怎么读/index.md
+      - 量化：一行代码减重 257MB: learning/08-project/01-需求设计与系统架构/07-项目实战笔记-08：新闻文本分类三方案对比（随机森林---FastText---BERT）/13-量化：一行代码减重-257MB/index.md
+      - 蒸馏：让学生继承教师的"判断力": learning/08-project/01-需求设计与系统架构/07-项目实战笔记-08：新闻文本分类三方案对比（随机森林---FastText---BERT）/14-蒸馏：让学生继承教师的-判断力/index.md
+    - 项目实战笔记 04：大宗商品价格监控 Agent:
+      - 主题目录: learning/08-project/01-需求设计与系统架构/08-项目实战笔记-04：大宗商品价格监控-Agent/index.md
+      - 需求: learning/08-project/01-需求设计与系统架构/08-项目实战笔记-04：大宗商品价格监控-Agent/01-需求/index.md
+      - 为什么叫它 "Agent": learning/08-project/01-需求设计与系统架构/08-项目实战笔记-04：大宗商品价格监控-Agent/02-为什么叫它--Agent/index.md
+      - 阈值语义: learning/08-project/01-需求设计与系统架构/08-项目实战笔记-04：大宗商品价格监控-Agent/03-阈值语义/index.md
+      - 整体数据流: learning/08-project/01-需求设计与系统架构/08-项目实战笔记-04：大宗商品价格监控-Agent/04-整体数据流/index.md
+      - 状态机: learning/08-project/01-需求设计与系统架构/08-项目实战笔记-04：大宗商品价格监控-Agent/05-状态机/index.md
+      - 多数据源降级抓取: learning/08-project/01-需求设计与系统架构/08-项目实战笔记-04：大宗商品价格监控-Agent/06-多数据源降级抓取/index.md
+      - 状态机与通知去重: learning/08-project/01-需求设计与系统架构/08-项目实战笔记-04：大宗商品价格监控-Agent/07-状态机与通知去重/index.md
+      - 状态持久化: learning/08-project/01-需求设计与系统架构/08-项目实战笔记-04：大宗商品价格监控-Agent/08-状态持久化/index.md
+      - 历史留痕与每日日报: learning/08-project/01-需求设计与系统架构/08-项目实战笔记-04：大宗商品价格监控-Agent/09-历史留痕与每日日报/index.md
+      - Flask 看板：把历史画成图: learning/08-project/01-需求设计与系统架构/08-项目实战笔记-04：大宗商品价格监控-Agent/10-Flask-看板：把历史画成图/index.md
+      - 入口设计：一个脚本两种模式: learning/08-project/01-需求设计与系统架构/08-项目实战笔记-04：大宗商品价格监控-Agent/11-入口设计：一个脚本两种模式/index.md
+  - 实现评估与复盘改进:
+    - 方向概览: learning/08-project/02-实现评估与复盘改进/index.md
+    - 项目实战笔记 01：法律咨询 RAG 问答系统:
+      - 主题目录: learning/08-project/02-实现评估与复盘改进/01-项目实战笔记-01：法律咨询-RAG-问答系统/index.md
+      - 关键技术选型与理由: learning/08-project/02-实现评估与复盘改进/01-项目实战笔记-01：法律咨询-RAG-问答系统/01-关键技术选型与理由/index.md
+      - 踩坑与解决: learning/08-project/02-实现评估与复盘改进/01-项目实战笔记-01：法律咨询-RAG-问答系统/02-踩坑与解决/index.md
+      - 可复用经验: learning/08-project/02-实现评估与复盘改进/01-项目实战笔记-01：法律咨询-RAG-问答系统/03-可复用经验/index.md
+    - 项目实战笔记 05：企业内部制度问答助手:
+      - 主题目录: learning/08-project/02-实现评估与复盘改进/02-项目实战笔记-05：企业内部制度问答助手/index.md
+      - 关键技术选型与理由: learning/08-project/02-实现评估与复盘改进/02-项目实战笔记-05：企业内部制度问答助手/01-关键技术选型与理由/index.md
+      - 踩坑与解决: learning/08-project/02-实现评估与复盘改进/02-项目实战笔记-05：企业内部制度问答助手/02-踩坑与解决/index.md
+      - 可复用经验: learning/08-project/02-实现评估与复盘改进/02-项目实战笔记-05：企业内部制度问答助手/03-可复用经验/index.md
+    - 项目实战笔记 02：法律咨询问答机器人:
+      - 主题目录: learning/08-project/02-实现评估与复盘改进/03-项目实战笔记-02：法律咨询问答机器人/index.md
+      - 关键技术选型与理由: learning/08-project/02-实现评估与复盘改进/03-项目实战笔记-02：法律咨询问答机器人/01-关键技术选型与理由/index.md
+      - 踩坑与解决: learning/08-project/02-实现评估与复盘改进/03-项目实战笔记-02：法律咨询问答机器人/02-踩坑与解决/index.md
+      - 可复用经验: learning/08-project/02-实现评估与复盘改进/03-项目实战笔记-02：法律咨询问答机器人/03-可复用经验/index.md
+    - 项目实战笔记 03：企业客服聊天机器人:
+      - 主题目录: learning/08-project/02-实现评估与复盘改进/04-项目实战笔记-03：企业客服聊天机器人/index.md
+      - 关键技术选型与理由: learning/08-project/02-实现评估与复盘改进/04-项目实战笔记-03：企业客服聊天机器人/01-关键技术选型与理由/index.md
+      - 踩坑与解决: learning/08-project/02-实现评估与复盘改进/04-项目实战笔记-03：企业客服聊天机器人/02-踩坑与解决/index.md
+      - 可复用经验: learning/08-project/02-实现评估与复盘改进/04-项目实战笔记-03：企业客服聊天机器人/03-可复用经验/index.md
+    - 项目实战笔记 06：电商评论分类（BERT+PET 与 BERT+P-Tuning）:
+      - 主题目录: learning/08-project/02-实现评估与复盘改进/05-项目实战笔记-06：电商评论分类（BERT+PET-与-BERT+P-Tuning）/index.md
+      - 为什么 PET 能小样本奏效：三个理由: learning/08-project/02-实现评估与复盘改进/05-项目实战笔记-06：电商评论分类（BERT+PET-与-BERT+P-Tuning）/01-为什么-PET-能小样本奏效：三个理由/index.md
+      - 踩坑与解决: learning/08-project/02-实现评估与复盘改进/05-项目实战笔记-06：电商评论分类（BERT+PET-与-BERT+P-Tuning）/02-踩坑与解决/index.md
+      - 可复用经验: learning/08-project/02-实现评估与复盘改进/05-项目实战笔记-06：电商评论分类（BERT+PET-与-BERT+P-Tuning）/03-可复用经验/index.md
+    - 项目实战笔记 07：监管公告分类与信息抽取:
+      - 主题目录: learning/08-project/02-实现评估与复盘改进/06-项目实战笔记-07：监管公告分类与信息抽取/index.md
+      - 提示工程 vs 模型训练：怎么选: learning/08-project/02-实现评估与复盘改进/06-项目实战笔记-07：监管公告分类与信息抽取/01-提示工程-vs-模型训练：怎么选/index.md
+      - 踩坑与解决: learning/08-project/02-实现评估与复盘改进/06-项目实战笔记-07：监管公告分类与信息抽取/02-踩坑与解决/index.md
+      - 可复用经验: learning/08-project/02-实现评估与复盘改进/06-项目实战笔记-07：监管公告分类与信息抽取/03-可复用经验/index.md
+    - 项目实战笔记 08：新闻文本分类三方案对比（随机森林 / FastText / BERT）:
+      - 主题目录: learning/08-project/02-实现评估与复盘改进/07-项目实战笔记-08：新闻文本分类三方案对比（随机森林---FastText---BERT）/index.md
+      - 实测结果: learning/08-project/02-实现评估与复盘改进/07-项目实战笔记-08：新闻文本分类三方案对比（随机森林---FastText---BERT）/01-实测结果/index.md
+      - 量化 vs 蒸馏: learning/08-project/02-实现评估与复盘改进/07-项目实战笔记-08：新闻文本分类三方案对比（随机森林---FastText---BERT）/02-量化-vs-蒸馏/index.md
+      - 踩坑与解决: learning/08-project/02-实现评估与复盘改进/07-项目实战笔记-08：新闻文本分类三方案对比（随机森林---FastText---BERT）/03-踩坑与解决/index.md
+      - 可复用经验: learning/08-project/02-实现评估与复盘改进/07-项目实战笔记-08：新闻文本分类三方案对比（随机森林---FastText---BERT）/04-可复用经验/index.md
+    - 项目实战笔记 04：大宗商品价格监控 Agent:
+      - 主题目录: learning/08-project/02-实现评估与复盘改进/08-项目实战笔记-04：大宗商品价格监控-Agent/index.md
+      - 踩坑与解决: learning/08-project/02-实现评估与复盘改进/08-项目实战笔记-04：大宗商品价格监控-Agent/01-踩坑与解决/index.md
+      - 可复用经验: learning/08-project/02-实现评估与复盘改进/08-项目实战笔记-04：大宗商品价格监控-Agent/02-可复用经验/index.md
+  - 综合复习与参考:
+    - 领域目录: 08-project/README.md
+    - ① 问答与 RAG 系统:
+      - 本节目录: 08-project/01-问答与RAG系统/README.md
+      - 1.1 项目实战笔记 01：法律咨询 RAG 问答系统: 08-project/01-问答与RAG系统/01-项目-法律咨询RAG问答系统.md
+      - 1.2 项目实战笔记 05：企业内部制度问答助手: 08-project/01-问答与RAG系统/05-项目-企业内部制度问答助手.md
+    - ② 对话与生成系统:
+      - 本节目录: 08-project/02-对话与生成系统/README.md
+      - 2.1 项目实战笔记 02：法律咨询问答机器人: 08-project/02-对话与生成系统/02-项目-法律咨询问答机器人.md
+      - 2.2 项目实战笔记 03：企业客服聊天机器人: 08-project/02-对话与生成系统/03-项目-企业客服聊天机器人.md
+    - ③ 文本分类系统:
+      - 本节目录: 08-project/03-文本分类系统/README.md
+      - 3.1 项目实战笔记 06：电商评论分类（BERT+PET 与 BERT+P-Tuning）: 08-project/03-文本分类系统/06-项目-电商评论分类（BERT+PET与P-Tuning）.md
+      - 3.2 项目实战笔记 07：监管公告分类与信息抽取: 08-project/03-文本分类系统/07-项目-监管公告分类与信息抽取.md
+      - 3.3 项目实战笔记 08：新闻文本分类三方案对比（随机森林 / FastText / BERT）: 08-project/03-文本分类系统/08-项目-新闻文本分类三方案对比（随机森林FastTextBERT）.md
+    - ④ Agent 系统:
+      - 本节目录: 08-project/04-Agent系统/README.md
+      - 4.1 项目实战笔记 04：大宗商品价格监控 Agent: 08-project/04-Agent系统/04-项目-大宗商品价格监控Agent.md
+- 前沿追踪:
+  - 追踪方法与评估框架:
+    - 方向概览: learning/10-radar/01-追踪方法与评估框架/index.md
+    - 这个栏目怎么用:
+      - 主题目录: learning/10-radar/01-追踪方法与评估框架/01-这个栏目怎么用/index.md
+      - 这个栏目解决什么问题: learning/10-radar/01-追踪方法与评估框架/01-这个栏目怎么用/01-这个栏目解决什么问题/index.md
+      - 硬门槛（四问全过）: learning/10-radar/01-追踪方法与评估框架/01-这个栏目怎么用/02-硬门槛（四问全过）/index.md
+      - 判定记录表（每次判断留痕）: learning/10-radar/01-追踪方法与评估框架/01-这个栏目怎么用/03-判定记录表（每次判断留痕）/index.md
+      - 信息源分级: learning/10-radar/01-追踪方法与评估框架/01-这个栏目怎么用/04-信息源分级/index.md
+      - 一条线索的完整生命周期: learning/10-radar/01-追踪方法与评估框架/01-这个栏目怎么用/05-一条线索的完整生命周期/index.md
+      - 更新节奏: learning/10-radar/01-追踪方法与评估框架/01-这个栏目怎么用/06-更新节奏/index.md
+      - 快速否决清单（命中任一条即不写条目）: learning/10-radar/01-追踪方法与评估框架/01-这个栏目怎么用/07-快速否决清单（命中任一条即不写条目）/index.md
+      - 「值不值得」的量化口径: learning/10-radar/01-追踪方法与评估框架/01-这个栏目怎么用/08-「值不值得」的量化口径/index.md
+      - 灰区处理: learning/10-radar/01-追踪方法与评估框架/01-这个栏目怎么用/09-灰区处理/index.md
+      - 触发退役的四种情形: learning/10-radar/01-追踪方法与评估框架/01-这个栏目怎么用/10-触发退役的四种情形/index.md
+      - 退役说明的固定格式: learning/10-radar/01-追踪方法与评估框架/01-这个栏目怎么用/11-退役说明的固定格式/index.md
+      - 退役后索引表的写法: learning/10-radar/01-追踪方法与评估框架/01-这个栏目怎么用/12-退役后索引表的写法/index.md
+      - 栏目自身的复盘指标: learning/10-radar/01-追踪方法与评估框架/01-这个栏目怎么用/13-栏目自身的复盘指标/index.md
+      - 一页速查: learning/10-radar/01-追踪方法与评估框架/01-这个栏目怎么用/14-一页速查/index.md
+    - 新技术评估框架:
+      - 主题目录: learning/10-radar/01-追踪方法与评估框架/02-新技术评估框架/index.md
+      - 五个维度与权重: learning/10-radar/01-追踪方法与评估框架/02-新技术评估框架/01-五个维度与权重/index.md
+      - 打分刻度（统一五档）: learning/10-radar/01-追踪方法与评估框架/02-新技术评估框架/02-打分刻度（统一五档）/index.md
+      - 看什么: learning/10-radar/01-追踪方法与评估框架/02-新技术评估框架/03-看什么/index.md
+      - 打分锚点: learning/10-radar/01-追踪方法与评估框架/02-新技术评估框架/04-打分锚点/index.md
+      - 看什么: learning/10-radar/01-追踪方法与评估框架/02-新技术评估框架/05-看什么/index.md
+      - 打分锚点: learning/10-radar/01-追踪方法与评估框架/02-新技术评估框架/06-打分锚点/index.md
+      - 看什么: learning/10-radar/01-追踪方法与评估框架/02-新技术评估框架/07-看什么/index.md
+      - 打分锚点: learning/10-radar/01-追踪方法与评估框架/02-新技术评估框架/08-打分锚点/index.md
+      - 看什么: learning/10-radar/01-追踪方法与评估框架/02-新技术评估框架/09-看什么/index.md
+      - 打分锚点: learning/10-radar/01-追踪方法与评估框架/02-新技术评估框架/10-打分锚点/index.md
+      - 关联能力清单: learning/10-radar/01-追踪方法与评估框架/02-新技术评估框架/11-关联能力清单/index.md
+      - 计算公式: learning/10-radar/01-追踪方法与评估框架/02-新技术评估框架/12-计算公式/index.md
+      - 等级与动作: learning/10-radar/01-追踪方法与评估框架/02-新技术评估框架/13-等级与动作/index.md
+      - 一票否决与一票升格: learning/10-radar/01-追踪方法与评估框架/02-新技术评估框架/14-一票否决与一票升格/index.md
+      - Jev: learning/10-radar/01-追踪方法与评估框架/02-新技术评估框架/15-Jev/index.md
+      - Muse: learning/10-radar/01-追踪方法与评估框架/02-新技术评估框架/16-Muse/index.md
+      - 使用这套框架的纪律: learning/10-radar/01-追踪方法与评估框架/02-新技术评估框架/17-使用这套框架的纪律/index.md
+  - 技术条目与实践判断:
+    - 方向概览: learning/10-radar/02-技术条目与实践判断/index.md
+    - Jev —— 把 Agent 的判断从「生成」里拆出来：不写字，只给带概率的判定:
+      - 主题目录: learning/10-radar/02-技术条目与实践判断/01-Jev-——-把-Agent-的判断从「生成」里拆出来：不写字，只给带概率的判定/index.md
+      - 问题的具体形态: learning/10-radar/02-技术条目与实践判断/01-Jev-——-把-Agent-的判断从「生成」里拆出来：不写字，只给带概率的判定/01-问题的具体形态/index.md
+      - 它的切入点: learning/10-radar/02-技术条目与实践判断/01-Jev-——-把-Agent-的判断从「生成」里拆出来：不写字，只给带概率的判定/02-它的切入点/index.md
+      - 输入：它接受什么: learning/10-radar/02-技术条目与实践判断/01-Jev-——-把-Agent-的判断从「生成」里拆出来：不写字，只给带概率的判定/03-输入：它接受什么/index.md
+      - 处理：核心计算路径: learning/10-radar/02-技术条目与实践判断/01-Jev-——-把-Agent-的判断从「生成」里拆出来：不写字，只给带概率的判定/04-处理：核心计算路径/index.md
+      - 输出：它承诺什么保证: learning/10-radar/02-技术条目与实践判断/01-Jev-——-把-Agent-的判断从「生成」里拆出来：不写字，只给带概率的判定/05-输出：它承诺什么保证/index.md
+      - 可靠性手段: learning/10-radar/02-技术条目与实践判断/01-Jev-——-把-Agent-的判断从「生成」里拆出来：不写字，只给带概率的判定/06-可靠性手段/index.md
+      - 选型结论: learning/10-radar/02-技术条目与实践判断/01-Jev-——-把-Agent-的判断从「生成」里拆出来：不写字，只给带概率的判定/07-选型结论/index.md
+      - 成本估算: learning/10-radar/02-技术条目与实践判断/01-Jev-——-把-Agent-的判断从「生成」里拆出来：不写字，只给带概率的判定/08-成本估算/index.md
+      - Agent 评测: learning/10-radar/02-技术条目与实践判断/01-Jev-——-把-Agent-的判断从「生成」里拆出来：不写字，只给带概率的判定/09-Agent-评测/index.md
+      - 工具调用: learning/10-radar/02-技术条目与实践判断/01-Jev-——-把-Agent-的判断从「生成」里拆出来：不写字，只给带概率的判定/10-工具调用/index.md
+      - 记忆管理: learning/10-radar/02-技术条目与实践判断/01-Jev-——-把-Agent-的判断从「生成」里拆出来：不写字，只给带概率的判定/11-记忆管理/index.md
+      - 权限与安全: learning/10-radar/02-技术条目与实践判断/01-Jev-——-把-Agent-的判断从「生成」里拆出来：不写字，只给带概率的判定/12-权限与安全/index.md
+      - 行动项汇总: learning/10-radar/02-技术条目与实践判断/01-Jev-——-把-Agent-的判断从「生成」里拆出来：不写字，只给带概率的判定/13-行动项汇总/index.md
+      - 关键事实缺口: learning/10-radar/02-技术条目与实践判断/01-Jev-——-把-Agent-的判断从「生成」里拆出来：不写字，只给带概率的判定/14-关键事实缺口/index.md
+      - 来源冲突记录: learning/10-radar/02-技术条目与实践判断/01-Jev-——-把-Agent-的判断从「生成」里拆出来：不写字，只给带概率的判定/15-来源冲突记录/index.md
+      - 更新记录: learning/10-radar/02-技术条目与实践判断/01-Jev-——-把-Agent-的判断从「生成」里拆出来：不写字，只给带概率的判定/16-更新记录/index.md
+    - Muse —— 把 Agent 安全从「模型对齐」改成「外部权限工程」:
+      - 主题目录: learning/10-radar/02-技术条目与实践判断/02-Muse-——-把-Agent-安全从「模型对齐」改成「外部权限工程」/index.md
+      - 问题的具体形态: learning/10-radar/02-技术条目与实践判断/02-Muse-——-把-Agent-安全从「模型对齐」改成「外部权限工程」/01-问题的具体形态/index.md
+      - 它的切入点: learning/10-radar/02-技术条目与实践判断/02-Muse-——-把-Agent-安全从「模型对齐」改成「外部权限工程」/02-它的切入点/index.md
+      - 输入：它接受什么: learning/10-radar/02-技术条目与实践判断/02-Muse-——-把-Agent-安全从「模型对齐」改成「外部权限工程」/03-输入：它接受什么/index.md
+      - 处理：核心计算路径: learning/10-radar/02-技术条目与实践判断/02-Muse-——-把-Agent-安全从「模型对齐」改成「外部权限工程」/04-处理：核心计算路径/index.md
+      - 输出：它承诺什么保证: learning/10-radar/02-技术条目与实践判断/02-Muse-——-把-Agent-安全从「模型对齐」改成「外部权限工程」/05-输出：它承诺什么保证/index.md
+      - 可靠性手段: learning/10-radar/02-技术条目与实践判断/02-Muse-——-把-Agent-安全从「模型对齐」改成「外部权限工程」/06-可靠性手段/index.md
+      - 但机制之外还有现实: learning/10-radar/02-技术条目与实践判断/02-Muse-——-把-Agent-安全从「模型对齐」改成「外部权限工程」/07-但机制之外还有现实/index.md
+      - 选型结论: learning/10-radar/02-技术条目与实践判断/02-Muse-——-把-Agent-安全从「模型对齐」改成「外部权限工程」/08-选型结论/index.md
+      - 成本估算: learning/10-radar/02-技术条目与实践判断/02-Muse-——-把-Agent-安全从「模型对齐」改成「外部权限工程」/09-成本估算/index.md
+      - Agent 评测: learning/10-radar/02-技术条目与实践判断/02-Muse-——-把-Agent-安全从「模型对齐」改成「外部权限工程」/10-Agent-评测/index.md
+      - RAG: learning/10-radar/02-技术条目与实践判断/02-Muse-——-把-Agent-安全从「模型对齐」改成「外部权限工程」/11-RAG/index.md
+      - 工具调用: learning/10-radar/02-技术条目与实践判断/02-Muse-——-把-Agent-安全从「模型对齐」改成「外部权限工程」/12-工具调用/index.md
+      - 记忆管理: learning/10-radar/02-技术条目与实践判断/02-Muse-——-把-Agent-安全从「模型对齐」改成「外部权限工程」/13-记忆管理/index.md
+      - 权限与安全: learning/10-radar/02-技术条目与实践判断/02-Muse-——-把-Agent-安全从「模型对齐」改成「外部权限工程」/14-权限与安全/index.md
+      - 行动项汇总: learning/10-radar/02-技术条目与实践判断/02-Muse-——-把-Agent-安全从「模型对齐」改成「外部权限工程」/15-行动项汇总/index.md
+      - 关键事实缺口: learning/10-radar/02-技术条目与实践判断/02-Muse-——-把-Agent-安全从「模型对齐」改成「外部权限工程」/16-关键事实缺口/index.md
+      - 来源冲突记录: learning/10-radar/02-技术条目与实践判断/02-Muse-——-把-Agent-安全从「模型对齐」改成「外部权限工程」/17-来源冲突记录/index.md
+      - 更新记录: learning/10-radar/02-技术条目与实践判断/02-Muse-——-把-Agent-安全从「模型对齐」改成「外部权限工程」/18-更新记录/index.md
+  - 综合复习与参考:
+    - 领域目录: 10-radar/README.md
+    - ① 追踪方法:
+      - 本节目录: 10-radar/01-追踪方法/README.md
+      - 1.1 这个栏目怎么用: 10-radar/01-追踪方法/01-这个栏目怎么用.md
+      - 1.2 新技术评估框架: 10-radar/01-追踪方法/02-新技术评估框架.md
+    - ② 技术条目:
+      - 本节目录: 10-radar/02-条目/README.md
+      - 2.1 Jev —— 把 Agent 的判断从「生成」里拆出来：不写字，只给带概率的判定: 10-radar/02-条目/2026-09-Jev-决策模型.md
+      - 2.2 Muse —— 把 Agent 安全从「模型对齐」改成「外部权限工程」: 10-radar/02-条目/2026-09-Muse-个人Agent.md
+    - ③ 条目模板:
+      - 本节目录: 10-radar/99-模板/README.md
+      - 3.1 技术名 —— 一句话说明它是什么: 10-radar/99-模板/radar-entry.md

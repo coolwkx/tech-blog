@@ -1,3 +1,9 @@
+---
+article_id: "18a44ccdeb8a"
+learning_kind: "reference"
+learning_category: "05-nlp"
+---
+
 # 高频面试题库
 
 > 用法：先自己答，再展开看参考。标 🔥 的是高频题。

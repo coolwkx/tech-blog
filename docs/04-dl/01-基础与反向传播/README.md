@@ -1,3 +1,9 @@
+---
+article_id: "093d3b1848bc"
+learning_kind: "guide"
+learning_category: "04-dl"
+---
+
 # ① 基础与反向传播
 
 > 本章共 3 篇笔记。

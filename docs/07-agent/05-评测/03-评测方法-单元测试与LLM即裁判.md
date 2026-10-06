@@ -1,3 +1,12 @@
+---
+article_id: "12ffa80c1618"
+learning_kind: "reference"
+learning_category: "07-agent"
+---
+
+# -评测方法-单元测试与LLM即裁判
+
+
 > **一句话总结**：评测方法的选择顺序是**先确定性、后模糊**——凡是终态可断言、产物可校验的一律用单元测试式判题，只有「没有唯一正确答案」的输出才交给 LLM-as-a-Judge，而 Judge 自己必须先与人工标注对齐（Cohen's Kappa）并接受显著性检验（McNemar / Bootstrap）才算合格。
 > **前置知识**：[01-为什么Agent评测比LLM评测难](01-为什么Agent评测比LLM评测难.md) 的三层评测与四象限、[02-评测指标设计](02-评测指标设计.md) 的口径固定与 `pass@k` / `pass^k`。
 > **学完能做到**：

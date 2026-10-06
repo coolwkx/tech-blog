@@ -18,8 +18,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: 学习记录恢复验证
+        run: node tests/records.test.cjs
       - name: 内容质检
-        run: python tools/lint_notes.py
+        run: |
+          python tools/lint_notes.py
+          python tests/check_lessons.py
+          python tests/python_semantics.py
 
   # ---------- 构建 MkDocs 站点 ----------
   build:
@@ -35,9 +43,8 @@ jobs:
       - name: 构建站点
         run: |
           set -euo pipefail
-          mkdocs build
-          python tools/build_learning_site.py
-          touch site/.nojekyll
+          python tests/metadata_and_redirects.py
+          python tools/site.py build
       - name: 上传站点产物
         uses: actions/upload-artifact@v4
         with:

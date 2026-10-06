@@ -1,3 +1,12 @@
+---
+article_id: "21455d0f58d4"
+learning_kind: "reference"
+learning_category: "07-agent"
+---
+
+# -Agent的规划与任务分解
+
+
 > **一句话总结**：规划是 Agent 把「一个模糊目标」翻译成「一串可执行子目标」的能力——给出的四个动作是**任务分析、目标设定、搜索、路径规划**，而在它以四种形态出现：Function Call 的链式工具调用、RAG 的查询改写策略、CrewAI 的 Task 拆解、以及人工编排的工作流。
 > **前置知识**：[01-Agent基础范式与ReAct循环](../01-基础范式/01-Agent基础范式与ReAct循环.md) 的五要素、[03-LangChain与工具编排](../03-记忆与多智能体/03-LangChain与工具编排.md) 的 Task/Crew、[06-RAG作为Agent的知识获取手段](../03-记忆与多智能体/06-RAG作为Agent的知识获取手段.md) 的检索流程。
 > **学完能做到**：

@@ -1,0 +1,42 @@
+---
+article_id: kp-ebbb4281d3b01eaa
+learning_kind: article
+learning_category: 07-agent
+learning_direction: practice
+learning_topic: topic-4cd0a37cb105
+learning_sourceId: 4cd0a37cb105
+learning_order: 1
+learning_objective: 理解并验证：文件职责
+---
+
+# 文件职责
+
+> **学习目标**：能够解释「文件职责」的机制或步骤，并用本节材料验证理解。
+>
+> **前置知识**：[01-Agent基础范式与ReAct循环](../../../../../07-agent/01-基础范式/01-Agent基础范式与ReAct循环.md) 的五要素、[05-Agent的记忆与知识管理](../../../../../07-agent/03-记忆与多智能体/05-Agent的记忆与知识管理.md) 的状态与历史分离、[07-Agent工程化与可靠性设计](../../../../../07-agent/04-评估与工程化/07-Agent工程化与可靠性设计.md) 的降级与限流。
+>
+> **所属主题**：-大宗商品价格监控Agent项目复盘 · 核心概念
+
+## 本次只学这一点
+
+| 文件 | 行数（约） | 职责 | 依赖 |
+| --- | --- | --- | --- |
+| `main_monitor.py` | 447 | 抓价、状态判定、推送、历史记录、日报生成函数 | `requests`、`json`、`time`、`re` |
+| `ai_analysis.py` | 88 | 读取历史做趋势/风险/操作参考分析 | `json`、`time` |
+| `daily_report.py` | 170 | 生成日报文本并推送 | `requests`、`json` |
+| `dashboard.py` | 178 | Flask + Chart.js 走势图面板 | `flask` |
+| `config.json` | 8 | 阈值、间隔、推送 Key | — |
+| `commodity_state.json` | 5 | 上次价格、状态、提醒时间 | — |
+| `commodity_history.json` | — | 时间序列 | — |
+
+## 验证理解
+
+- 合上正文，用自己的话解释本知识点解决的问题及适用边界。
+- 若本节含代码、公式或流程，先预测结果，再运行、推导或逐步追踪；项目片段需要沿用原文的依赖与数据。
+- 如果缺少变量、术语或完整代码，请查阅[综合原文](../../../../../07-agent/07-前沿与面试/08-大宗商品价格监控Agent项目复盘.md)；代码片段不等同于独立可运行项目。
+
+## 自测与关联复习
+
+- 「文件职责」为什么需要这种设计？改变一个条件会怎样？
+- 找出仍讲不清楚的地方，加入待复习并留下具体问题。
+- [本主题目录](../index.md) · [完整示例、常见坑与原文自测](../../../../../07-agent/07-前沿与面试/08-大宗商品价格监控Agent项目复盘.md)

@@ -1,3 +1,9 @@
+---
+article_id: "94a81d666c0a"
+learning_kind: "reference"
+learning_category: "05-nlp"
+---
+
 # BERT 与预训练模型
 
 > **一句话总结**：BERT 用「双向 Transformer Encoder + MLM/NSP 自监督预训练」学到了通用语言表示，下游任务只需加一个轻量头再微调。

@@ -1,3 +1,9 @@
+---
+article_id: "cbc77f3ab05c"
+learning_kind: "reference"
+learning_category: "05-nlp"
+---
+
 # Attention 与 Transformer
 
 > **一句话总结**：用「Query-Key 相似度加权 Value」替代 RNN 的逐步递归，让序列建模第一次可以大规模并行。

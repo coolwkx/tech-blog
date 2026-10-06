@@ -1,3 +1,9 @@
+---
+article_id: "81ea1539aa88"
+learning_kind: "guide"
+learning_category: "08-project"
+---
+
 # 🚀 项目实战
 
 > 把知识串成系统：项目架构、关键实现、踩坑与可复用经验
@@ -25,3 +31,11 @@
 ---
 
 [⬅️ 返回博客首页](../README.md)
+
+
+## 按学习方向复习
+
+- [需求设计与系统架构](../learning/08-project/01-需求设计与系统架构/index.md)
+- [实现评估与复盘改进](../learning/08-project/02-实现评估与复盘改进/index.md)
+
+原有章节保留作综合复习与完整案例参考。新学习目录将每个知识点放在独立目录中。

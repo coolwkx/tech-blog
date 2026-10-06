@@ -1,3 +1,9 @@
+---
+article_id: "d7e52d0c88a6"
+learning_kind: "guide"
+learning_category: "07-agent"
+---
+
 # ① 基础范式
 
 > 本章共 2 篇笔记。

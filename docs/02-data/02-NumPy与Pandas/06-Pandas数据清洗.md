@@ -1,3 +1,12 @@
+---
+article_id: "0f9e190924a9"
+learning_kind: "reference"
+learning_category: "02-data"
+---
+
+# -Pandas数据清洗
+
+
 > **一句话总结**：数据清洗就是把"原始文件里的脏数据"变成"可信、结构整齐的 DataFrame"——链路是**读进来 → 看清结构 → 定位与改写 → 补缺失 → 合并**；`Series`（一维）与 `DataFrame`（二维）两个对象加上"索引对齐"这条隐含规则，贯穿每一步。
 > **前置知识**：[05-NumPy数值计算](05-NumPy数值计算.md)（`ndarray`、广播、`np.nan`、`np.where`）；会读写文件、了解 CSV/JSON 格式。
 > **学完能做到**：1. 用 `read_csv/read_json/read_sql` 把各种来源的数据读成 DataFrame 并指定索引与列；2. 用 `loc/iloc/drop/assign/replace/drop_duplicates` 精准增删改查；3. 系统处理缺失值（含 `'?'` 这类伪缺失标记），并用 `concat/merge` 把多份数据拼成一张表。

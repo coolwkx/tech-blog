@@ -1,3 +1,9 @@
+---
+article_id: "c50c390e51bf"
+learning_kind: "guide"
+learning_category: "05-nlp"
+---
+
 # ② 序列建模与 Transformer
 
 > 本章共 3 篇笔记。

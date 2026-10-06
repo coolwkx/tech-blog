@@ -1,3 +1,9 @@
+---
+article_id: "e4164cd1d11a"
+learning_kind: "guide"
+learning_category: "10-radar"
+---
+
 # ③ 条目模板
 
 > 本章共 1 篇笔记。

@@ -1,3 +1,9 @@
+---
+article_id: "31fb337cab50"
+learning_kind: "guide"
+learning_category: "03-ml"
+---
+
 # ④ 集成学习与无监督
 
 > 本章共 2 篇笔记。

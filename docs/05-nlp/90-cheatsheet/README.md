@@ -1,3 +1,9 @@
+---
+article_id: "8c2f4edaa1af"
+learning_kind: "guide"
+learning_category: "05-nlp"
+---
+
 # 速查 · 术语 · 面试题库
 
 > 三类「非正文」，用于快速检索与考前突击。

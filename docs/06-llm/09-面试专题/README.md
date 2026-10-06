@@ -1,3 +1,9 @@
+---
+article_id: "f32f8f99a72d"
+learning_kind: "guide"
+learning_category: "06-llm"
+---
+
 # ⑦ 面试专题
 
 > 本章共 1 篇笔记。

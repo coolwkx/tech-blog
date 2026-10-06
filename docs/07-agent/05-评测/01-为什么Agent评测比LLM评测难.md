@@ -1,3 +1,12 @@
+---
+article_id: "46f092adbce1"
+learning_kind: "reference"
+learning_category: "07-agent"
+---
+
+# -为什么Agent评测比LLM评测难
+
+
 > **一句话总结**：LLM 评测打分的是「一次输出的文本」，Agent 评测打分的是「一个策略在不确定环境里的一条多步轨迹」——评测对象从**结果**变成了**结果 + 过程 + 系统开销**的三元组，所以「最终答案对了」只是必要条件，远远不是充分条件。
 > **前置知识**：[01-Agent基础范式与ReAct循环](../01-基础范式/01-Agent基础范式与ReAct循环.md) 的 Observe-Think-Act 循环、[02-Function-Calling与工具调用](../02-工具与规划/02-Function-Calling与工具调用.md) 的工具协议、[07-Agent工程化与可靠性设计](../04-评估与工程化/07-Agent工程化与可靠性设计.md) 的轨迹落盘与结构化日志。
 > **学完能做到**：

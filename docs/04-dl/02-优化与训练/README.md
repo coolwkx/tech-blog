@@ -1,3 +1,9 @@
+---
+article_id: "26f53ca6b2f1"
+learning_kind: "guide"
+learning_category: "04-dl"
+---
+
 # ② 优化与训练
 
 > 本章共 3 篇笔记。

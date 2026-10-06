@@ -1,3 +1,12 @@
+---
+article_id: "f5340ad3033e"
+learning_kind: "reference"
+learning_category: "06-llm"
+---
+
+# -DPO与免强化学习对齐
+
+
 > **一句话总结**：DPO（Direct Preference Optimization）用一个恒等式把「带 KL 约束的 RLHF 目标」的最优解写出来，再把奖励反解成「策略与参考模型的对数比」，代回 Bradley-Terry 似然后得到一个人人可训的分类损失——它需要训练的模型从四个降到两个，训练流程也退化成类似 SFT 的一遍前向加反向。
 > **前置知识**：Bradley-Terry 模型与排序损失、KL 散度、Sigmoid 与交叉熵、极大似然；读过第 01 篇（RLHF 与 KL 惩罚）和第 02 篇（奖励模型）会非常顺。
 > **学完能做到**：1. 独立完成 DPO 的完整推导链——从带 KL 约束的目标写出最优策略的闭式解，反解出隐式奖励，代回 Bradley-Terry 似然消掉配分函数，最后得到 DPO 损失；2. 说明 $\beta$ 的物理含义（每单位对数比的价格）以及它取大取小分别会发生什么；3. 在 DPO / IPO / KTO / ORPO / cDPO 之间做出有依据的选型，并手写一个可运行的 DPO 损失实现。

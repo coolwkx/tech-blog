@@ -1,3 +1,9 @@
+---
+article_id: "45c0450f2f61"
+learning_kind: "guide"
+learning_category: "05-nlp"
+---
+
 # ① 预处理与文本表示
 
 > 本章共 5 篇笔记。

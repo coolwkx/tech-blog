@@ -1,3 +1,9 @@
+---
+article_id: "314d719df758"
+learning_kind: "reference"
+learning_category: "08-project"
+---
+
 # 项目实战笔记 06：电商评论分类（BERT+PET 与 BERT+P-Tuning）
 
 > **一句话总结**：把"评论分类"这个判别任务**改写成完形填空**——PET 用人工硬模板 + 标签词映射（Verbalizer），P-Tuning 用可学习的软模板（伪 token），两者都在 63 条训练样本上把 BERT 的潜力榨出来。

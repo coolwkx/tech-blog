@@ -1,3 +1,12 @@
+---
+article_id: "4da3eec20eac"
+learning_kind: "reference"
+learning_category: "02-data"
+---
+
+# -MySQL基础与SQL语法
+
+
 > **一句话总结**：SQL 是把"我想要什么数据"翻译成数据库能执行的声明式语言；本分三块——**DDL 定结构**（库、表、字段、约束）、**DML 改数据**（增删改）、**DQL 取数据**（`select` 七段式语法），其中 `select ... from ... where ... group by ... having ... order by ... limit` 的执行顺序必须背下来。
 > **前置知识**：会启动 MySQL（或用提供的虚拟机）、能用 DataGrip 或命令行连上数据库；理解"表 = 行 + 列"。
 > **学完能做到**：1. 独立建库建表，正确选用数据类型并加上主键/非空/唯一/默认约束；2. 熟练写出带条件、排序、聚合、分组、分页的查询；3. 说清 `delete` 与 `truncate`、`where` 与 `having`、`count(*)` 与 `count(列)` 这几组高频面试对比。

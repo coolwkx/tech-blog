@@ -1,3 +1,9 @@
+---
+article_id: "75ee4a004eef"
+learning_kind: "guide"
+learning_category: "07-agent"
+---
+
 # ③ 记忆与多智能体
 
 > 本章共 3 篇笔记。

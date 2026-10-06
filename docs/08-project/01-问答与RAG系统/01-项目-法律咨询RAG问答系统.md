@@ -1,3 +1,9 @@
+---
+article_id: "e94c0577cb2f"
+learning_kind: "reference"
+learning_category: "08-project"
+---
+
 # 项目实战笔记 01：法律咨询 RAG 问答系统
 
 > **一句话总结**：用 LangChain + BGE-M3 + Milvus 搭一套"MySQL FAQ 精确匹配优先、Milvus 混合检索兜底"的双通道法律咨询 RAG 问答系统，把大模型的幻觉关在知识库的笼子里。

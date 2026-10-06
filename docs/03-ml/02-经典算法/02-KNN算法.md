@@ -1,3 +1,9 @@
+---
+article_id: "8321d1237f76"
+learning_kind: "reference"
+learning_category: "03-ml"
+---
+
 # KNN 算法
 
 > **一句话总结**：KNN（K-Nearest Neighbor）是"懒惰学习"的代表——训练阶段什么都不做，只把数据存下来；预测时现场计算待预测样本与所有训练样本的距离，取最近的 $K$ 个邻居，分类靠**多数表决**、回归靠**取平均**。

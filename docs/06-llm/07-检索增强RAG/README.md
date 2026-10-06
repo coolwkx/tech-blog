@@ -1,3 +1,9 @@
+---
+article_id: "e03fc45e45f0"
+learning_kind: "guide"
+learning_category: "06-llm"
+---
+
 # ⑥ 检索增强 RAG
 
 > 本章共 4 篇笔记。

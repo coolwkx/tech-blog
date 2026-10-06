@@ -1,3 +1,12 @@
+---
+article_id: "90fdb3fa96e7"
+learning_kind: "reference"
+learning_category: "06-llm"
+---
+
+# -本地部署与Ollama
+
+
 > **一句话总结**：Ollama 是把「下载模型 → 加载权重 → 起一个 HTTP 服务」三件事封装成一条命令的本地大模型运行工具；它让本地推理的门槛从「配环境 + 写加载代码」降到 `ollama run <模型名>`，并通过 11434 端口暴露 OpenAI 兼容接口，从而能无缝接入 LangChain 等上层框架。
 > **前置知识**：命令行基础、环境变量概念、HTTP/REST 基础、Python 与虚拟环境。
 > **学完能做到**：1. 在 Windows/Linux/macOS 上正确安装并配置 Ollama（含模型存储路径迁移）；2. 用 CLI、`ollama` Python 库、`requests` 调 REST API、LangChain 四种方式调用同一个本地模型；3. 根据显存选择模型规模与量化版本，并写出可复用的 Modelfile。

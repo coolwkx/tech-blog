@@ -1,3 +1,9 @@
+---
+article_id: "d7bbe1de9b00"
+learning_kind: "reference"
+learning_category: "05-nlp"
+---
+
 # RNN 与 LSTM 文本建模
 
 > **一句话总结**：RNN 用「隐藏状态沿时间传递」建模序列，但连乘的梯度让它记不住长依赖——LSTM 用门控和一个近似恒等的细胞状态通道解决了这个问题。

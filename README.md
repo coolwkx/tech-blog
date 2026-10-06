@@ -27,9 +27,9 @@ cd tech-blog
 # 方式一：直接读 Markdown（无需任何依赖）
 # docs/README.md 是总入口
 
-# 方式二：本地起站点（带全文搜索与侧边栏）
-pip install mkdocs-material
-mkdocs serve # http://127.0.0.1:8000
+# 方式二：预览与线上一致的学习界面
+pip install -r requirements-site.txt
+python tools/site.py preview # http://127.0.0.1:8000
 
 # 方式三：在线看
 # https://coolwkx.github.io/tech-blog/
@@ -103,9 +103,40 @@ python tools/build_index.py # 改过目录或 nav 后刷新索引
 
 ```bash
 pip install -r requirements-site.txt
-mkdocs build
-python tools/build_learning_site.py
-python -m http.server 8000 --directory site
+python tools/site.py preview
 ```
 
 打开 http://localhost:8000 查看学习界面。`mkdocs serve` 仍用于预览原始文档布局；`learning-ui/` 保存学习界面模板，`tools/build_learning_site.py` 生成目录、正文与延迟加载的搜索索引。`site/` 是生成产物，不提交到仓库。
+
+## 按知识点复习与维护
+
+Python 分为「语言基础与核心机制」和「工程实践与进阶应用」两个方向。其他领域同样分为两个学习方向，每个方向下按主题选择独立知识点。`docs/learning/<领域>/<方向>/<主题>/<知识点>/index.md` 是独立学习页面；原有章节仍保留为综合参考与完整案例。
+
+每个知识点写明本次目标、前置知识与来源。拆分保留原文的概念、公式和示例；项目片段可能依赖原文环境，页面明确提供上下文入口。不要把所有示例都视为独立程序。
+
+### 统一构建与预览
+
+```bash
+pip install -r requirements-site.txt
+python tools/site.py build
+python tools/site.py preview
+```
+
+本地预览和 CI 使用同一个构建入口，发布前检查页面编号、目录、正文、内部链接和分领域搜索索引的一致性。浏览器的学习记录可通过侧栏导出、导入；导入提供合并和替换，未知编号保留，格式错误不会覆盖已有记录。
+
+### 新增或移动文章
+
+- 新文章先运行 `python tools/register_articles.py`，生成一次性的 `article_id`。移动或改名时保留这个编号，不能按新路径重新生成。
+- 独立知识点的 front matter 设置 `learning_kind: article`、`learning_category`、`learning_direction`、`learning_topic` 和 `learning_sourceId`；综合原文使用 `reference`。
+- 更新 `learning-map.json` 的目录登记和 `mkdocs.yml` 的导航，保持主题、方向和来源明确。知识点不必因目录改名而改变编号。
+- 修改原文时同步审阅对应知识点：独立页面是可编辑 Markdown，而非每次部署强行切割原文。
+- 运行 `python tools/lint_notes.py`、`node tests/records.test.cjs` 和 `python tools/site.py build` 后提交。
+
+搜索优先匹配标题与摘要，正文按领域加载；搜索框可以选择单一领域，避免每次下载全部索引。收藏、复习和笔记仍只保存在当前浏览器，跨设备需导出、导入备份。
+
+
+### 缓存与地址兼容
+
+浏览器会缓存学习界面和已打开的正文、索引与公式图表资源；未打开的内容不保证离线可用。新版本就绪时显示更新按钮，保存阅读位置后再更新，避免阅读中途强制刷新。缓存限额为 400 个资源，不存储 GitHub 凭据。
+
+`learning-map.json` 中登记已发布路径。移动文章时保留 front matter 中的 `article_id`，更新目录登记与导航；构建会给原地址生成跳转，旧学习记录继续按同一编号匹配。

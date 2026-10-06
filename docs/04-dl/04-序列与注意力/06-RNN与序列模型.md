@@ -1,3 +1,12 @@
+---
+article_id: "a9dec5ff9c41"
+learning_kind: "reference"
+learning_category: "04-dl"
+---
+
+# -RNN与序列模型
+
+
 > **一句话总结**：循环神经网络（Recurrent Neural Network，RNN）用一条带反馈的边把"时间"接进网络，让隐状态 $h_t$ 充当记忆；但按时间反向传播（BPTT）里的 Jacobian 连乘会带来长程依赖问题，LSTM 用"内部状态 + 三个门"把连乘换成加性路径，GRU 用两个门做简化，二者共同构成序列建模的门控基石。
 >
 > **前置知识**：多层前馈网络与反向传播、链式法则与 Jacobian、Logistic/Tanh 及其导数、梯度下降与学习率、PyTorch 的 `nn.Module` 与张量维度。
