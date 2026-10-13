@@ -17510,6 +17510,20 @@
       "kind": "direction",
       "direction": "practice",
       "title": "技术条目与实践判断"
+    },
+    "10-radar/02-条目/2026-10-REA-逆向工程Agent.md": {
+      "id": "note-4131e0afd0f54c1f",
+      "category": "10-radar",
+      "kind": "reference"
+    },
+    "learning/10-radar/02-技术条目与实践判断/03-REA-逆向工程Agent/index.md": {
+      "id": "topic-note-4131e0afd0f54c1f-practice",
+      "category": "10-radar",
+      "kind": "topic",
+      "direction": "practice",
+      "topic": "topic-note-4131e0afd0f54c1f",
+      "title": "REA —— 让 Agent 沿证据追踪软件实现，结论仍需验证",
+      "sourceId": "note-4131e0afd0f54c1f"
     }
   },
   "topics": [
@@ -35182,6 +35196,14 @@
           "src": "learning/10-radar/02-技术条目与实践判断/02-Muse-——-把-Agent-安全从「模型对齐」改成「外部权限工程」/18-更新记录/index.md"
         }
       ]
+    },
+    {
+      "key": "topic-note-4131e0afd0f54c1f",
+      "category": "10-radar",
+      "direction": "practice",
+      "title": "REA —— 让 Agent 沿证据追踪软件实现，结论仍需验证",
+      "src": "learning/10-radar/02-技术条目与实践判断/03-REA-逆向工程Agent/index.md",
+      "points": []
     }
   ],
   "published_paths": {
@@ -36898,6 +36920,8 @@
     "kp-d1a8835c87667937": "learning/10-radar/02-%E6%8A%80%E6%9C%AF%E6%9D%A1%E7%9B%AE%E4%B8%8E%E5%AE%9E%E8%B7%B5%E5%88%A4%E6%96%AD/02-Muse-%E2%80%94%E2%80%94-%E6%8A%8A-Agent-%E5%AE%89%E5%85%A8%E4%BB%8E%E3%80%8C%E6%A8%A1%E5%9E%8B%E5%AF%B9%E9%BD%90%E3%80%8D%E6%94%B9%E6%88%90%E3%80%8C%E5%A4%96%E9%83%A8%E6%9D%83%E9%99%90%E5%B7%A5%E7%A8%8B%E3%80%8D/13-%E8%AE%B0%E5%BF%86%E7%AE%A1%E7%90%86/",
     "kp-e76d8ee7eb2ec107": "learning/10-radar/02-%E6%8A%80%E6%9C%AF%E6%9D%A1%E7%9B%AE%E4%B8%8E%E5%AE%9E%E8%B7%B5%E5%88%A4%E6%96%AD/02-Muse-%E2%80%94%E2%80%94-%E6%8A%8A-Agent-%E5%AE%89%E5%85%A8%E4%BB%8E%E3%80%8C%E6%A8%A1%E5%9E%8B%E5%AF%B9%E9%BD%90%E3%80%8D%E6%94%B9%E6%88%90%E3%80%8C%E5%A4%96%E9%83%A8%E6%9D%83%E9%99%90%E5%B7%A5%E7%A8%8B%E3%80%8D/03-%E8%BE%93%E5%85%A5%EF%BC%9A%E5%AE%83%E6%8E%A5%E5%8F%97%E4%BB%80%E4%B9%88/",
     "kp-ead4c25394def0e5": "learning/10-radar/02-%E6%8A%80%E6%9C%AF%E6%9D%A1%E7%9B%AE%E4%B8%8E%E5%AE%9E%E8%B7%B5%E5%88%A4%E6%96%AD/02-Muse-%E2%80%94%E2%80%94-%E6%8A%8A-Agent-%E5%AE%89%E5%85%A8%E4%BB%8E%E3%80%8C%E6%A8%A1%E5%9E%8B%E5%AF%B9%E9%BD%90%E3%80%8D%E6%94%B9%E6%88%90%E3%80%8C%E5%A4%96%E9%83%A8%E6%9D%83%E9%99%90%E5%B7%A5%E7%A8%8B%E3%80%8D/17-%E6%9D%A5%E6%BA%90%E5%86%B2%E7%AA%81%E8%AE%B0%E5%BD%95/",
-    "kp-ff952a444120aae2": "learning/10-radar/02-%E6%8A%80%E6%9C%AF%E6%9D%A1%E7%9B%AE%E4%B8%8E%E5%AE%9E%E8%B7%B5%E5%88%A4%E6%96%AD/02-Muse-%E2%80%94%E2%80%94-%E6%8A%8A-Agent-%E5%AE%89%E5%85%A8%E4%BB%8E%E3%80%8C%E6%A8%A1%E5%9E%8B%E5%AF%B9%E9%BD%90%E3%80%8D%E6%94%B9%E6%88%90%E3%80%8C%E5%A4%96%E9%83%A8%E6%9D%83%E9%99%90%E5%B7%A5%E7%A8%8B%E3%80%8D/01-%E9%97%AE%E9%A2%98%E7%9A%84%E5%85%B7%E4%BD%93%E5%BD%A2%E6%80%81/"
+    "kp-ff952a444120aae2": "learning/10-radar/02-%E6%8A%80%E6%9C%AF%E6%9D%A1%E7%9B%AE%E4%B8%8E%E5%AE%9E%E8%B7%B5%E5%88%A4%E6%96%AD/02-Muse-%E2%80%94%E2%80%94-%E6%8A%8A-Agent-%E5%AE%89%E5%85%A8%E4%BB%8E%E3%80%8C%E6%A8%A1%E5%9E%8B%E5%AF%B9%E9%BD%90%E3%80%8D%E6%94%B9%E6%88%90%E3%80%8C%E5%A4%96%E9%83%A8%E6%9D%83%E9%99%90%E5%B7%A5%E7%A8%8B%E3%80%8D/01-%E9%97%AE%E9%A2%98%E7%9A%84%E5%85%B7%E4%BD%93%E5%BD%A2%E6%80%81/",
+    "note-4131e0afd0f54c1f": "10-radar/02-%E6%9D%A1%E7%9B%AE/2026-10-REA-%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8BAgent/",
+    "topic-note-4131e0afd0f54c1f-practice": "learning/10-radar/02-%E6%8A%80%E6%9C%AF%E6%9D%A1%E7%9B%AE%E4%B8%8E%E5%AE%9E%E8%B7%B5%E5%88%A4%E6%96%AD/03-REA-%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8BAgent/"
   }
 }
