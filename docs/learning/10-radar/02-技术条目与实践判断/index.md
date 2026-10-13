@@ -11,3 +11,5 @@ learning_direction: "practice"
 
 - [Jev —— 把 Agent 的判断从「生成」里拆出来：不写字，只给带概率的判定](01-Jev-——-把-Agent-的判断从「生成」里拆出来：不写字，只给带概率的判定/index.md)：16 个知识点
 - [Muse —— 把 Agent 安全从「模型对齐」改成「外部权限工程」](02-Muse-——-把-Agent-安全从「模型对齐」改成「外部权限工程」/index.md)：18 个知识点
+
+- [REA —— 让 Agent 沿证据追踪软件实现](03-REA-逆向工程Agent/index.md)：完整主题

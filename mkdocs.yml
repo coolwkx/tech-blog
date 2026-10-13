@@ -1960,6 +1960,9 @@ nav:
       - Muse: learning/10-radar/01-追踪方法与评估框架/02-新技术评估框架/16-Muse/index.md
       - 使用这套框架的纪律: learning/10-radar/01-追踪方法与评估框架/02-新技术评估框架/17-使用这套框架的纪律/index.md
   - 技术条目与实践判断:
+    - "REA —— 让 Agent 沿证据追踪软件实现，结论仍需验证":
+      - 主题目录: learning/10-radar/02-技术条目与实践判断/03-REA-逆向工程Agent/index.md
+      - 完整原文: 10-radar/02-条目/2026-10-REA-逆向工程Agent.md
     - 方向概览: learning/10-radar/02-技术条目与实践判断/index.md
     - Jev —— 把 Agent 的判断从「生成」里拆出来：不写字，只给带概率的判定:
       - 主题目录: learning/10-radar/02-技术条目与实践判断/01-Jev-——-把-Agent-的判断从「生成」里拆出来：不写字，只给带概率的判定/index.md
